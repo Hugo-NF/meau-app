@@ -10,7 +10,7 @@ const createTestProps = (props?: object) => ({
 describe('App', () => {
   const props = createTestProps();
   const { getByText } = render(<App {...props} />);
-  it('should render a welcome', () => {
-    expect(getByText(/working/i)).toBeDefined();
+  it('should render Bugstenium Rocks!', () => {
+    expect(getByText(/Bugstenium Rocks!/i)).toBeDefined();
   });
 });
