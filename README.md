@@ -19,7 +19,7 @@ Luiz Antônio Borges Martins    | 16/0013615
 * Instalação de dependências: `npm install`
 
 * Instalação do APK em modo Debug (via ADB): `npm run android`
-* Instalação do APK em modo Debug (via ADB): `npm run android-release`
+* Instalação do APK em modo Release (via ADB): `npm run android-release`
 
 * Bundler do React-Native: `npm start`
 * Bundler do Expo: `npm run web`
