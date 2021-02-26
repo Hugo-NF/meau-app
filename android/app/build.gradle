@@ -132,7 +132,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.meauapp"
+        applicationId "com.bugstenium.meau"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -8,5 +8,8 @@
     "assetBundlePatterns": [
       "**/*"
     ]
+  },
+  "android": {
+    "package": "com.bugstenium.meau"
   }
 }
