@@ -1,21 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import OpsComponent from './components/Ops';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    alignItems: 'center'
+  }
 });
 
 export default function App() : JSX.Element {
   return (
     <View style={styles.container}>
-      <Text>Bugstenium rocks!</Text>
-      <StatusBar style="auto" />
+      <OpsComponent></OpsComponent>
     </View>
   );
 }
