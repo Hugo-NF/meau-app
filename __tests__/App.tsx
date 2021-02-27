@@ -4,9 +4,10 @@ import App from '../src/App';
 
 jest.useFakeTimers();
 
-const createTestProps = (props?: object) => ({
+const createTestProps = (props?: Record<string, unknown>): Record<string, unknown> => ({
   ...props,
 });
+
 describe('App', () => {
   const props = createTestProps();
   const { getByText } = render(<App {...props} />);
