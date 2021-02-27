@@ -1,23 +1,18 @@
-import { setStatusBarStyle, StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+import { StatusBar } from 'expo-status-bar';
+
+// React Navigation Stack
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+
+import Routes from './routes';
 
 export default function App() : JSX.Element {
-  setStatusBarStyle('auto');
-
   return (
-    <View style={styles.container}>
-      <Text>Bugstenium rocks!</Text>
-      <StatusBar />
-    </View>
+    <NavigationContainer>
+      <StatusBar translucent backgroundColor="black" style="auto" />
+      <Routes />
+    </NavigationContainer>
   );
 }
