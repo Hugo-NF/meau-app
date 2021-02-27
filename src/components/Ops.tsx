@@ -24,20 +24,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   opsText: {
-    fontFamily: "Courgette Regular",
+    fontFamily: "Courgette_400Regular",
     fontSize: 53,
     color: "#88c9bf",
     marginVertical: 52
   },
   message: {
-    fontFamily: "Roboto regular",
+    fontFamily: "Roboto_400Regular",
     fontSize: 14,
     color: "#757575",
     marginBottom: 16,
     textAlign: 'center'
   },
   button: {
-    fontFamily: "Roboto regular",
+    fontFamily: "Roboto_400Regular",
     fontSize: 12,
     color: "#434343",
     backgroundColor: "#88c9bf",

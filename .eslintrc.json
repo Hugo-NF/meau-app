@@ -55,7 +55,8 @@
         "ts": "never",
         "tsx": "never"
       }
-    ]
+    ],
+    "camelcase": ["error", { "imports": "never" }]
   },
   "settings": {
     "import/resolver": {
