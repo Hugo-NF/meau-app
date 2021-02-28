@@ -1,10 +1,10 @@
 module.exports = {
-    "preset": "react-native",
+    "preset": "jest-expo",
     "setupFiles": [
-      "./node_modules/react-native-gesture-handler/jestSetup.js"
+      "./jest/react-navigation-setup.js"
     ],
     "transformIgnorePatterns": [
-        "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
+        "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic|(jest-)?react-native|@react-native-community|@react-navigation)"
     ],
     "transform": {
         "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js",
