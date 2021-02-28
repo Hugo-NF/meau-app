@@ -16,7 +16,7 @@ const createTestProps = (props?: Record<string, unknown>): Record<string, unknow
 describe('App', () => {
   const props = createTestProps();
   it('should render Bugstenium Rocks!', async () => {
-    const { getByText } = render(<App{...props} />);
+    const { getByText } = render(<App {...props} />);
     await waitFor(() => getByText(/Bugstenium Rocks!/i));
   });
 });
