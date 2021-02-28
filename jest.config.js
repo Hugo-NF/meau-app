@@ -1,6 +1,8 @@
-
 module.exports = {
     "preset": "react-native",
+    "setupFiles": [
+      "./node_modules/react-native-gesture-handler/jestSetup.js"
+    ],
     "transformIgnorePatterns": [
         "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"
     ],
@@ -18,5 +20,8 @@ module.exports = {
         "tsx",
         "js"
     ],
+    "moduleNameMapper": {
+      ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "babel-jest"
+    },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$"
 }
