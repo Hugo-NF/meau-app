@@ -49,6 +49,7 @@ AsyncButton.defaultProps = {
   styles: {
     flexDirection: 'row',
     backgroundColor: Theme.default.primary,
+    color: Theme.default.light,
     marginTop: '0px',
     marginBottom: '0px',
     marginLeft: '0px',
