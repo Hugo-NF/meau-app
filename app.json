@@ -1,12 +1,15 @@
 {
   "name": "meau-app",
-  "displayName": "meau-app",
+  "displayName": "Meau",
   "expo": {
-    "name": "meau-app",
+    "name": "Meau",
     "slug": "meau-app",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
     ]
+  },
+  "android": {
+    "package": "com.bugstenium.meau"
   }
 }

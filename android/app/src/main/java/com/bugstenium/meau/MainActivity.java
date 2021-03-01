@@ -1,4 +1,4 @@
-package com.meauapp;
+package com.bugstenium.meau;
 
 import android.os.Bundle;
 
