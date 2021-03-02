@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import React from 'react';
 
-import OpsComponent from './components/Ops';
+import OpsComponent from './pages/Cadastro Pessoal/Ops';
 
 // Importing App Fonts
 import {
