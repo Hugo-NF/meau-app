@@ -1,5 +1,7 @@
 import React from 'react';
 // import AppLoading from 'expo-app-loading';
+import { StyleSheet, Text, View } from 'react-native';
+import TextInputCheck from './components/TextInputCheck';
 
 import { StatusBar } from 'expo-status-bar';
 
@@ -18,6 +20,8 @@ import { NavigationContainer } from '@react-navigation/native';
 // } from '@expo-google-fonts/roboto';
 
 import Routes from './routes';
+
+const emptyTextValidation: (_: string) => boolean = (text: string) => text !== '';
 
 export default function App() : JSX.Element {
   // const [fontsLoaded] = useFonts({
