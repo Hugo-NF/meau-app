@@ -13,6 +13,7 @@ export default function TextInputCheck(props: Record<string, unknown>) {
             style={styles.textInput}
             placeholder="Placeholder"
             placeholderTextColor="#bdbdbd"
+            {...props}
             onChangeText={onChangeText}
             />
             <Text style={styles.check}>

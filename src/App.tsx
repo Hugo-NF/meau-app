@@ -12,14 +12,16 @@ const styles = StyleSheet.create({
   },
 });
 
+const emptyTextValidation = (text: string) => text != "";
+
 export default function App() : JSX.Element {
   setStatusBarStyle('auto');
 
   return (
     <View style={styles.container}>
       <Text>Bugstenium rocks!</Text>
-      <TextInputCheck validation={(text) => text != ""}></TextInputCheck>
-      <TextInputCheck></TextInputCheck>
+      <TextInputCheck validation={emptyTextValidation} placeholder="Login"></TextInputCheck>
+      <TextInputCheck validation={emptyTextValidation} placeholder="E-mail"></TextInputCheck>
       <StatusBar />
     </View>
   );
