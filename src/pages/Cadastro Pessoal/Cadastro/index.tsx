@@ -59,25 +59,27 @@ export default function CadastroPessoal() : JSX.Element {
           <TextInputCheck validation={emptyTextValidation} placeholder="Senha" />
           <TextInputCheck validation={emptyTextValidation} placeholder="Confirmação de senha" />
           <Text style={styles.pageTinyTitle}>Foto de perfil</Text>
-          <AsyncButton
-            styles={{
-              flex: 1,
-              width: '300px',
-              height: '32px',
-              backgroundColor: '#88c9bf',
-              borderRadius: '5px',
-              marginTop: '10px',
-              marginBottom: '24px',
-            }}
-            asyncAction={false}
-            callback={() => {
-              navigation.navigate('Home');
-            }}
-          >
-            <Text style={{ textTransform: 'uppercase' }}>
-              Fazer cadastro
-            </Text>
-          </AsyncButton>
+          <View>
+            <AsyncButton
+              styles={{
+                flex: 1,
+                width: '250px',
+                height: '50px',
+                backgroundColor: '#88c9bf',
+                borderRadius: '5px',
+                marginTop: '10px',
+                marginBottom: '54px',
+              }}
+              asyncAction={false}
+              callback={() => {
+                navigation.navigate('Home');
+              }}
+            >
+              <Text style={{ textTransform: 'uppercase' }}>
+                Fazer cadastro
+              </Text>
+            </AsyncButton>
+          </View>
         </View>
       </View>
     </ScrollView>
