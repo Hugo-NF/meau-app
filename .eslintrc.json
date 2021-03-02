@@ -26,6 +26,7 @@
   ],
   "rules": {
     "max-len": "off",
+    "react/style-prop-object": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
@@ -42,6 +43,7 @@
     "import/prefer-default-export": "off",
     "import/no-duplicates": "off",
     "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/explicit-function-return-type": [
       "error",
       {
@@ -56,7 +58,7 @@
         "tsx": "never"
       }
     ],
-    "camelcase": ["error", { "imports": "never" }]
+    "camelcase": ["error", { "ignoreImports": true, "properties": "never" }]
   },
   "settings": {
     "import/resolver": {

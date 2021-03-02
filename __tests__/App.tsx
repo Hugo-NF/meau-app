@@ -1,17 +1,26 @@
+// Package imports.
 import React from 'react';
-import { render } from 'react-native-testing-library';
+import { cleanup, render } from '@testing-library/react-native';
+
+// Module imports.
 import App from '../src/App';
 
-jest.useFakeTimers();
-
+// Suite configuration.
 const createTestProps = (props?: Record<string, unknown>): Record<string, unknown> => ({
   ...props,
 });
 
+afterEach(cleanup);
+
+// Tests.
 describe('App', () => {
+  // Variable declaration.
   const props = createTestProps();
-  const { getByText } = render(<App {...props} />);
-  it('should render Bugstenium Rocks!', () => {
-    expect(getByText(/Bugstenium Rocks!/i)).toBeDefined();
+
+  // Tests.
+  it('should render Bugstenium Rocks!', async () => {
+    const { findByText } = render(<App {...props} />);
+    const mainText = await findByText(/Bugstenium rocks!/i);
+    expect(mainText).toBeTruthy();
   });
 });

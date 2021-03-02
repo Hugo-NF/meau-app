@@ -4,22 +4,28 @@ import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 
 export default function OpsComponent() {
     return (
-        <View style={styles.opsContainer}>
-        <Text style={styles.opsText}>Ops!</Text>
-        <Text style={styles.message}>Você não pode realizar esta ação sem possuir um cadastro.</Text>
-        <TouchableOpacity style={styles.button}>
-          <Text>Fazer cadastro</Text>
-        </TouchableOpacity>
-        <Text style={styles.message}>Já possui cadastro?</Text>
-        <TouchableOpacity style={styles.button}>
-          <Text>Fazer login</Text>
-        </TouchableOpacity>
+      <View style={styles.opsContainer}>
+        <View style={styles.opsInnerContainer}>
+          <Text style={styles.opsText}>Ops!</Text>
+          <Text style={styles.message}>Você não pode realizar esta ação sem possuir um cadastro.</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text>Fazer cadastro</Text>
+          </TouchableOpacity>
+          <Text style={styles.message}>Já possui cadastro?</Text>
+          <TouchableOpacity style={styles.button}>
+            <Text>Fazer login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
 }
 
 const styles = StyleSheet.create({
   opsContainer: {
+    width: "100%",
+    alignItems: 'center'
+  },
+  opsInnerContainer: {
     width: 232,
     alignItems: 'center'
   },

@@ -3,5 +3,5 @@ const MeauBlue = require('../assets/meau_logo_2.png');
 
 export default {
   MeauWhite,
-  MeauBlue
+  MeauBlue,
 };
