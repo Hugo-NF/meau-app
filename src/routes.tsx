@@ -31,7 +31,7 @@ export default function Routes() : JSX.Element {
           headerShown: true,
           headerTitle: 'Cadastro Pessoal',
           headerStyle: {
-            backgroundColor: '#88c9bf',
+            backgroundColor: '#cfe9e5',
           },
         }}
       />
