@@ -10,11 +10,10 @@ import AsyncButton from '../../components/AsyncButton';
 import TextInputCheck from '../../components/TextInputCheck';
 import { Theme } from '../../constants';
 import { Container } from './styles';
+import { emptyTextValidation } from '../../utils/validationRules';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
-
-  const emptyTextValidation: (_: string) => boolean = (text: string) => text !== '';
 
   return (
     <Container>

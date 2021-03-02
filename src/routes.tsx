@@ -30,6 +30,9 @@ export default function Routes() : JSX.Element {
         options={{
           headerShown: true,
           headerTitle: 'Cadastro Pessoal',
+          headerStyle: {
+            backgroundColor: '#88c9bf',
+          },
         }}
       />
       <AppStack.Screen name="Login" component={Login} />
