@@ -1,56 +1,57 @@
-
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-
-export default function OpsComponent() {
-    return (
-      <View style={styles.opsContainer}>
-        <View style={styles.opsInnerContainer}>
-          <Text style={styles.opsText}>Ops!</Text>
-          <Text style={styles.message}>Você não pode realizar esta ação sem possuir um cadastro.</Text>
-          <TouchableOpacity style={styles.button}>
-            <Text>Fazer cadastro</Text>
-          </TouchableOpacity>
-          <Text style={styles.message}>Já possui cadastro?</Text>
-          <TouchableOpacity style={styles.button}>
-            <Text>Fazer login</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-}
+import {
+  TouchableOpacity, StyleSheet, Text, View,
+} from 'react-native';
 
 const styles = StyleSheet.create({
   opsContainer: {
-    width: "100%",
-    alignItems: 'center'
+    width: '100%',
+    alignItems: 'center',
   },
   opsInnerContainer: {
     width: 232,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   opsText: {
-    fontFamily: "Courgette_400Regular",
+    fontFamily: 'Courgette_400Regular',
     fontSize: 53,
-    color: "#88c9bf",
-    marginVertical: 52
+    color: '#88c9bf',
+    marginVertical: 52,
   },
   message: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: 14,
-    color: "#757575",
+    color: '#757575',
     marginBottom: 16,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   button: {
-    fontFamily: "Roboto_400Regular",
+    fontFamily: 'Roboto_400Regular',
     fontSize: 12,
-    color: "#434343",
-    backgroundColor: "#88c9bf",
+    color: '#434343',
+    backgroundColor: '#88c9bf',
     marginBottom: 44,
     padding: 10,
     width: 232,
     height: 40,
-    alignItems: "center"
-  }
-})
+    alignItems: 'center',
+  },
+});
+
+export default function OpsComponent(): JSX.Element {
+  return (
+    <View style={styles.opsContainer}>
+      <View style={styles.opsInnerContainer}>
+        <Text style={styles.opsText}>Ops!</Text>
+        <Text style={styles.message}>Você não pode realizar esta ação sem possuir um cadastro.</Text>
+        <TouchableOpacity style={styles.button}>
+          <Text>Fazer cadastro</Text>
+        </TouchableOpacity>
+        <Text style={styles.message}>Já possui cadastro?</Text>
+        <TouchableOpacity style={styles.button}>
+          <Text>Fazer login</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
