@@ -33,6 +33,22 @@ export default function Home() : JSX.Element {
         <Entypo name="lock" size={16} />
         <Text>Login</Text>
       </AsyncButton>
+      <AsyncButton
+        styles={{
+          flex: 1,
+          width: '30%',
+          height: '32px',
+          backgroundColor: Theme.default.secondary,
+          borderRadius: '5px',
+          marginTop: '10px',
+        }}
+        asyncAction={false}
+        callback={() => {
+          navigation.navigate('Cadastro Pessoal/Cadastro');
+        }}
+      >
+        <Text>Cadastro Pessoal</Text>
+      </AsyncButton>
     </Container>
   );
 }
