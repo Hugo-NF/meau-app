@@ -46,10 +46,10 @@ export default function Home() : JSX.Element {
         }}
         asyncAction={false}
         callback={() => {
-          navigation.navigate('Cadastro Pessoal/Cadastro');
+          navigation.navigate('Unauthorized');
         }}
       >
-        <Text>Cadastro Pessoal</Text>
+        <Text>Ops</Text>
       </AsyncButton>
 
       <Text>Exemplo de TextInputCheck:</Text>

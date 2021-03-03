@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
+import Unauthorized from './pages/Unauthorized';
 
 // Routes.
 export default function Routes() : JSX.Element {
@@ -41,6 +42,10 @@ export default function Routes() : JSX.Element {
             backgroundColor: '#cfe9e5',
           },
         }}
+      />
+      <AppStack.Screen
+        name="Unauthorized"
+        component={Unauthorized}
       />
     </AppStack.Navigator>
   );

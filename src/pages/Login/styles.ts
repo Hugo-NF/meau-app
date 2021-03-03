@@ -21,9 +21,8 @@ export const styledComponents = {
 
   LoginForm: styled.View<ViewProps>`
     margin-top: 64px;
-    margin-bottom: 52px;,
+    margin-bottom: 52px;
   `,
-
 };
 
 // Navigation options.
@@ -52,5 +51,5 @@ export const styles = {
     marginTop: 16,
   },
 
-  statusBarColor: Theme.elements.headerPrimaryDark,
+  statusBarColor: Theme.elements.statusBarPrimary,
 };
