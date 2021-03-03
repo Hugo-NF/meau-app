@@ -4,12 +4,8 @@ import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-// Styled component imports.
-import {
-  navigationOptions,
-  styles,
-  styledComponents: {ButtonText, Container, LoginForm}
-} from './styles';
+// Style imports.
+import { navigationOptions, styles, styledComponents } from './styles';
 
 // Component imports.
 import AsyncButton from '../../components/AsyncButton';
@@ -36,13 +32,12 @@ export default function Login() : JSX.Element {
   }, [navigation]);
 
   // Functions.
-  const notEmpty = (text) : boolean => {
-    text !== '';
-  };
+  const notEmpty = (text: string) : boolean => text !== '';
 
-  const placeholderFunction = () : null => {
-    null;
-  };
+  const placeholderFunction = () : null => null;
+
+  // Styled components.
+  const { ButtonText, Container, LoginForm } = styledComponents;
 
   return (
     <Container>

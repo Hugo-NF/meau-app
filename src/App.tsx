@@ -4,11 +4,11 @@ import AppLoading from 'expo-app-loading';
 
 import { StatusBar } from 'expo-status-bar';
 
-// React Navigation Stack
+// React Navigation Stack.
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 
-// Importing App Fonts
+// Importing App Fonts.
 import {
   useFonts,
   Courgette_400Regular,
@@ -18,6 +18,7 @@ import {
   Roboto_400Regular,
 } from '@expo-google-fonts/roboto';
 
+// Module imports.
 import Routes from './routes';
 
 export default function App() : JSX.Element {
