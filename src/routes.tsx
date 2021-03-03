@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Importing our pages.
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Ops from './pages/Cadastro Pessoal/Ops';
+import Unauthorized from './pages/Unauthorized';
 
 // Routes.
 export default function Routes() : JSX.Element {
@@ -32,6 +32,11 @@ export default function Routes() : JSX.Element {
           headerShown: true,
         }}
       />
+      <AppStack.Screen
+        name="Unauthorized"
+        component={Unauthorized}
+      />
+
     </AppStack.Navigator>
   );
 }

@@ -47,7 +47,7 @@ export default function Home() : JSX.Element {
         }}
         asyncAction={false}
         callback={() => {
-          navigation.navigate('CadastroPessoal/Ops');
+          navigation.navigate('Unauthorized');
         }}
       >
         <Text>Ops</Text>
