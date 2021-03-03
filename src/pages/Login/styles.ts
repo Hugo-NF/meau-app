@@ -21,9 +21,8 @@ export const styledComponents = {
 
   LoginForm: styled.View<ViewProps>`
     margin-top: 64px;
-    margin-bottom: 52px;,
+    margin-bottom: 52px;
   `,
-
 };
 
 // Navigation options.
