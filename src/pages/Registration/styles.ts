@@ -32,8 +32,6 @@ export const styledComponents = {
   ButtonText: styled.Text<TextProps>`
     text-transform: uppercase;
   `,
-
-  ButtonContainer: styled.Text<TextProps>``,
 };
 
 // Styles.
