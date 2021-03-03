@@ -19,6 +19,8 @@ const Theme = {
     headerPrimaryDark: '#88C9BF',
     headerSecondary: '#FEE29B',
     headerSecondaryDark: '#FFD358',
+    headerText: '#434343',
+    headerLeftIcon: '#434343',
     muted: '#ADB5BD',
     active: '#FFD358',
     input: '#DCDCDC',
