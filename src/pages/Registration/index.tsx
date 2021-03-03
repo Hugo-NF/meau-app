@@ -2,11 +2,12 @@ import React from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-import TextInputCheck from '../../../components/TextInputCheck';
-import AsyncButton from '../../../components/AsyncButton';
-import { emptyTextValidation } from '../../../utils/validationRules';
+import TextInputCheck from '../../components/TextInputCheck';
+import AsyncButton from '../../components/AsyncButton';
+import { emptyTextValidation } from '../../utils/validationRules';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,7 +38,23 @@ const styles = StyleSheet.create({
 });
 
 export default function CadastroPessoal() : JSX.Element {
+  // Variable declaration.
   const navigation = useNavigation();
+
+  // Layout effects.
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Ionicons
+          name="menu-sharp"
+          size={24}
+          style={styles.headerLeftIcon}
+        />
+      ),
+      ...navigationOptions,
+    });
+    setStatusBarBackgroundColor(styles.statusBarColor, false);
+  }, [navigation]);
 
   return (
     <ScrollView>

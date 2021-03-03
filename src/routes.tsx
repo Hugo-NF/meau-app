@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Importing our pages.
 import Home from './pages/Home';
 import Login from './pages/Login';
-import CadastroPessoal from './pages/Cadastro Pessoal/Cadastro';
+import Registration from './pages/Registration';
 
 // Routes.
 export default function Routes() : JSX.Element {
@@ -32,11 +32,11 @@ export default function Routes() : JSX.Element {
         }}
       />
       <AppStack.Screen
-        name="Cadastro Pessoal/Cadastro"
-        component={CadastroPessoal}
+        name="Registration"
+        component={Registration}
         options={{
           headerShown: true,
-          headerTitle: 'Cadastro Pessoal',
+          headerTitle: 'Registration',
           headerStyle: {
             backgroundColor: '#cfe9e5',
           },
