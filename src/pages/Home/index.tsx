@@ -7,11 +7,14 @@ import { useNavigation } from '@react-navigation/native';
 import { Entypo } from '@expo/vector-icons';
 
 import AsyncButton from '../../components/AsyncButton';
+import TextInputCheck from '../../components/TextInputCheck';
 import { Theme } from '../../constants';
 import { Container } from './styles';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
+
+  const emptyTextValidation: (_: string) => boolean = (text: string) => text !== '';
 
   return (
     <Container>
@@ -33,6 +36,9 @@ export default function Home() : JSX.Element {
         <Entypo name="lock" size={16} />
         <Text>Login</Text>
       </AsyncButton>
+
+      <Text>Exemplo de TextInputCheck:</Text>
+      <TextInputCheck validation={emptyTextValidation} placeholder="E-mail" />
     </Container>
   );
 }
