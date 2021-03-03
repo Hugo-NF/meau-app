@@ -5,7 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 // Styled component imports.
-import { navigationOptions, styles, styledComponents } from './styles';
+import {
+  navigationOptions,
+  styles,
+  styledComponents: {ButtonText, Container, LoginForm}
+} from './styles';
 
 // Component imports.
 import AsyncButton from '../../components/AsyncButton';
@@ -41,8 +45,8 @@ export default function Login() : JSX.Element {
   };
 
   return (
-    <styledComponents.Container>
-      <styledComponents.LoginForm>
+    <Container>
+      <LoginForm>
         <TextInputCheck
           validation={notEmpty}
           placeholder="Nome de usuário"
@@ -51,14 +55,14 @@ export default function Login() : JSX.Element {
           validation={notEmpty}
           placeholder="Senha"
         />
-      </styledComponents.LoginForm>
+      </LoginForm>
       <AsyncButton
         styles={styles.asyncButton}
         asyncAction={false}
         callback={placeholderFunction}
       >
-        <styledComponents.ButtonText>ENTRAR</styledComponents.ButtonText>
+        <ButtonText>ENTRAR</ButtonText>
       </AsyncButton>
-    </styledComponents.Container>
+    </Container>
   );
 }
