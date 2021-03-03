@@ -21,8 +21,8 @@ export const styledComponents = {
 
   LoginForm: styled.View<ViewProps>`
     margin-top: 64px;
-    margin-bottom: 52px;
-  `
+    margin-bottom: 52px;,
+  `,
 
 };
 
@@ -32,7 +32,7 @@ export const navigationOptions = {
     backgroundColor: Theme.elements.headerPrimary,
   },
   headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Login'
+  headerTitle: 'Login',
 };
 
 // Styles.
@@ -49,8 +49,8 @@ export const styles = {
     color: Theme.elements.buttonText,
     marginBottom: 16,
     marginLeft: 16,
-    marginTop:16
+    marginTop: 16,
   },
 
-  statusBarColor: Theme.elements.headerPrimaryDark
+  statusBarColor: Theme.elements.headerPrimaryDark,
 };

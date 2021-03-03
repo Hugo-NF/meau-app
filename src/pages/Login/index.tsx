@@ -1,12 +1,11 @@
 // Package imports.
-import React, {useLayoutEffect} from 'react';
+import React, { useLayoutEffect } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 // Styled component imports.
-import {navigationOptions, styles, styledComponents} from './styles';
+import { navigationOptions, styles, styledComponents } from './styles';
 
 // Component imports.
 import AsyncButton from '../../components/AsyncButton';
@@ -27,14 +26,18 @@ export default function Login() : JSX.Element {
           style={styles.headerLeftIcon}
         />
       ),
-      ...navigationOptions
+      ...navigationOptions,
     });
     setStatusBarBackgroundColor(styles.statusBarColor, false);
   }, [navigation]);
 
   // Functions.
-  const notEmpty = (text) => {
+  const notEmpty = (text) : boolean => {
     text !== '';
+  };
+
+  const placeholderFunction = () : null => {
+    null;
   };
 
   return (
@@ -52,7 +55,7 @@ export default function Login() : JSX.Element {
       <AsyncButton
         styles={styles.asyncButton}
         asyncAction={false}
-        callback={() => {}}
+        callback={placeholderFunction}
       >
         <styledComponents.ButtonText>ENTRAR</styledComponents.ButtonText>
       </AsyncButton>

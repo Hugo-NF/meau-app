@@ -1,7 +1,6 @@
+// Package imports.
 import React from 'react';
 import AppLoading from 'expo-app-loading';
-import { StyleSheet, Text, View } from 'react-native';
-import TextInputCheck from './components/TextInputCheck';
 
 import { StatusBar } from 'expo-status-bar';
 
@@ -21,8 +20,6 @@ import {
 
 import Routes from './routes';
 
-const emptyTextValidation: (_: string) => boolean = (text: string) => text !== '';
-
 export default function App() : JSX.Element {
   const [fontsLoaded] = useFonts({
     Courgette_400Regular,
@@ -35,7 +32,7 @@ export default function App() : JSX.Element {
 
   return (
     <NavigationContainer>
-      <StatusBar translucent style="auto" />
+      <StatusBar translucent />
       <Routes />
     </NavigationContainer>
   );
