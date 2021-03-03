@@ -1,12 +1,13 @@
+// Package imports.
 import React from 'react';
-
 import { createStackNavigator } from '@react-navigation/stack';
 
-// Importing our pages
+// Importing our pages.
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Ops from './pages/Cadastro Pessoal/Ops';
 
+// Routes.
 export default function Routes() : JSX.Element {
   const AppStack = createStackNavigator();
 
@@ -24,13 +25,11 @@ export default function Routes() : JSX.Element {
         }}
         // Overrides the header just for this screen
       />
-      <AppStack.Screen name="Login" component={Login} />
       <AppStack.Screen
-        name="CadastroPessoal/Ops"
-        component={Ops}
+        name="Login"
+        component={Login}
         options={{
           headerShown: true,
-          headerTitle: 'Cadastro pessoal',
         }}
       />
     </AppStack.Navigator>

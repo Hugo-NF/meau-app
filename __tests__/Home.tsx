@@ -2,8 +2,11 @@
 import React from 'react';
 import { cleanup, render } from '@testing-library/react-native';
 
+// Component imports.
+import MockedNavigation from '../src/utils/tests/MockedNavigation';
+
 // Module imports.
-import App from '../src/App';
+import Home from '../src/pages/Home';
 
 // Suite configuration.
 const createTestProps = (props?: Record<string, unknown>): Record<string, unknown> => ({
@@ -13,13 +16,16 @@ const createTestProps = (props?: Record<string, unknown>): Record<string, unknow
 afterEach(cleanup);
 
 // Tests.
-describe('App', () => {
+describe('Home', () => {
   // Variable declaration.
   const props = createTestProps();
+  const component = (
+    <MockedNavigation {...props} component={Home} />
+  );
 
   // Tests.
   it('should render Bugstenium Rocks!', async () => {
-    const { findByText } = render(<App {...props} />);
+    const { findByText } = render(component);
     const mainText = await findByText(/Bugstenium rocks!/i);
     expect(mainText).toBeTruthy();
   });

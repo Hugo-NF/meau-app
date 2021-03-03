@@ -1,9 +1,9 @@
 module.exports = {
-    "preset": "react-native",
+    "preset": "jest-expo",
     "setupFiles": ["./jest/react-navigation-setup.js"],
     "setupFilesAfterEnv": ["@testing-library/jest-native/extend-expect"],
     "transformIgnorePatterns": [
-        "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic|(jest-)?react-native|@react-native-community|@react-navigation)"
+        "node_modules/(?!(jest-)?react-native|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg)"
     ],
     "transform": {
         "^.+\\.js$": "<rootDir>/node_modules/react-native/jest/preprocessor.js",
