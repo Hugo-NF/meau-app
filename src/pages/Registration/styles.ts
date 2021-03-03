@@ -1,9 +1,6 @@
 // Package imports.
-import { TextProps, ViewProps } from 'react-native';
+import { PixelRatio, TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
-
-// Style imports.
-import { Theme } from '../../constants';
 
 // Styled components.
 export const styledComponents = {
@@ -25,11 +22,29 @@ export const styledComponents = {
 
   SessionText: styled.Text<TextProps>`
     width: 100%;
-    margin-bottom: 32;
+    margin-bottom: 32px;
+    margin-left: ${PixelRatio.getPixelSizeForLayoutSize(22)}px;
     color: #434343;
     text-transform: uppercase;
-    text-align: center;
+    text-align: left;
   `,
+
+  ButtonText: styled.Text<TextProps>`
+    text-transform: uppercase;
+  `,
+
+  ButtonContainer: styled.Text<TextProps>``,
 };
 
 // Styles.
+export const styles = {
+  asyncButton: {
+    flex: 1,
+    width: '250px',
+    height: '50px',
+    backgroundColor: '#88c9bf',
+    borderRadius: '5px',
+    marginTop: '10px',
+    marginBottom: '54px',
+  },
+};

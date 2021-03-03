@@ -1,7 +1,9 @@
 import React, { useLayoutEffect } from 'react';
 
 import {
-  View, Text, SafeAreaView, ScrollView,
+  SafeAreaView,
+  ScrollView,
+  View,
 } from 'react-native';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
@@ -13,12 +15,14 @@ import AsyncButton from '../../components/AsyncButton';
 
 import { Theme } from '../../constants';
 
-import { styledComponents } from './styles';
+import { styles, styledComponents } from './styles';
 
 export default function Registration() : JSX.Element {
   // Variable declaration.
   const navigation = useNavigation();
-  const { Container, InfoText, SessionText } = styledComponents;
+  const {
+    ButtonText, Container, InfoText, SessionText,
+  } = styledComponents;
 
   // Layout effects.
   useLayoutEffect(() => {
@@ -47,23 +51,13 @@ export default function Registration() : JSX.Element {
           <SessionText>Foto de perfil</SessionText>
           <View>
             <AsyncButton
-              styles={{
-                flex: 1,
-                width: '250px',
-                height: '50px',
-                backgroundColor: '#88c9bf',
-                borderRadius: '5px',
-                marginTop: '10px',
-                marginBottom: '54px',
-              }}
+              styles={styles.asyncButton}
               asyncAction={false}
               callback={() => {
                 navigation.navigate('Home');
               }}
             >
-              <Text style={{ textTransform: 'uppercase' }}>
-                Fazer cadastro
-              </Text>
+              <ButtonText>Fazer cadastro</ButtonText>
             </AsyncButton>
           </View>
         </Container>
