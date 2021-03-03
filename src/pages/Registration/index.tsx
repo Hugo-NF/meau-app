@@ -1,81 +1,50 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
+
 import {
-  View, Text, StyleSheet, ScrollView,
+  View, Text, SafeAreaView, ScrollView,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+
+import { setStatusBarBackgroundColor } from 'expo-status-bar';
+
 import { useNavigation } from '@react-navigation/native';
 
 import TextInputCheck from '../../components/TextInputCheck';
 import AsyncButton from '../../components/AsyncButton';
-import { emptyTextValidation } from '../../utils/validationRules';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  innerContainer: {
-    width: 328,
-    alignItems: 'center',
-  },
-  infoText: {
-    width: 328,
-    backgroundColor: '#cfe9e5',
-    padding: 8,
-    textAlign: 'center',
-    fontSize: 14,
-    color: '#434343',
-    marginTop: 16,
-    marginBottom: 28,
-  },
-  pageTinyTitle: {
-    width: '100%',
-    marginBottom: 32,
-    color: '#434343',
-    textTransform: 'uppercase',
-    textAlign: 'left',
-  },
-});
+import { Theme } from '../../constants';
 
-export default function CadastroPessoal() : JSX.Element {
+import { styledComponents } from './styles';
+
+export default function Registration() : JSX.Element {
   // Variable declaration.
   const navigation = useNavigation();
+  const { Container, InfoText, SessionText } = styledComponents;
 
   // Layout effects.
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Ionicons
-          name="menu-sharp"
-          size={24}
-          style={styles.headerLeftIcon}
-        />
-      ),
-      ...navigationOptions,
-    });
-    setStatusBarBackgroundColor(styles.statusBarColor, false);
+    setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
   }, [navigation]);
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.innerContainer}>
-          <Text style={styles.infoText}>
+    <SafeAreaView>
+      <ScrollView>
+        <Container>
+          <InfoText>
             As informações preenchidas serão divulgadas apenas para a pessoa com a qual você realizar o processo de adoção e/ou apadrinhamento, após a formalização do processo.
-          </Text>
-          <Text style={styles.pageTinyTitle}>Informações Pessoais</Text>
-          <TextInputCheck validation={emptyTextValidation} placeholder="Nome completo" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="Idade" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="E-mail" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="Estado" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="Cidade" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="Endereço" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="Telefone" />
-          <Text style={styles.pageTinyTitle}>Informações de perfil</Text>
-          <TextInputCheck validation={emptyTextValidation} placeholder="Nome de usuário" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="Senha" />
-          <TextInputCheck validation={emptyTextValidation} placeholder="Confirmação de senha" />
-          <Text style={styles.pageTinyTitle}>Foto de perfil</Text>
+          </InfoText>
+          <SessionText>Informações Pessoais</SessionText>
+          <TextInputCheck validation={() => true} placeholder="Nome completo" />
+          <TextInputCheck validation={() => true} placeholder="Idade" />
+          <TextInputCheck validation={() => true} placeholder="E-mail" />
+          <TextInputCheck validation={() => true} placeholder="Estado" />
+          <TextInputCheck validation={() => true} placeholder="Cidade" />
+          <TextInputCheck validation={() => true} placeholder="Endereço" />
+          <TextInputCheck validation={() => true} placeholder="Telefone" />
+          <SessionText>Informações de perfil</SessionText>
+          <TextInputCheck validation={() => true} placeholder="Nome de usuário" />
+          <TextInputCheck validation={() => true} placeholder="Senha" />
+          <TextInputCheck validation={() => true} placeholder="Confirmação de senha" />
+          <SessionText>Foto de perfil</SessionText>
           <View>
             <AsyncButton
               styles={{
@@ -97,8 +66,8 @@ export default function CadastroPessoal() : JSX.Element {
               </Text>
             </AsyncButton>
           </View>
-        </View>
-      </View>
-    </ScrollView>
+        </Container>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

@@ -10,7 +10,6 @@ import AsyncButton from '../../components/AsyncButton';
 import TextInputCheck from '../../components/TextInputCheck';
 import { Theme } from '../../constants';
 import { Container } from './styles';
-import { emptyTextValidation } from '../../utils/validationRules';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
@@ -53,7 +52,7 @@ export default function Home() : JSX.Element {
       </AsyncButton>
 
       <Text>Exemplo de TextInputCheck:</Text>
-      <TextInputCheck validation={emptyTextValidation} placeholder="E-mail" />
+      <TextInputCheck validation={() => true} placeholder="E-mail" />
     </Container>
   );
 }
