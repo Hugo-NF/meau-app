@@ -46,7 +46,7 @@ export const styles = {
     marginTop: '10px',
     marginLeft: '10px',
     marginRight: '10px',
-    width: '232px',
+    width: '60%',
     height: '40px',
     alignItems: 'center',
     borderRadius: '2px',
