@@ -54,5 +54,5 @@ export const styles = {
     marginTop: 16,
   },
 
-  statusBarColor: Theme.elements.headerPrimaryDark,
+  statusBarColor: Theme.elements.statusBarPrimary,
 };

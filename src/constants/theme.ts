@@ -16,6 +16,7 @@ const Theme = {
     invalidText: '#BDBDBD',
     label: '#F7A800',
     divider: '#E0E0E0',
+    statusBarPrimary: '#88C9BF',
     statusBarPrimaryDark: '#589B9B',
     statusBarSecondaryDark: '#F7A800',
     headerPrimary: '#CFE9E5',

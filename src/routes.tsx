@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AnimalRegistration from './pages/AnimalRegistration';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Registration from './pages/Registration';
 import Unauthorized from './pages/Unauthorized';
 
 // Routes.
@@ -18,13 +19,19 @@ export default function Routes() : JSX.Element {
       screenOptions={{ headerShown: false }} // By default, hides the header in all screens
     >
       <AppStack.Screen
+        name="AnimalRegistration"
+        component={AnimalRegistration}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <AppStack.Screen
         name="Home"
         component={Home}
         options={{
           headerShown: true,
           headerTitle: 'Início',
         }}
-        // Overrides the header just for this screen
       />
       <AppStack.Screen
         name="Login"
@@ -34,8 +41,8 @@ export default function Routes() : JSX.Element {
         }}
       />
       <AppStack.Screen
-        name="AnimalRegistration"
-        component={AnimalRegistration}
+        name="Registration"
+        component={Registration}
         options={{
           headerShown: true,
         }}
@@ -44,7 +51,6 @@ export default function Routes() : JSX.Element {
         name="Unauthorized"
         component={Unauthorized}
       />
-
     </AppStack.Navigator>
   );
 }
