@@ -37,10 +37,6 @@ export default function Routes() : JSX.Element {
         component={Registration}
         options={{
           headerShown: true,
-          headerTitle: 'Registration',
-          headerStyle: {
-            backgroundColor: '#cfe9e5',
-          },
         }}
       />
       <AppStack.Screen
