@@ -52,7 +52,22 @@ export default function Home() : JSX.Element {
       >
         <Text>Ops</Text>
       </AsyncButton>
-
+      <AsyncButton
+        styles={{
+          flex: 1,
+          width: '30%',
+          height: '32px',
+          backgroundColor: Theme.default.secondary,
+          borderRadius: '5px',
+          marginTop: '10px',
+        }}
+        asyncAction={false}
+        callback={() => {
+          navigation.navigate('AnimalRegistration');
+        }}
+      >
+        <Text>Animal form</Text>
+      </AsyncButton>
       <Text>Exemplo de TextInputCheck:</Text>
       <TextInputCheck validation={emptyTextValidation} placeholder="E-mail" />
     </Container>

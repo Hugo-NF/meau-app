@@ -13,9 +13,11 @@ const Theme = {
   elements: {
     text: '#757575',
     buttonText: '#434343',
+    invalidText: '#BDBDBD',
     label: '#F7A800',
     divider: '#E0E0E0',
     statusBarPrimaryDark: '#589B9B',
+    statusBarSecondaryDark: '#F7A800',
     headerPrimary: '#CFE9E5',
     headerPrimaryDark: '#88C9BF',
     headerSecondary: '#FEE29B',
@@ -28,6 +30,7 @@ const Theme = {
     inputSucess: '#7BDEB2',
     inputError: '#FCB3A4',
     placeholder: '#9FA5AA',
+    radioButtom: '#757575',
   },
   named: {
     blue: '#007BFF',

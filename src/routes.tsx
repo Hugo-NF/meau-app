@@ -3,6 +3,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Importing our pages.
+import AnimalRegistration from './pages/AnimalRegistration';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Unauthorized from './pages/Unauthorized';
@@ -28,6 +29,13 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="Login"
         component={Login}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <AppStack.Screen
+        name="AnimalRegistration"
+        component={AnimalRegistration}
         options={{
           headerShown: true,
         }}
