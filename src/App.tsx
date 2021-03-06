@@ -16,7 +16,7 @@ import {
 
 import {
   Roboto_400Regular,
-  Roboto_500Medium
+  Roboto_500Medium,
 } from '@expo-google-fonts/roboto';
 
 // Module imports.

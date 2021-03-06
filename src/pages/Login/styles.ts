@@ -33,7 +33,7 @@ export const navigationOptions = {
   headerTintColor: Theme.elements.headerText,
   headerTitle: 'Login',
   headerTitleStyle: {
-    fontFamily: "Roboto_500Medium"
+    fontFamily: 'Roboto_500Medium',
   },
 };
 

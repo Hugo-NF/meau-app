@@ -1,5 +1,5 @@
 // Package imports.
-import { PixelRatio, TextProps, ViewProps } from 'react-native';
+import { TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.
@@ -13,7 +13,7 @@ export const styledComponents = {
 
   ButtonText: styled.Text<TextProps>`
     color: ${Theme.elements.buttonText};
-    font-family: "Roboto_400Regular";
+    font-family: 'Roboto_400Regular';
     font-size: 12px;
   `,
 
@@ -31,7 +31,7 @@ export const styledComponents = {
 
   CheckBoxText: styled.Text<TextProps>`
     color: ${Theme.elements.text};
-    font-family: "Roboto_400Regular";
+    font-family: 'Roboto_400Regular';
     font-size: 14px;
     marginBottom: 1px;
   `,
@@ -48,14 +48,14 @@ export const styledComponents = {
 
   FormHeaderText: styled.Text<TextProps>`
     color: ${Theme.elements.headerText};
-    font-family: "Roboto_500Medium";
+    font-family: 'Roboto_500Medium';
     font-size: 16px;
     margin-top: 16px;
   `,
 
   FormLabelText: styled.Text<TextProps>`
     color: ${Theme.elements.label};
-    font-family: "Roboto_400Regular";
+    font-family: 'Roboto_400Regular';
     font-size: 12px;
     margin-top: 20px;
   `,
@@ -66,7 +66,7 @@ export const styledComponents = {
 
   InvalidCheckBoxText: styled.Text<TextProps>`
     color: ${Theme.elements.invalidText};
-    font-family: "Roboto_400Regular";
+    font-family: 'Roboto_400Regular';
     font-size: 14px;
     marginBottom: 1px;
   `,
@@ -99,7 +99,7 @@ export const navigationOptions = {
   headerTintColor: Theme.elements.headerText,
   headerTitle: 'Cadastro do Animal',
   headerTitleStyle: {
-    fontFamily: "Roboto_500Medium"
+    fontFamily: 'Roboto_500Medium',
   },
 };
 
@@ -109,7 +109,7 @@ export const styles = {
     // Remove the default margins on bottom and top because they mess with the
     // apps' specification.
     marginBottom: -2,
-    marginTop: -2
+    marginTop: -2,
   },
 
   headerLeftIcon: {
@@ -129,7 +129,7 @@ export const styles = {
     labelHorizontal: true,
     labelStyle: {
       color: Theme.elements.text,
-      fontFamily: "Roboto_400Regular",
+      fontFamily: 'Roboto_400Regular',
       fontSize: 14,
       paddingLeft: 8,
     },
@@ -146,7 +146,7 @@ export const styles = {
     wrapStyle: {
       marginTop: 0,
       width: 102,
-    }
+    },
   },
 
   statusBarColor: Theme.elements.statusBarSecondaryDark,

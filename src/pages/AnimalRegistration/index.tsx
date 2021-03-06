@@ -73,16 +73,16 @@ export default function AnimalRegistration() : JSX.Element {
     previousAnimalVisit: false,
     signedTerm: false,
   });
-  const [age, setAge] = useState(null);
+  const [age, setAge] = useState(-1);
   const [healthCondition, setHealthCondition] = useState({
     castrated: false,
     dewormed: false,
     sick: false,
     vaccinated: false,
   });
-  const [sex, setSex] = useState(null);
-  const [size, setSize] = useState(null);
-  const [species, setSpecies] = useState(null);
+  const [sex, setSex] = useState(-1);
+  const [size, setSize] = useState(-1);
+  const [species, setSpecies] = useState(-1);
   const [temperament, setTemperament] = useState({
     calm: false,
     lazy: false,
@@ -114,26 +114,25 @@ export default function AnimalRegistration() : JSX.Element {
 
   const updatePostAdoptionMonitoring = (
     oldAdoptionRequirements : AdoptionRequirements,
-    newValue : boolean
+    newValue : boolean,
   ) : AdoptionRequirements => {
-    let newAdoptionRequirements = {...oldAdoptionRequirements};
-    newAdoptionRequirements['postAdoptionMonitoring'] = newValue;
+    const newAdoptionRequirements = { ...oldAdoptionRequirements };
+    newAdoptionRequirements.postAdoptionMonitoring = newValue;
 
-    if(newValue === false)
-      newAdoptionRequirements['postAdoptionMonitoringPeriod'] = null;
+    if (newValue === false) newAdoptionRequirements.postAdoptionMonitoringPeriod = null;
 
     return newAdoptionRequirements;
-  }
+  };
 
   const updateStateDictValue = (
-    oldStateDict : object,
+    oldStateDict : Record<string, unknown>,
     key : string,
-    newValue: any
-  ) : object => {
-    let newStateDict = {...oldStateDict};
+    newValue: unknown,
+  ) : Record<string, unknown> => {
+    const newStateDict = { ...oldStateDict };
     newStateDict[key] = newValue;
     return newStateDict;
-  }
+  };
 
   // Styled components.
   const {
@@ -150,7 +149,7 @@ export default function AnimalRegistration() : JSX.Element {
     InvalidCheckBoxText,
     LabeledCheckBox,
     SingleCheckBoxRow,
-    TextInputContainer
+    TextInputContainer,
   } = styledComponents;
 
   return (
@@ -168,43 +167,43 @@ export default function AnimalRegistration() : JSX.Element {
           <FormLabelText>ESPÉCIE</FormLabelText>
           <RadioForm
             radio_props={[
-              {label: 'Cachorro', value: Species.Dog },
-              {label: 'Gato', value: Species.Cat }
+              { label: 'Cachorro', value: Species.Dog },
+              { label: 'Gato', value: Species.Cat },
             ]}
-            initial={-1}
-            onPress={(value) => {setSpecies({value:value})}}
+            initial={species}
+            onPress={(value) => { setSpecies({ value }); }}
             {...styles.radioForm}
           />
           <FormLabelText>SEXO</FormLabelText>
           <RadioForm
             radio_props={[
-              {label: 'Macho', value: Sex.Male },
-              {label: 'Fêmea', value: Sex.Female }
+              { label: 'Macho', value: Sex.Male },
+              { label: 'Fêmea', value: Sex.Female },
             ]}
-            initial={-1}
-            onPress={(value) => {setSex({value:value})}}
+            initial={sex}
+            onPress={(value) => { setSex({ value }); }}
             {...styles.radioForm}
           />
           <FormLabelText>PORTE</FormLabelText>
           <RadioForm
             radio_props={[
-              {label: 'Pequeno', value: Size.Small },
-              {label: 'Médio', value: Size.Medium },
-              {label: 'Grande', value: Size.Big }
+              { label: 'Pequeno', value: Size.Small },
+              { label: 'Médio', value: Size.Medium },
+              { label: 'Grande', value: Size.Big },
             ]}
-            initial={-1}
-            onPress={(value) => {setSize({value:value})}}
+            initial={size}
+            onPress={(value) => { setSize({ value }); }}
             {...styles.radioForm}
           />
           <FormLabelText>IDADE</FormLabelText>
           <RadioForm
             radio_props={[
-              {label: 'Filhote', value: Age.Newborn },
-              {label: 'Adulto', value: Age.Adult },
-              {label: 'Idoso', value: Age.Elder }
+              { label: 'Filhote', value: Age.Newborn },
+              { label: 'Adulto', value: Age.Adult },
+              { label: 'Idoso', value: Age.Elder },
             ]}
-            initial={-1}
-            onPress={(value) => {setAge({value:value})}}
+            initial={age}
+            onPress={(value) => { setAge({ value }); }}
             {...styles.radioForm}
           />
           <FormLabelText>TEMPERAMENTO</FormLabelText>
@@ -214,7 +213,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={temperament.playful}
                 onValueChange={(newValue) => setTemperament(
-                  updateStateDictValue(temperament, 'playful', newValue)
+                  updateStateDictValue(temperament, 'playful', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -225,7 +224,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={temperament.shy}
                 onValueChange={(newValue) => setTemperament(
-                  updateStateDictValue(temperament, 'shy', newValue)
+                  updateStateDictValue(temperament, 'shy', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -236,7 +235,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={temperament.calm}
                 onValueChange={(newValue) => setTemperament(
-                  updateStateDictValue(temperament, 'calm', newValue)
+                  updateStateDictValue(temperament, 'calm', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -249,7 +248,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={temperament.vigilant}
                 onValueChange={(newValue) => setTemperament(
-                  updateStateDictValue(temperament, 'vigilant', newValue)
+                  updateStateDictValue(temperament, 'vigilant', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -260,7 +259,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={temperament.loving}
                 onValueChange={(newValue) => setTemperament(
-                  updateStateDictValue(temperament, 'loving', newValue)
+                  updateStateDictValue(temperament, 'loving', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -271,7 +270,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={temperament.lazy}
                 onValueChange={(newValue) => setTemperament(
-                  updateStateDictValue(temperament, 'lazy', newValue)
+                  updateStateDictValue(temperament, 'lazy', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -285,7 +284,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={healthCondition.vaccinated}
                 onValueChange={(newValue) => setHealthCondition(
-                  updateStateDictValue(healthCondition, 'vaccinated', newValue)
+                  updateStateDictValue(healthCondition, 'vaccinated', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -296,7 +295,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={healthCondition.dewormed}
                 onValueChange={(newValue) => setHealthCondition(
-                  updateStateDictValue(healthCondition, 'dewormed', newValue)
+                  updateStateDictValue(healthCondition, 'dewormed', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -309,7 +308,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={healthCondition.castrated}
                 onValueChange={(newValue) => setHealthCondition(
-                  updateStateDictValue(healthCondition, 'castrated', newValue)
+                  updateStateDictValue(healthCondition, 'castrated', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -320,7 +319,7 @@ export default function AnimalRegistration() : JSX.Element {
                 disabled={false}
                 value={healthCondition.sick}
                 onValueChange={(newValue) => setHealthCondition(
-                  updateStateDictValue(healthCondition, 'sick', newValue)
+                  updateStateDictValue(healthCondition, 'sick', newValue),
                 )}
                 style={styles.checkbox}
               />
@@ -342,8 +341,8 @@ export default function AnimalRegistration() : JSX.Element {
                 updateStateDictValue(
                   adoptionRequirements,
                   'signedTerm',
-                  newValue
-                )
+                  newValue,
+                ),
               )}
               style={styles.checkbox}
             />
@@ -357,8 +356,8 @@ export default function AnimalRegistration() : JSX.Element {
                 updateStateDictValue(
                   adoptionRequirements,
                   'housePhotos',
-                  newValue
-                )
+                  newValue,
+                ),
               )}
               style={styles.checkbox}
             />
@@ -372,8 +371,8 @@ export default function AnimalRegistration() : JSX.Element {
                 updateStateDictValue(
                   adoptionRequirements,
                   'previousAnimalVisit',
-                  newValue
-                )
+                  newValue,
+                ),
               )}
               style={styles.checkbox}
             />
@@ -386,8 +385,8 @@ export default function AnimalRegistration() : JSX.Element {
               onValueChange={(newValue) => setAdoptionRequirements(
                 updatePostAdoptionMonitoring(
                   adoptionRequirements,
-                  newValue
-                )
+                  newValue,
+                ),
               )}
               style={styles.checkbox}
             />
@@ -397,58 +396,58 @@ export default function AnimalRegistration() : JSX.Element {
             <SingleCheckBoxRow>
               <CheckBox
                 disabled={!adoptionRequirements.postAdoptionMonitoring}
-                value={adoptionRequirements.postAdoptionMonitoringPeriod == 1}
+                value={adoptionRequirements.postAdoptionMonitoringPeriod === 1}
                 onValueChange={(newValue) => setAdoptionRequirements(
                   updateStateDictValue(
                     adoptionRequirements,
                     'postAdoptionMonitoringPeriod',
-                    1
-                  )
+                    newValue ? 1 : null,
+                  ),
                 )}
                 style={styles.checkbox}
               />
               {
-                adoptionRequirements.postAdoptionMonitoring ?
-                <CheckBoxText>1 mês</CheckBoxText> :
-                <InvalidCheckBoxText>1 mês</InvalidCheckBoxText>
+                adoptionRequirements.postAdoptionMonitoring
+                  ? <CheckBoxText>1 mês</CheckBoxText>
+                  : <InvalidCheckBoxText>1 mês</InvalidCheckBoxText>
               }
             </SingleCheckBoxRow>
             <SingleCheckBoxRow>
               <CheckBox
                 disabled={!adoptionRequirements.postAdoptionMonitoring}
-                value={adoptionRequirements.postAdoptionMonitoringPeriod == 3}
+                value={adoptionRequirements.postAdoptionMonitoringPeriod === 3}
                 onValueChange={(newValue) => setAdoptionRequirements(
                   updateStateDictValue(
                     adoptionRequirements,
                     'postAdoptionMonitoringPeriod',
-                    3
-                  )
+                    newValue ? 3 : null,
+                  ),
                 )}
                 style={styles.checkbox}
               />
               {
-                adoptionRequirements.postAdoptionMonitoring ?
-                <CheckBoxText>3 meses</CheckBoxText> :
-                <InvalidCheckBoxText>3 meses</InvalidCheckBoxText>
+                adoptionRequirements.postAdoptionMonitoring
+                  ? <CheckBoxText>3 meses</CheckBoxText>
+                  : <InvalidCheckBoxText>3 meses</InvalidCheckBoxText>
               }
             </SingleCheckBoxRow>
             <SingleCheckBoxRow>
               <CheckBox
                 disabled={!adoptionRequirements.postAdoptionMonitoring}
-                value={adoptionRequirements.postAdoptionMonitoringPeriod == 6}
+                value={adoptionRequirements.postAdoptionMonitoringPeriod === 6}
                 onValueChange={(newValue) => setAdoptionRequirements(
                   updateStateDictValue(
                     adoptionRequirements,
                     'postAdoptionMonitoringPeriod',
-                    6
-                  )
+                    newValue ? 6 : null,
+                  ),
                 )}
                 style={styles.checkbox}
               />
               {
-                adoptionRequirements.postAdoptionMonitoring ?
-                <CheckBoxText>6 meses</CheckBoxText> :
-                <InvalidCheckBoxText>6 meses</InvalidCheckBoxText>
+                adoptionRequirements.postAdoptionMonitoring
+                  ? <CheckBoxText>6 meses</CheckBoxText>
+                  : <InvalidCheckBoxText>6 meses</InvalidCheckBoxText>
               }
             </SingleCheckBoxRow>
           </IndentedSubsection>
