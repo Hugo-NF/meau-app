@@ -29,7 +29,7 @@ export const styledComponents = {
   SessionText: styled.Text<TextProps>`
     width: 100%;
     margin-bottom: 32px;
-    margin-left: ${PixelRatio.getPixelSizeForLayoutSize(22)}px;
+    margin-left: ${PixelRatio.getPixelSizeForLayoutSize(20)}px;
     color: ${Theme.default.primary};
     text-transform: uppercase;
     text-align: left;
