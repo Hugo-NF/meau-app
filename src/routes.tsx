@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // Importing our pages.
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Registration from './pages/Registration';
 import Unauthorized from './pages/Unauthorized';
 
 // Routes.
@@ -23,7 +24,6 @@ export default function Routes() : JSX.Element {
           headerShown: true,
           headerTitle: 'Início',
         }}
-        // Overrides the header just for this screen
       />
       <AppStack.Screen
         name="Login"
@@ -33,10 +33,16 @@ export default function Routes() : JSX.Element {
         }}
       />
       <AppStack.Screen
+        name="Registration"
+        component={Registration}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <AppStack.Screen
         name="Unauthorized"
         component={Unauthorized}
       />
-
     </AppStack.Navigator>
   );
 }

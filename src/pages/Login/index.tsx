@@ -28,7 +28,7 @@ export default function Login() : JSX.Element {
       ),
       ...navigationOptions,
     });
-    setStatusBarBackgroundColor(styles.statusBarColor, false);
+    setStatusBarBackgroundColor(styles.statusBarColor, true);
   }, [navigation]);
 
   // Functions.

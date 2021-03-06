@@ -24,6 +24,7 @@ export const styledComponents = {
   Message: styled.Text<TextProps>`
     font-family: 'Roboto_400Regular';
     font-size: 14px;
+    max-width: 80%;
     color: ${Theme.elements.text};
     margin-bottom: 16px;
     text-align: center;
@@ -42,7 +43,7 @@ export const styles = {
   asyncButton: {
     backgroundColor: Theme.default.primary,
     marginBottom: '44px',
-    marginTop: '10px',
+    marginTop: '0px',
     marginLeft: '10px',
     marginRight: '10px',
     width: '232px',

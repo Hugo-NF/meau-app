@@ -14,8 +14,6 @@ import { Container } from './styles';
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
 
-  const emptyTextValidation: (_: string) => boolean = (text: string) => text !== '';
-
   return (
     <Container>
       <Text onPress={() => navigation.navigate('Login')}>Bugstenium rocks!</Text>
@@ -54,7 +52,7 @@ export default function Home() : JSX.Element {
       </AsyncButton>
 
       <Text>Exemplo de TextInputCheck:</Text>
-      <TextInputCheck validation={emptyTextValidation} placeholder="E-mail" />
+      <TextInputCheck validation={() => true} placeholder="E-mail" />
     </Container>
   );
 }

@@ -15,6 +15,7 @@ const Theme = {
     buttonText: '#434343',
     label: '#F7A800',
     divider: '#E0E0E0',
+    statusBarPrimary: '#88C9BF',
     statusBarPrimaryDark: '#589B9B',
     headerPrimary: '#CFE9E5',
     headerPrimaryDark: '#88C9BF',

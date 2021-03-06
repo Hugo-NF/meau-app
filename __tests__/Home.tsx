@@ -3,7 +3,7 @@ import React from 'react';
 import { cleanup, render } from '@testing-library/react-native';
 
 // Component imports.
-import MockedNavigation from '../src/utils/tests/MockedNavigation';
+import MockedNavigation from '../src/mocks/MockedNavigation';
 
 // Module imports.
 import Home from '../src/pages/Home';
