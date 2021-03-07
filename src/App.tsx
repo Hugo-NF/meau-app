@@ -16,6 +16,7 @@ import {
 
 import {
   Roboto_400Regular,
+  Roboto_500Medium,
 } from '@expo-google-fonts/roboto';
 
 // Module imports.
@@ -25,6 +26,7 @@ export default function App() : JSX.Element {
   const [fontsLoaded] = useFonts({
     Courgette_400Regular,
     Roboto_400Regular,
+    Roboto_500Medium,
   });
 
   if (!fontsLoaded) {
