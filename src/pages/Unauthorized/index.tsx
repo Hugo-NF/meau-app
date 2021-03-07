@@ -21,7 +21,19 @@ export default function Unauthorized(): JSX.Element {
   }, [navigation]);
 
   return (
-    <HeaderLayout>
+    <HeaderLayout
+      headerShown
+      title="Opsss"
+      titleStyles={{
+        fontFamily: 'Roboto_400Regular',
+        fontSize: '20px',
+        color: Theme.elements.headerText,
+      }}
+      leftAction={{
+        hidden: false,
+        actionType: 'back',
+      }}
+    >
       <Container>
         <Title>Ops!</Title>
         <Message>Você não pode realizar esta ação sem possuir um cadastro.</Message>

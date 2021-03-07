@@ -5,18 +5,40 @@ import { Ionicons } from '@expo/vector-icons';
 
 import MenuDrawer from 'react-native-side-drawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { styledComponents } from './styles';
+import { styledComponents, IHeaderProps, ITitleProps } from './styles';
+import { Theme } from '../../constants';
+
+type HeaderActions = 'back' | 'drawer' | 'share';
+
+interface IButtonAction {
+  hidden?: boolean,
+  actionType: HeaderActions,
+  iconColor?: string,
+}
 
 interface IHeaderLayoutProps {
+  headerShown: boolean,
+  headerStyles?: IHeaderProps,
+  title: string,
+  titleStyles?: ITitleProps,
+  leftAction?: IButtonAction,
+  rightAction?: IButtonAction,
   children: React.ReactNode,
 }
 
-export default function HeaderLayout({ children }: IHeaderLayoutProps): JSX.Element {
+export default function HeaderLayout({
+  headerShown,
+  headerStyles,
+  title,
+  titleStyles,
+  leftAction,
+  rightAction,
+  children,
+}: IHeaderLayoutProps): JSX.Element {
   // Hooks
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigation = useNavigation();
 
-  // Styled components desestructuring
   const {
     ActionButton, HeaderContainer, HeaderTitle, LayoutContainer, PageContainer,
   } = styledComponents;
@@ -30,7 +52,7 @@ export default function HeaderLayout({ children }: IHeaderLayoutProps): JSX.Elem
         padding: 10,
       }}
     >
-      <HeaderTitle>Close</HeaderTitle>
+      <HeaderTitle {...titleStyles}>Close</HeaderTitle>
     </TouchableOpacity>
   );
   return (
@@ -43,15 +65,29 @@ export default function HeaderLayout({ children }: IHeaderLayoutProps): JSX.Elem
         opacity={0.1}
         position="left"
       >
-        <HeaderContainer>
-          <ActionButton onPress={() => setDrawerOpen(true)}>
-            <Ionicons name="menu-sharp" size={24} />
-          </ActionButton>
-          <HeaderTitle>Login</HeaderTitle>
-          <ActionButton>
-            <Ionicons name="menu-sharp" size={24} />
-          </ActionButton>
+        { headerShown && (
+        <HeaderContainer {...headerStyles}>
+          {!leftAction?.hidden && (
+            <ActionButton onPress={() => setDrawerOpen(true)}>
+              <Ionicons
+                name="menu-sharp"
+                size={24}
+                color={leftAction?.iconColor}
+              />
+            </ActionButton>
+          )}
+          <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
+          {!rightAction?.hidden && (
+            <ActionButton>
+              <Ionicons
+                name="menu-sharp"
+                size={24}
+                color={leftAction?.iconColor}
+              />
+            </ActionButton>
+          )}
         </HeaderContainer>
+        )}
         <PageContainer>
           {children}
         </PageContainer>
@@ -59,3 +95,24 @@ export default function HeaderLayout({ children }: IHeaderLayoutProps): JSX.Elem
     </LayoutContainer>
   );
 }
+
+HeaderLayout.defaultProps = {
+  headerStyles: {
+    maxHeight: '56px',
+    height: '56px',
+    backgroundColor: Theme.elements.headerPrimaryDark,
+  },
+  titleStyles: {
+    fontFamily: 'Roboto_400Regular',
+    fontSize: '16px',
+    color: Theme.elements.headerText,
+  },
+  leftAction: {
+    hidden: true,
+    iconColor: Theme.elements.headerText,
+  },
+  rightAction: {
+    hidden: true,
+    iconColor: Theme.elements.headerText,
+  },
+};

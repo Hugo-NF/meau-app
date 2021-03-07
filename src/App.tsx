@@ -35,7 +35,7 @@ export default function App() : JSX.Element {
 
   return (
     <NavigationContainer>
-      <StatusBar translucent hidden />
+      <StatusBar translucent />
       <Routes />
     </NavigationContainer>
   );
