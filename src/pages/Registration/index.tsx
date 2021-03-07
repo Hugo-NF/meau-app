@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,7 +16,7 @@ import AsyncButton from '../../components/AsyncButton';
 
 import { Theme } from '../../constants';
 
-import { styles, styledComponents } from './styles';
+import { navigationOptions, styles, styledComponents } from './styles';
 
 export default function Registration() : JSX.Element {
   // Variable declaration.
@@ -26,6 +27,16 @@ export default function Registration() : JSX.Element {
 
   // Layout effects.
   useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => (
+        <Ionicons
+          name="menu-sharp"
+          size={24}
+          style={styles.headerLeftIcon}
+        />
+      ),
+      ...navigationOptions,
+    });
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
   }, [navigation]);
 
@@ -48,7 +59,6 @@ export default function Registration() : JSX.Element {
           <TextInputCheck validation={() => true} placeholder="Nome de usuário" />
           <TextInputCheck validation={() => true} placeholder="Senha" />
           <TextInputCheck validation={() => true} placeholder="Confirmação de senha" />
-          <SessionText>Foto de perfil</SessionText>
           <View>
             <AsyncButton
               styles={styles.asyncButton}

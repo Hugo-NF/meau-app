@@ -32,16 +32,19 @@ export const navigationOptions = {
   },
   headerTintColor: Theme.elements.headerText,
   headerTitle: 'Login',
+  headerTitleStyle: {
+    fontFamily: 'Roboto_500Medium',
+  },
 };
 
 // Styles.
 export const styles = {
   asyncButton: {
     backgroundColor: Theme.default.primary,
-    borderRadius: 2,
-    height: 40,
-    marginTop: 0,
-    width: 232,
+    borderRadius: '2px',
+    height: '40px',
+    marginTop: '0px',
+    width: '232px',
   },
 
   headerLeftIcon: {
