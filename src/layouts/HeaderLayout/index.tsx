@@ -4,15 +4,17 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 import MenuDrawer from 'react-native-side-drawer';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { styledComponents, IHeaderProps, ITitleProps } from './styles';
+
 import { Theme } from '../../constants';
+import DrawerContent from '../../components/DrawerContent';
+
+import { styledComponents, IHeaderProps, ITitleProps } from './styles';
 
 type HeaderActions = 'back' | 'drawer' | 'share';
 
 interface IButtonAction {
   hidden?: boolean,
-  actionType: HeaderActions,
+  actionType?: HeaderActions,
   iconColor?: string,
 }
 
@@ -21,8 +23,8 @@ interface IHeaderLayoutProps {
   headerStyles?: IHeaderProps,
   title: string,
   titleStyles?: ITitleProps,
-  leftAction?: IButtonAction,
-  rightAction?: IButtonAction,
+  leftAction: IButtonAction,
+  rightAction: IButtonAction,
   children: React.ReactNode,
 }
 
@@ -43,49 +45,57 @@ export default function HeaderLayout({
     ActionButton, HeaderContainer, HeaderTitle, LayoutContainer, PageContainer,
   } = styledComponents;
 
-  const drawerContent = (): JSX.Element => (
-    <TouchableOpacity
-      onPress={() => setDrawerOpen(false)}
-      style={{
-        flex: 1,
-        backgroundColor: '#38C8EC',
-        padding: 10,
-      }}
-    >
-      <HeaderTitle {...titleStyles}>Close</HeaderTitle>
-    </TouchableOpacity>
-  );
+  const renderActionButton = (buttonType : IButtonAction): JSX.Element => {
+    switch (buttonType.actionType) {
+      default:
+      case 'back':
+        return (
+          <ActionButton onPress={() => navigation.goBack()}>
+            <Ionicons
+              name="md-arrow-back"
+              size={24}
+              color={buttonType?.iconColor}
+            />
+          </ActionButton>
+        );
+      case 'drawer':
+        return (
+          <ActionButton onPress={() => setDrawerOpen(true)}>
+            <Ionicons
+              name="menu-sharp"
+              size={24}
+              color={buttonType?.iconColor}
+            />
+          </ActionButton>
+        );
+      case 'share':
+        return (
+          <ActionButton>
+            <Ionicons
+              name="share-social"
+              size={24}
+              color={buttonType?.iconColor}
+            />
+          </ActionButton>
+        );
+    }
+  };
+
   return (
     <LayoutContainer>
       <MenuDrawer
         open={drawerOpen}
-        drawerContent={drawerContent()}
-        drawerPercentage={45}
+        drawerContent={DrawerContent({ drawerOpen, setDrawerOpen })}
+        drawerPercentage={75}
         animationTime={250}
         opacity={0.1}
         position="left"
       >
-        { headerShown && (
+        {headerShown && (
         <HeaderContainer {...headerStyles}>
-          {!leftAction?.hidden && (
-            <ActionButton onPress={() => setDrawerOpen(true)}>
-              <Ionicons
-                name="menu-sharp"
-                size={24}
-                color={leftAction?.iconColor}
-              />
-            </ActionButton>
-          )}
+          {!leftAction?.hidden && (renderActionButton(leftAction))}
           <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
-          {!rightAction?.hidden && (
-            <ActionButton>
-              <Ionicons
-                name="menu-sharp"
-                size={24}
-                color={leftAction?.iconColor}
-              />
-            </ActionButton>
-          )}
+          {!rightAction?.hidden && (renderActionButton(rightAction))}
         </HeaderContainer>
         )}
         <PageContainer>
@@ -106,13 +116,5 @@ HeaderLayout.defaultProps = {
     fontFamily: 'Roboto_400Regular',
     fontSize: '16px',
     color: Theme.elements.headerText,
-  },
-  leftAction: {
-    hidden: true,
-    iconColor: Theme.elements.headerText,
-  },
-  rightAction: {
-    hidden: true,
-    iconColor: Theme.elements.headerText,
   },
 };

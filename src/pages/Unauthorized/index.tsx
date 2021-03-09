@@ -23,7 +23,7 @@ export default function Unauthorized(): JSX.Element {
   return (
     <HeaderLayout
       headerShown
-      title="Opsss"
+      title="Autenticação"
       titleStyles={{
         fontFamily: 'Roboto_400Regular',
         fontSize: '20px',
@@ -31,7 +31,10 @@ export default function Unauthorized(): JSX.Element {
       }}
       leftAction={{
         hidden: false,
-        actionType: 'back',
+        actionType: 'drawer',
+      }}
+      rightAction={{
+        hidden: true,
       }}
     >
       <Container>
