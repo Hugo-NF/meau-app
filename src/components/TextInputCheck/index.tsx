@@ -1,50 +1,36 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, View, Text, TextInput, TextInputProps,
+  View, Text, TextInput, TextInputProps,
 } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    borderBottomColor: '#e6e7e8',
-    borderBottomWidth: 1.8,
-    width: 328,
-    marginBottom: 36,
-    flexDirection: 'row',
-  },
-  textInput: {
-    fontSize: 14,
-    fontFamily: 'Roboto_400Regular',
-    padding: 0,
-    width: 328 - 20,
-    flexGrow: 1,
-  },
-  check: {
-    width: 20,
-    fontFamily: 'Roboto_400Regular',
-    color: '#434343',
-    paddingLeft: 5,
-  },
-});
+import { defaultStyles } from './styles';
 
-interface TextInputCheckProps extends TextInputProps {
-  validation: (_: string) => boolean;
+interface ITextInputCheckStyles {
+  container?: Record<string, unknown>,
+  input?: Record<string, unknown>,
+  check?: Record<string, unknown>
 }
 
-export default function TextInputCheck(props: TextInputCheckProps): JSX.Element {
-  const { validation } = props;
+interface ITextInputCheckProps extends TextInputProps {
+  validation: (_: string) => boolean,
+  styles?: ITextInputCheckStyles
+}
+
+export default function TextInputCheck(props: ITextInputCheckProps): JSX.Element {
+  const { styles, validation } = props;
   const [shouldShow, setShouldShow] = useState(false);
   const onChangeText = (text: string): void => { setShouldShow(validation(text)); };
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...(styles?.container ?? {}), ...defaultStyles.container }}>
       <TextInput
-        style={styles.textInput}
+        style={{ ...(styles?.input ?? {}), ...defaultStyles.textInput }}
         placeholder="Placeholder"
         placeholderTextColor="#bdbdbd"
         {...props}
         onChangeText={onChangeText}
       />
-      <Text style={styles.check}>
+      <Text style={{ ...(styles?.check ?? {}), ...defaultStyles.check }}>
         {shouldShow && (
         <Text>&#10003;</Text>
         )}
@@ -52,3 +38,11 @@ export default function TextInputCheck(props: TextInputCheckProps): JSX.Element 
     </View>
   );
 }
+
+TextInputCheck.defaultProps = {
+  styles: {
+    container: {},
+    input: {},
+    check: {},
+  },
+};
