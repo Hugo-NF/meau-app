@@ -28,12 +28,14 @@ const styles = StyleSheet.create({
 
 interface TextInputCheckProps extends TextInputProps {
   validation: (_: string) => boolean;
+  onChangeText?: (text: string) => void;
 }
 
 export default function TextInputCheck(props: TextInputCheckProps): JSX.Element {
-  const { validation } = props;
+  const { onChangeText, validation } = props;
   const [shouldShow, setShouldShow] = useState(false);
-  const onChangeText = (text: string): void => { setShouldShow(validation(text)); };
+  const defaultOnChangeText = (): boolean => false;
+  const internalOnChangeText = (text: string): void => { setShouldShow(validation(text)); (onChangeText || defaultOnChangeText)(text); };
 
   return (
     <View style={styles.container}>
@@ -42,7 +44,7 @@ export default function TextInputCheck(props: TextInputCheckProps): JSX.Element 
         placeholder="Placeholder"
         placeholderTextColor="#bdbdbd"
         {...props}
-        onChangeText={onChangeText}
+        onChangeText={internalOnChangeText}
       />
       <Text style={styles.check}>
         {shouldShow && (
