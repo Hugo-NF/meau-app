@@ -68,6 +68,7 @@ export default function Home() : JSX.Element {
       </AsyncButton>
       <Text>Exemplo de TextInputCheck:</Text>
       <TextInputCheck validation={() => true} placeholder="E-mail" />
+      <TextInputCheck validation={() => true} containerStyle={{ backgroundColor: '#eee' }} placeholder="E-mail estilizado" />
     </Container>
   );
 }
