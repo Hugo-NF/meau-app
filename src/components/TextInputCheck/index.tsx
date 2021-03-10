@@ -1,36 +1,41 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TextInputProps,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextInputProps,
+  View,
 } from 'react-native';
 
 import { defaultStyles } from './styles';
 
-interface ITextInputCheckStyles {
-  container?: Record<string, unknown>,
-  input?: Record<string, unknown>,
-  check?: Record<string, unknown>
-}
-
 interface ITextInputCheckProps extends TextInputProps {
   validation: (_: string) => boolean,
-  styles?: ITextInputCheckStyles
+  containerStyle?: Record<string, unknown>,
+  textInputStyle?: Record<string, unknown>,
+  checkStyle?: Record<string, unknown>,
 }
 
-export default function TextInputCheck(props: ITextInputCheckProps): JSX.Element {
-  const { styles, validation } = props;
+export default function TextInputCheck({
+  containerStyle, textInputStyle, checkStyle, validation, ...props
+}: ITextInputCheckProps): JSX.Element {
   const [shouldShow, setShouldShow] = useState(false);
   const onChangeText = (text: string): void => { setShouldShow(validation(text)); };
 
+  const containerStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.container, containerStyle);
+  const textInputStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.textInput, textInputStyle);
+  const checkStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.check, checkStyle);
+
   return (
-    <View style={{ ...defaultStyles.container, ...(styles?.container ?? {}) }}>
+    <View style={containerStyles}>
       <TextInput
-        style={{ ...defaultStyles.textInput, ...(styles?.input ?? {}) }}
+        style={textInputStyles}
         placeholder="Placeholder"
         placeholderTextColor="#bdbdbd"
         {...props}
         onChangeText={onChangeText}
       />
-      <Text style={{ ...defaultStyles.check, ...(styles?.check ?? {}) }}>
+      <Text style={checkStyles}>
         {shouldShow && (
         <Text>&#10003;</Text>
         )}
@@ -40,9 +45,7 @@ export default function TextInputCheck(props: ITextInputCheckProps): JSX.Element
 }
 
 TextInputCheck.defaultProps = {
-  styles: {
-    container: {},
-    input: {},
-    check: {},
-  },
+  containerStyle: {},
+  textInputStyle: {},
+  checkStyle: {},
 };
