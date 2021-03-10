@@ -1,5 +1,6 @@
 // Package imports.
 import React, { useLayoutEffect, useState } from 'react';
+import { Text } from 'react-native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -19,6 +20,11 @@ export default function Login() : JSX.Element {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [wrongLogin, setWrongLogin] = useState(false);
+
+  if (auth().currentUser) {
+    navigation.navigate('Authorized');
+  }
 
   // Layout effects.
   useLayoutEffect(() => {
@@ -59,6 +65,7 @@ export default function Login() : JSX.Element {
     } catch (e) {
       // Erro
       console.log(e);
+      setWrongLogin(true);
     }
   };
 
@@ -73,9 +80,12 @@ export default function Login() : JSX.Element {
         <TextInputCheck
           validation={notEmpty}
           placeholder="Senha"
+          secureTextEntry
           onChangeText={(text) => setPassword(text)}
         />
       </LoginForm>
+      <Text>{wrongLogin ? 'E-mail ou senha inválidos' : ''}</Text>
+
       <AsyncButton
         styles={styles.asyncButton}
         asyncAction={false}
