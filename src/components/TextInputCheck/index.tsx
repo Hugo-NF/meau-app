@@ -22,15 +22,15 @@ export default function TextInputCheck(props: ITextInputCheckProps): JSX.Element
   const onChangeText = (text: string): void => { setShouldShow(validation(text)); };
 
   return (
-    <View style={{ ...(styles?.container ?? {}), ...defaultStyles.container }}>
+    <View style={{ ...defaultStyles.container, ...(styles?.container ?? {}) }}>
       <TextInput
-        style={{ ...(styles?.input ?? {}), ...defaultStyles.textInput }}
+        style={{ ...defaultStyles.textInput, ...(styles?.input ?? {}) }}
         placeholder="Placeholder"
         placeholderTextColor="#bdbdbd"
         {...props}
         onChangeText={onChangeText}
       />
-      <Text style={{ ...(styles?.check ?? {}), ...defaultStyles.check }}>
+      <Text style={{ ...defaultStyles.check, ...(styles?.check ?? {}) }}>
         {shouldShow && (
         <Text>&#10003;</Text>
         )}
