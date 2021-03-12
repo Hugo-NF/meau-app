@@ -18,11 +18,12 @@ export const defaultStyles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Roboto_400Regular',
     padding: 0,
+    paddingLeft: 2,
     width: containerWidth - checkWidth,
     flexGrow: 1,
   },
   check: {
-    color: Theme.elements.check,
+    color: Theme.elements.checkPrimary,
     marginBottom: -4,
     width: checkWidth,
   },

@@ -32,7 +32,8 @@ const Theme = {
     inputError: '#FCB3A4',
     placeholder: '#9FA5AA',
     radioButtom: '#757575',
-    check: '#589B9B',
+    checkPrimary: '#589B9B',
+    checkSecondary: '#F7A800',
   },
   named: {
     blue: '#007BFF',

@@ -127,7 +127,6 @@ export default function AnimalRegistration() : JSX.Element {
     InvalidCheckBoxText,
     LabeledCheckBox,
     SingleCheckBoxRow,
-    TextInputContainer,
   } = styledComponents;
 
   return (
@@ -136,12 +135,13 @@ export default function AnimalRegistration() : JSX.Element {
         <Form>
           <FormHeaderText>Adoção</FormHeaderText>
           <FormLabelText>NOME DO ANIMAL</FormLabelText>
-          <TextInputContainer>
-            <TextInputCheck
-              validation={notEmpty}
-              placeholder="Nome do animal"
-            />
-          </TextInputContainer>
+          <TextInputCheck
+            checkStyle={styles.textInputCheck}
+            containerStyle={styles.textInputContainer}
+            textInputStyle={styles.textInput}
+            validation={notEmpty}
+            placeholder="Nome do animal"
+          />
           <FormLabelText>ESPÉCIE</FormLabelText>
           <RadioForm
             radio_props={[
@@ -284,12 +284,13 @@ export default function AnimalRegistration() : JSX.Element {
               <CheckBoxText>Doente</CheckBoxText>
             </LabeledCheckBox>
           </CheckBoxRowBottom>
-          <TextInputContainer>
-            <TextInputCheck
-              validation={notEmpty}
-              placeholder="Doenças do animal"
-            />
-          </TextInputContainer>
+          <TextInputCheck
+            checkStyle={styles.textInputCheck}
+            containerStyle={styles.textInputContainer}
+            textInputStyle={styles.textInput}
+            validation={notEmpty}
+            placeholder="Doenças do animal"
+          />
           <FormLabelText>EXIGÊNCIAS PARA ADOÇÃO</FormLabelText>
           <SingleCheckBoxRow>
             <CheckBox
@@ -369,12 +370,13 @@ export default function AnimalRegistration() : JSX.Element {
             </SingleCheckBoxRow>
           </IndentedSubsection>
           <FormLabelText>SOBRE O ANIMAL</FormLabelText>
-          <TextInputContainer>
-            <TextInputCheck
-              validation={notEmpty}
-              placeholder="Compartilhe a história do animal"
-            />
-          </TextInputContainer>
+          <TextInputCheck
+            checkStyle={styles.textInputCheck}
+            containerStyle={styles.textInputContainer}
+            textInputStyle={styles.textInput}
+            validation={notEmpty}
+            placeholder="Compartilhe a história do animal"
+          />
         </Form>
         <ButtonContainer>
           <AsyncButton
