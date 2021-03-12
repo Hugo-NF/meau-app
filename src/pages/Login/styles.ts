@@ -20,8 +20,8 @@ export const styledComponents = {
   `,
 
   LoginForm: styled.View<ViewProps>`
-    margin-top: 64px;
-    margin-bottom: 52px;
+    margin-top: 56px;
+    margin-bottom: 40px;
   `,
 };
 
@@ -55,4 +55,14 @@ export const styles = {
   },
 
   statusBarColor: Theme.elements.statusBarPrimary,
+
+  textInput: {
+    width: 288,
+  },
+
+  textInputContainer: {
+    width: 312,
+    marginBottom: 12,
+    marginTop: 0,
+  },
 };

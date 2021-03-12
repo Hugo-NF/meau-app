@@ -85,10 +85,6 @@ export const styledComponents = {
     width: 100%;
   `,
 
-  TextInputContainer: styled.View<ViewProps>`
-    margin-bottom: -36px;
-    margin-top: 8px;
-  `,
 };
 
 // Navigation options.
@@ -159,5 +155,19 @@ export const styles = {
     marginBottom: '24px',
     marginTop: '24px',
     width: '232px',
+  },
+
+  textInput: {
+    width: 288,
+  },
+
+  textInputContainer: {
+    width: 312,
+    marginBottom: 0,
+    marginTop: 8,
+  },
+
+  textInputCheck: {
+    color: Theme.elements.checkSecondary,
   },
 };
