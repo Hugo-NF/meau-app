@@ -66,9 +66,9 @@ export default function Home() : JSX.Element {
       >
         <Text>Animal form</Text>
       </AsyncButton>
-      <Text>Exemplo de TextInputCheck:</Text>
+      <Text style={{marginTop: 20}}>Exemplo de TextInputCheck:</Text>
       <TextInputCheck validation={() => true} placeholder="E-mail" />
-      <TextInputCheck validation={() => true} containerStyle={{ backgroundColor: '#eee' }} placeholder="E-mail estilizado" />
+      <TextInputCheck validation={() => true} containerStyle={{ backgroundColor: '#eee' }} checkSize={16} checkStyle={{ color: Theme.default.secondary, marginRight: 20 }} textInputStyle={{ width: 150 }} placeholder="E-mail estilizado" />
     </Container>
   );
 }

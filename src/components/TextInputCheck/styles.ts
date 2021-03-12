@@ -1,15 +1,18 @@
 import { StyleSheet } from 'react-native';
 
-const checkWidth = 20;
+import { Theme } from '../../constants';
+
+const checkWidth = 24;
 const containerWidth = 328;
 
 export const defaultStyles = StyleSheet.create({
   container: {
     borderBottomColor: '#e6e7e8',
     borderBottomWidth: 1.8,
-    width: containerWidth,
-    marginBottom: 36,
     flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 36,
+    width: containerWidth,
   },
   textInput: {
     fontSize: 14,
@@ -19,9 +22,8 @@ export const defaultStyles = StyleSheet.create({
     flexGrow: 1,
   },
   check: {
+    color: Theme.elements.check,
+    marginBottom: -4,
     width: checkWidth,
-    fontFamily: 'Roboto_400Regular',
-    color: '#434343',
-    paddingLeft: 5,
   },
 });
