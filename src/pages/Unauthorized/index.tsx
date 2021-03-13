@@ -24,6 +24,11 @@ export default function Unauthorized(): JSX.Element {
     <HeaderLayout
       headerShown
       title="Cadastro"
+      headerStyles={{
+        backgroundColor: Theme.elements.headerPrimaryDark,
+        maxHeight: '56px',
+        height: '56px',
+      }}
       leftAction={{
         hidden: false,
         actionType: 'back',

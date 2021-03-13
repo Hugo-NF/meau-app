@@ -116,7 +116,7 @@ HeaderLayout.defaultProps = {
   headerStyles: {
     maxHeight: '56px',
     height: '56px',
-    backgroundColor: Theme.elements.headerPrimaryDark,
+    backgroundColor: Theme.elements.headerPrimary,
   },
   titleStyles: {
     fontFamily: 'Roboto_500Medium',

@@ -29,7 +29,6 @@ export const styledComponents = {
   SessionText: styled.Text<TextProps>`
     width: 100%;
     margin-bottom: 32px;
-    margin-left: ${PixelRatio.getPixelSizeForLayoutSize(20)}px;
     color: ${Theme.default.primary};
     text-transform: uppercase;
     text-align: left;
@@ -40,19 +39,6 @@ export const styledComponents = {
   `,
 };
 
-// Navigation options.
-export const navigationOptions = {
-  headerStyle: {
-    backgroundColor: Theme.elements.headerPrimary,
-  },
-  headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Cadastro pessoal',
-  headerTitleStyle: {
-    fontFamily: 'Roboto_500Medium',
-    fontSize: 20,
-  },
-};
-
 // Styles.
 export const styles = {
   asyncButton: {
@@ -61,8 +47,8 @@ export const styles = {
     height: '50px',
     backgroundColor: Theme.default.primary,
     borderRadius: '5px',
-    marginTop: '10px',
-    marginBottom: '54px',
+    marginTop: '32px',
+    marginBottom: '24px',
   },
 
   headerLeftIcon: {
@@ -71,5 +57,4 @@ export const styles = {
     marginLeft: 16,
     marginTop: 16,
   },
-
 };

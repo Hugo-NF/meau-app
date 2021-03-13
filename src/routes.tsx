@@ -40,9 +40,6 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="Registration"
         component={Registration}
-        options={{
-          headerShown: true,
-        }}
       />
       <AppStack.Screen
         name="Unauthorized"

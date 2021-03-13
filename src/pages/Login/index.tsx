@@ -63,14 +63,14 @@ export default function Login() : JSX.Element {
             validation={notEmpty}
             placeholder="Senha"
           />
+          <AsyncButton
+            styles={styles.asyncButton}
+            asyncAction={false}
+            callback={placeholderFunction}
+          >
+            <ButtonText>Entrar</ButtonText>
+          </AsyncButton>
         </LoginForm>
-        <AsyncButton
-          styles={styles.asyncButton}
-          asyncAction={false}
-          callback={placeholderFunction}
-        >
-          <ButtonText>Entrar</ButtonText>
-        </AsyncButton>
       </Container>
     </HeaderLayout>
   );
