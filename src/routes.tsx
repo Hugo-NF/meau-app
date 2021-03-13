@@ -21,9 +21,6 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="AnimalRegistration"
         component={AnimalRegistration}
-        options={{
-          headerShown: true,
-        }}
       />
       <AppStack.Screen
         name="Home"

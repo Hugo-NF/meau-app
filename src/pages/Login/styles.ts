@@ -26,18 +26,6 @@ export const styledComponents = {
   `,
 };
 
-// Navigation options.
-export const navigationOptions = {
-  headerStyle: {
-    backgroundColor: Theme.elements.headerPrimary,
-  },
-  headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Login',
-  headerTitleStyle: {
-    fontFamily: 'Roboto_500Medium',
-  },
-};
-
 // Styles.
 export const styles = {
   asyncButton: {
