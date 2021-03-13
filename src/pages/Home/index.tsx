@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
-import { setStatusBarHidden, StatusBarAnimation } from 'expo-status-bar';
+import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 import AsyncButton from '../../components/AsyncButton';
 
@@ -12,7 +12,7 @@ export default function Home() : JSX.Element {
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
-    setStatusBarHidden(true, 'none');
+    setStatusBarBackgroundColor('transparent', true);
   }, [navigation]);
 
   const {
@@ -30,19 +30,19 @@ export default function Home() : JSX.Element {
         styles={styles.asyncButton}
         asyncAction={false}
         callback={() => {
-          navigation.navigate('Login');
+          navigation.navigate('Unauthorized');
         }}
       >
-        <ButtonText>Adotar</ButtonText>
+        <ButtonText>Ops</ButtonText>
       </AsyncButton>
       <AsyncButton
         styles={styles.asyncButton}
         asyncAction={false}
         callback={() => {
-          navigation.navigate('Login');
+          navigation.navigate('Registration');
         }}
       >
-        <ButtonText>Ajudar</ButtonText>
+        <ButtonText>Cadastro</ButtonText>
       </AsyncButton>
       <AsyncButton
         styles={styles.asyncButton}

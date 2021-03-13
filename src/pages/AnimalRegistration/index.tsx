@@ -125,7 +125,7 @@ export default function AnimalRegistration() : JSX.Element {
   return (
     <HeaderLayout
       headerShown
-      title="Cadastro Pessoal"
+      title="Cadastro do Animal"
       headerStyles={{
         backgroundColor: Theme.elements.headerSecondaryDark,
         maxHeight: '56px',

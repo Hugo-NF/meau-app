@@ -1,7 +1,6 @@
 import React, { useLayoutEffect } from 'react';
 
 import {
-  SafeAreaView,
   ScrollView,
   View,
 } from 'react-native';
@@ -22,7 +21,7 @@ export default function Registration() : JSX.Element {
   // Variable declaration.
   const navigation = useNavigation();
   const {
-    ButtonText, Container, InfoText, SessionText,
+    ButtonText, Container, InfoText, SessionText, FormContainer,
   } = styledComponents;
 
   // Layout effects.
@@ -48,8 +47,8 @@ export default function Registration() : JSX.Element {
       }}
     >
       <Container>
-        <SafeAreaView>
-          <ScrollView>
+        <ScrollView>
+          <FormContainer>
             <InfoText>
               As informações preenchidas serão divulgadas apenas para a pessoa com a qual você realizar o processo de adoção e/ou apadrinhamento, após a formalização do processo.
             </InfoText>
@@ -76,8 +75,9 @@ export default function Registration() : JSX.Element {
                 <ButtonText>Fazer cadastro</ButtonText>
               </AsyncButton>
             </View>
-          </ScrollView>
-        </SafeAreaView>
+
+          </FormContainer>
+        </ScrollView>
       </Container>
     </HeaderLayout>
   );
