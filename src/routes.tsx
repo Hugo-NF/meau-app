@@ -22,31 +22,18 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="AnimalRegistration"
         component={AnimalRegistration}
-        options={{
-          headerShown: true,
-        }}
       />
       <AppStack.Screen
         name="Home"
         component={Home}
-        options={{
-          headerShown: true,
-          headerTitle: 'Início',
-        }}
       />
       <AppStack.Screen
         name="Login"
         component={Login}
-        options={{
-          headerShown: true,
-        }}
       />
       <AppStack.Screen
         name="Registration"
         component={Registration}
-        options={{
-          headerShown: true,
-        }}
       />
       <AppStack.Screen
         name="Unauthorized"

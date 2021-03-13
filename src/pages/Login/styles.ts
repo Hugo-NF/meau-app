@@ -11,6 +11,7 @@ export const styledComponents = {
     color: ${Theme.elements.buttonText};
     font-family: "Roboto_400Regular";
     font-size: 12px;
+    text-transform: uppercase;
   `,
 
   Container: styled.View<ViewProps>`
@@ -20,21 +21,9 @@ export const styledComponents = {
   `,
 
   LoginForm: styled.View<ViewProps>`
-    margin-top: 64px;
-    margin-bottom: 52px;
+    margin-top: 56px;
+    margin-bottom: 40px;
   `,
-};
-
-// Navigation options.
-export const navigationOptions = {
-  headerStyle: {
-    backgroundColor: Theme.elements.headerPrimary,
-  },
-  headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Login',
-  headerTitleStyle: {
-    fontFamily: 'Roboto_500Medium',
-  },
 };
 
 // Styles.
@@ -55,4 +44,14 @@ export const styles = {
   },
 
   statusBarColor: Theme.elements.statusBarPrimary,
+
+  textInput: {
+    width: 288,
+  },
+
+  textInputContainer: {
+    width: 312,
+    marginBottom: 12,
+    marginTop: 0,
+  },
 };

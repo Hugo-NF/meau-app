@@ -33,7 +33,7 @@ export const styledComponents = {
     color: ${Theme.elements.text};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
-    marginBottom: 1px;
+    margin-bottom: 1px;
   `,
 
   Container: styled.View<ViewProps>`
@@ -68,7 +68,7 @@ export const styledComponents = {
     color: ${Theme.elements.invalidText};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
-    marginBottom: 1px;
+    margin-bottom: 1px;
   `,
 
   LabeledCheckBox: styled.View<ViewProps>`
@@ -85,22 +85,6 @@ export const styledComponents = {
     width: 100%;
   `,
 
-  TextInputContainer: styled.View<ViewProps>`
-    margin-bottom: -36px;
-    margin-top: 8px;
-  `,
-};
-
-// Navigation options.
-export const navigationOptions = {
-  headerStyle: {
-    backgroundColor: Theme.elements.headerSecondaryDark,
-  },
-  headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Cadastro do Animal',
-  headerTitleStyle: {
-    fontFamily: 'Roboto_500Medium',
-  },
 };
 
 // Styles.
@@ -137,7 +121,7 @@ export const styles = {
       marginTop: 0,
       width: 102,
     },
-    selectedButtonColor: Theme.elements.radioButtom,
+    selectedButtonColor: Theme.elements.active,
     style: {
       marginBottom: 0,
       marginLeft: 2,
@@ -159,5 +143,19 @@ export const styles = {
     marginBottom: '24px',
     marginTop: '24px',
     width: '232px',
+  },
+
+  textInput: {
+    width: 288,
+  },
+
+  textInputContainer: {
+    width: 312,
+    marginBottom: 0,
+    marginTop: 8,
+  },
+
+  textInputCheck: {
+    color: Theme.elements.checkSecondary,
   },
 };
