@@ -1,9 +1,12 @@
 // Package imports.
 import React, { useLayoutEffect, useState } from 'react';
-import { Text } from 'react-native';
+
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import auth, { firebase } from '@react-native-firebase/auth';
+
+import * as Yup from 'yup';
+import { Formik } from 'formik';
 
 // Style imports.
 import { styles, styledComponents } from './styles';

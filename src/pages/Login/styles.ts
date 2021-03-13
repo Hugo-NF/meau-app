@@ -43,8 +43,6 @@ export const styles = {
     marginTop: 16,
   },
 
-  statusBarColor: Theme.elements.statusBarPrimary,
-
   textInput: {
     width: 288,
   },
