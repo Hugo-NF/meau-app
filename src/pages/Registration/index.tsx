@@ -27,16 +27,6 @@ export default function Registration() : JSX.Element {
 
   // Layout effects.
   useLayoutEffect(() => {
-    // navigation.setOptions({
-    //   headerLeft: () => (
-    //     <Ionicons
-    //       name="menu-sharp"
-    //       size={24}
-    //       style={styles.headerLeftIcon}
-    //     />
-    //   ),
-    //   ...navigationOptions,
-    // });
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
   }, [navigation]);
 

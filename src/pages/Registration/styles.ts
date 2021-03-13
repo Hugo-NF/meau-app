@@ -1,5 +1,5 @@
 // Package imports.
-import { PixelRatio, TextProps, ViewProps } from 'react-native';
+import { TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.

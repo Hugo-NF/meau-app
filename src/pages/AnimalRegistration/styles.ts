@@ -68,7 +68,7 @@ export const styledComponents = {
     color: ${Theme.elements.invalidText};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
-    marginBottom: 1px;
+    margin-bottom: 1px;
   `,
 
   LabeledCheckBox: styled.View<ViewProps>`
