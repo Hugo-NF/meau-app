@@ -43,10 +43,14 @@ export default function Login() : JSX.Element {
     <Container>
       <LoginForm>
         <TextInputCheck
+          containerStyle={styles.textInputContainer}
+          textInputStyle={styles.textInput}
           validation={notEmpty}
           placeholder="Nome de usuário"
         />
         <TextInputCheck
+          containerStyle={styles.textInputContainer}
+          textInputStyle={styles.textInput}
           validation={notEmpty}
           placeholder="Senha"
         />

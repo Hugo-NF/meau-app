@@ -1,54 +1,59 @@
 import React, { useState } from 'react';
 import {
-  StyleSheet, View, Text, TextInput, TextInputProps,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  View,
 } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const styles = StyleSheet.create({
-  container: {
-    borderBottomColor: '#e6e7e8',
-    borderBottomWidth: 1.8,
-    width: 328,
-    marginBottom: 36,
-    flexDirection: 'row',
-  },
-  textInput: {
-    fontSize: 14,
-    fontFamily: 'Roboto_400Regular',
-    padding: 0,
-    width: 328 - 20,
-    flexGrow: 1,
-  },
-  check: {
-    width: 20,
-    fontFamily: 'Roboto_400Regular',
-    color: '#434343',
-    paddingLeft: 5,
-  },
-});
+import { defaultStyles } from './styles';
 
-interface TextInputCheckProps extends TextInputProps {
-  validation: (_: string) => boolean;
+interface ITextInputCheckProps extends TextInputProps {
+  validation: (_: string) => boolean,
+  containerStyle?: Record<string, unknown>,
+  textInputStyle?: Record<string, unknown>,
+  checkEnabled?: boolean,
+  checkSize?: number,
+  checkStyle?: Record<string, unknown>,
 }
 
-export default function TextInputCheck(props: TextInputCheckProps): JSX.Element {
-  const { validation } = props;
-  const [shouldShow, setShouldShow] = useState(false);
-  const onChangeText = (text: string): void => { setShouldShow(validation(text)); };
+export default function TextInputCheck({
+  containerStyle,
+  textInputStyle,
+  checkEnabled,
+  checkSize,
+  checkStyle,
+  validation,
+  ...props
+}: ITextInputCheckProps): JSX.Element {
+  const [shouldShowCheck, setShouldShowCheck] = useState(false);
+  const onChangeText = (text: string): void => { setShouldShowCheck(validation(text)); };
+
+  const containerStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.container, containerStyle);
+  const textInputStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.textInput, textInputStyle);
+  const checkStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.check, checkStyle);
 
   return (
-    <View style={styles.container}>
+    <View style={containerStyles}>
       <TextInput
-        style={styles.textInput}
+        style={textInputStyles}
         placeholder="Placeholder"
         placeholderTextColor="#bdbdbd"
         {...props}
         onChangeText={onChangeText}
       />
-      <Text style={styles.check}>
-        {shouldShow && (
-        <Text>&#10003;</Text>
-        )}
-      </Text>
+      {checkEnabled && shouldShowCheck && (
+        <MaterialCommunityIcons name="check" size={checkSize} style={checkStyles} />
+      )}
     </View>
   );
 }
+
+TextInputCheck.defaultProps = {
+  containerStyle: {},
+  textInputStyle: {},
+  checkEnabled: true,
+  checkSize: 24,
+  checkStyle: {},
+};
