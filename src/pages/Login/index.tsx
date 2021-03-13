@@ -1,15 +1,18 @@
 // Package imports.
 import React, { useLayoutEffect } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 // Style imports.
-import { navigationOptions, styles, styledComponents } from './styles';
+import { styles, styledComponents } from './styles';
+
+// Layout import
+import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Component imports.
 import AsyncButton from '../../components/AsyncButton';
 import TextInputCheck from '../../components/TextInputCheck';
+import { Theme } from '../../constants';
 
 // Component export.
 export default function Login() : JSX.Element {
@@ -18,17 +21,7 @@ export default function Login() : JSX.Element {
 
   // Layout effects.
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <Ionicons
-          name="menu-sharp"
-          size={24}
-          style={styles.headerLeftIcon}
-        />
-      ),
-      ...navigationOptions,
-    });
-    setStatusBarBackgroundColor(styles.statusBarColor, true);
+    setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
   }, [navigation]);
 
   // Functions.
@@ -40,28 +33,45 @@ export default function Login() : JSX.Element {
   const { ButtonText, Container, LoginForm } = styledComponents;
 
   return (
-    <Container>
-      <LoginForm>
-        <TextInputCheck
-          containerStyle={styles.textInputContainer}
-          textInputStyle={styles.textInput}
-          validation={notEmpty}
-          placeholder="Nome de usuário"
-        />
-        <TextInputCheck
-          containerStyle={styles.textInputContainer}
-          textInputStyle={styles.textInput}
-          validation={notEmpty}
-          placeholder="Senha"
-        />
-      </LoginForm>
-      <AsyncButton
-        styles={styles.asyncButton}
-        asyncAction={false}
-        callback={placeholderFunction}
-      >
-        <ButtonText>ENTRAR</ButtonText>
-      </AsyncButton>
-    </Container>
+    <HeaderLayout
+      headerShown
+      title="Login"
+      headerStyles={{
+        backgroundColor: Theme.elements.headerPrimary,
+        maxHeight: '56px',
+        height: '56px',
+      }}
+      leftAction={{
+        hidden: false,
+        actionType: 'drawer',
+      }}
+      rightAction={{
+        hidden: true,
+      }}
+    >
+      <Container>
+        <LoginForm>
+          <TextInputCheck
+            containerStyle={styles.textInputContainer}
+            textInputStyle={styles.textInput}
+            validation={notEmpty}
+            placeholder="Nome de usuário"
+          />
+          <TextInputCheck
+            containerStyle={styles.textInputContainer}
+            textInputStyle={styles.textInput}
+            validation={notEmpty}
+            placeholder="Senha"
+          />
+        </LoginForm>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={placeholderFunction}
+        >
+          <ButtonText>Entrar</ButtonText>
+        </AsyncButton>
+      </Container>
+    </HeaderLayout>
   );
 }

@@ -36,9 +36,6 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="Login"
         component={Login}
-        options={{
-          headerShown: true,
-        }}
       />
       <AppStack.Screen
         name="Registration"

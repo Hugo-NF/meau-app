@@ -119,7 +119,7 @@ HeaderLayout.defaultProps = {
     backgroundColor: Theme.elements.headerPrimaryDark,
   },
   titleStyles: {
-    fontFamily: 'Roboto_400Regular',
+    fontFamily: 'Roboto_500Medium',
     fontSize: '20px',
     color: Theme.elements.headerText,
   },

@@ -11,6 +11,7 @@ export const styledComponents = {
     color: ${Theme.elements.buttonText};
     font-family: "Roboto_400Regular";
     font-size: 12px;
+    text-transform: uppercase;
   `,
 
   Container: styled.View<ViewProps>`
