@@ -1,74 +1,78 @@
-import React from 'react';
-
-import { Text } from 'react-native';
+import React, { useLayoutEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
-
-import { Entypo } from '@expo/vector-icons';
+import { setStatusBarHidden, StatusBarAnimation } from 'expo-status-bar';
 
 import AsyncButton from '../../components/AsyncButton';
-import TextInputCheck from '../../components/TextInputCheck';
-import { Theme } from '../../constants';
-import { Container } from './styles';
+
+import { styledComponents, styles } from './styles';
+import { Images } from '../../constants';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
 
+  useLayoutEffect(() => {
+    setStatusBarHidden(true, 'none');
+  }, [navigation]);
+
+  const {
+    Container, Title, Message, ButtonText, LoginText, LogoContainer,
+  } = styledComponents;
+
   return (
     <Container>
-      <Text onPress={() => navigation.navigate('Login')}>Bugstenium rocks!</Text>
+      <Title>Olá!</Title>
+      <Message>
+        Bem vindo ao Meau!{'\n'}
+        Aqui você pode adotar, doar e ajudar cães e gatos com facilidade. Qual o seu interesse?
+      </Message>
+      <AsyncButton
+        styles={styles.asyncButton}
+        asyncAction={false}
+        callback={() => {
+          navigation.navigate('Login');
+        }}
+      >
+        <ButtonText>Adotar</ButtonText>
+      </AsyncButton>
+      <AsyncButton
+        styles={styles.asyncButton}
+        asyncAction={false}
+        callback={() => {
+          navigation.navigate('Login');
+        }}
+      >
+        <ButtonText>Ajudar</ButtonText>
+      </AsyncButton>
+      <AsyncButton
+        styles={styles.asyncButton}
+        asyncAction={false}
+        callback={() => {
+          navigation.navigate('AnimalRegistration');
+        }}
+      >
+        <ButtonText>Cadastrar animal</ButtonText>
+      </AsyncButton>
       <AsyncButton
         styles={{
-          flex: 1,
-          width: '30%',
-          height: '32px',
-          backgroundColor: Theme.default.secondary,
-          borderRadius: '5px',
-          marginTop: '10px',
+          backgroundColor: 'transparent',
+          marginBottom: '68px',
+          marginTop: '44px',
+          marginLeft: '10px',
+          marginRight: '10px',
+          width: '60%',
+          height: '40px',
+          alignItems: 'center',
+          borderRadius: '2px',
         }}
         asyncAction={false}
         callback={() => {
           navigation.navigate('Login');
         }}
       >
-        <Entypo name="lock" size={16} />
-        <Text>Login</Text>
+        <LoginText>login</LoginText>
       </AsyncButton>
-      <AsyncButton
-        styles={{
-          flex: 1,
-          width: '30%',
-          height: '32px',
-          backgroundColor: Theme.default.secondary,
-          borderRadius: '5px',
-          marginTop: '10px',
-        }}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('Unauthorized');
-        }}
-      >
-        <Text>Ops</Text>
-      </AsyncButton>
-      <AsyncButton
-        styles={{
-          flex: 1,
-          width: '30%',
-          height: '32px',
-          backgroundColor: Theme.default.secondary,
-          borderRadius: '5px',
-          marginTop: '10px',
-        }}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('AnimalRegistration');
-        }}
-      >
-        <Text>Animal form</Text>
-      </AsyncButton>
-      <Text style={{ marginTop: 20 }}>Exemplo de TextInputCheck:</Text>
-      <TextInputCheck validation={() => true} placeholder="E-mail" />
-      <TextInputCheck validation={() => true} containerStyle={{ backgroundColor: '#eee' }} checkSize={16} checkStyle={{ color: Theme.default.secondary, marginRight: 20 }} textInputStyle={{ width: 150 }} placeholder="E-mail estilizado" />
+      <LogoContainer source={Images.MeauBlue} resizeMode="contain" />
     </Container>
   );
 }

@@ -25,10 +25,6 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="Home"
         component={Home}
-        options={{
-          headerShown: true,
-          headerTitle: 'Início',
-        }}
       />
       <AppStack.Screen
         name="Login"
