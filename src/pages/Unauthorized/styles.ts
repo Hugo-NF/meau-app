@@ -10,7 +10,6 @@ export const styledComponents = {
   Container: styled.View<ViewProps>`
     flex: 1;
     align-items: center;
-    justify-content: center;
   `,
 
   Title: styled.Text<TextProps>`

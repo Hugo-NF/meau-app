@@ -19,9 +19,6 @@ export const styledComponents = {
     flex: 1;
     flex-direction: column;
   `,
-  PageContainer: styled.View<ViewProps>`
-    flex: 1;
-  `,
   HeaderContainer: styled.View<IHeaderProps>`
     flex: 1;
     flex-direction: row;

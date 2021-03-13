@@ -23,15 +23,10 @@ export default function Unauthorized(): JSX.Element {
   return (
     <HeaderLayout
       headerShown
-      title="Autenticação"
-      titleStyles={{
-        fontFamily: 'Roboto_400Regular',
-        fontSize: '20px',
-        color: Theme.elements.headerText,
-      }}
+      title="Cadastro"
       leftAction={{
         hidden: false,
-        actionType: 'drawer',
+        actionType: 'back',
       }}
       rightAction={{
         hidden: true,

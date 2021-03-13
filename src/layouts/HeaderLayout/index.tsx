@@ -18,6 +18,12 @@ interface IButtonAction {
   iconColor?: string,
 }
 
+interface IRoutesDrawer {
+  path: string,
+  displayName: string,
+  icon: JSX.Element
+}
+
 interface IHeaderLayoutProps {
   headerShown: boolean,
   headerStyles?: IHeaderProps,
@@ -26,6 +32,8 @@ interface IHeaderLayoutProps {
   leftAction: IButtonAction,
   rightAction: IButtonAction,
   children: React.ReactNode,
+  drawerRoutes?: Array<IRoutesDrawer>,
+  drawerUser?: boolean
 }
 
 export default function HeaderLayout({
@@ -42,7 +50,7 @@ export default function HeaderLayout({
   const navigation = useNavigation();
 
   const {
-    ActionButton, HeaderContainer, HeaderTitle, LayoutContainer, PageContainer,
+    ActionButton, HeaderContainer, HeaderTitle, LayoutContainer,
   } = styledComponents;
 
   const renderActionButton = (buttonType : IButtonAction): JSX.Element => {
@@ -98,9 +106,7 @@ export default function HeaderLayout({
           {!rightAction?.hidden && (renderActionButton(rightAction))}
         </HeaderContainer>
         )}
-        <PageContainer>
-          {children}
-        </PageContainer>
+        {children}
       </MenuDrawer>
     </LayoutContainer>
   );
@@ -114,7 +120,9 @@ HeaderLayout.defaultProps = {
   },
   titleStyles: {
     fontFamily: 'Roboto_400Regular',
-    fontSize: '16px',
+    fontSize: '20px',
     color: Theme.elements.headerText,
   },
+  drawerRoutes: [],
+  drawerUser: true,
 };
