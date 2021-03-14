@@ -10,6 +10,7 @@ export const styledComponents = {
   Container: styled.View<ViewProps>`
     flex: 1;
     align-items: center;
+    background-color: ${Theme.default.background};
   `,
 
   Title: styled.Text<TextProps>`

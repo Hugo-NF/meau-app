@@ -9,7 +9,7 @@ import { Theme } from '../../constants';
 export const styledComponents = {
   Container: styled.View<ViewProps>`
     flex: 1;
-    align-items: center;
+    background-color: ${Theme.default.background};
   `,
 
   InfoText: styled.Text<TextProps>`
@@ -26,9 +26,15 @@ export const styledComponents = {
     height: 80px;
   `,
 
+  FormContainer: styled.View<ViewProps>`
+    flex: 1;
+    align-items: center;
+  `,
+
   SessionText: styled.Text<TextProps>`
-    width: 100%;
+    width: 90%;
     margin-bottom: 32px;
+    margin-left: 28px;
     color: ${Theme.default.primary};
     text-transform: uppercase;
     text-align: left;

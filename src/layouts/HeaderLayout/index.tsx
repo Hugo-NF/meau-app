@@ -91,23 +91,23 @@ export default function HeaderLayout({
 
   return (
     <LayoutContainer>
-      <MenuDrawer
+      {/* <MenuDrawer
         open={drawerOpen}
         drawerContent={DrawerContent({ drawerOpen, setDrawerOpen })}
         drawerPercentage={75}
         animationTime={250}
         opacity={0.1}
         position="left"
-      >
-        {headerShown && (
+      > */}
+      {headerShown && (
         <HeaderContainer {...headerStyles}>
           {!leftAction?.hidden && (renderActionButton(leftAction))}
           <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
           {!rightAction?.hidden && (renderActionButton(rightAction))}
         </HeaderContainer>
-        )}
-        {children}
-      </MenuDrawer>
+      )}
+      {children}
+      {/* </MenuDrawer> */}
     </LayoutContainer>
   );
 }
