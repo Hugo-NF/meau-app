@@ -13,8 +13,6 @@ export const styledComponents = {
     flex: 1;
     align-items: center;
     justify-content: space-around;
-    margin-top: 56px;
-    margin-bottom: 52px;
     background-color: ${Theme.default.background};
   `,
 

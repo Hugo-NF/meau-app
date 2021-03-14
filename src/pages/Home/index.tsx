@@ -3,10 +3,11 @@ import React, { useLayoutEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
+import HeaderLayout from '../../layouts/HeaderLayout';
 import AsyncButton from '../../components/AsyncButton';
 
 import { styledComponents, styles } from './styles';
-import { Images } from '../../constants';
+import { Images, Theme } from '../../constants';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
@@ -20,59 +21,76 @@ export default function Home() : JSX.Element {
   } = styledComponents;
 
   return (
-    <Container>
-      <Title>Olá!</Title>
-      <Message>
-        Bem vindo ao Meau!{'\n'}
-        Aqui você pode adotar, doar e ajudar cães e gatos com facilidade. Qual o seu interesse?
-      </Message>
-      <AsyncButton
-        styles={styles.asyncButton}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('Unauthorized');
-        }}
-      >
-        <ButtonText>Ops</ButtonText>
-      </AsyncButton>
-      <AsyncButton
-        styles={styles.asyncButton}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('Registration');
-        }}
-      >
-        <ButtonText>Cadastro</ButtonText>
-      </AsyncButton>
-      <AsyncButton
-        styles={styles.asyncButton}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('AnimalRegistration');
-        }}
-      >
-        <ButtonText>Cadastrar animal</ButtonText>
-      </AsyncButton>
-      <AsyncButton
-        styles={{
-          backgroundColor: 'transparent',
-          marginBottom: '68px',
-          marginTop: '44px',
-          marginLeft: '10px',
-          marginRight: '10px',
-          width: '60%',
-          height: '40px',
-          alignItems: 'center',
-          borderRadius: '2px',
-        }}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('Login');
-        }}
-      >
-        <LoginText>login</LoginText>
-      </AsyncButton>
-      <LogoContainer source={Images.MeauBlue} resizeMode="contain" />
-    </Container>
+    <HeaderLayout
+      headerShown
+      title=""
+      headerStyles={{
+        backgroundColor: Theme.default.background,
+        maxHeight: '56px',
+        height: '56px',
+      }}
+      leftAction={{
+        hidden: false,
+        actionType: 'drawer',
+      }}
+      rightAction={{
+        hidden: true,
+      }}
+    >
+      <Container>
+        <Title>Olá!</Title>
+        <Message>
+          Bem vindo ao Meau!{'\n'}
+          Aqui você pode adotar, doar e ajudar cães e gatos com facilidade. Qual o seu interesse?
+        </Message>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('Unauthorized');
+          }}
+        >
+          <ButtonText>Ops</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('Registration');
+          }}
+        >
+          <ButtonText>Cadastro</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('AnimalRegistration');
+          }}
+        >
+          <ButtonText>Cadastrar animal</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={{
+            backgroundColor: 'transparent',
+            marginBottom: '68px',
+            marginTop: '44px',
+            marginLeft: '10px',
+            marginRight: '10px',
+            width: '60%',
+            height: '40px',
+            alignItems: 'center',
+            borderRadius: '2px',
+          }}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('Login');
+          }}
+        >
+          <LoginText>login</LoginText>
+        </AsyncButton>
+        <LogoContainer source={Images.MeauBlue} resizeMode="contain" />
+      </Container>
+    </HeaderLayout>
   );
 }

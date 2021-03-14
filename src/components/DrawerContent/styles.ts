@@ -4,7 +4,6 @@ import styled from 'styled-components/native';
 import { Theme } from '../../constants';
 
 export const DrawerContainer = styled.View<ViewProps>`
-  display: flex;
   flex: 1;
   justify-content: center;
   align-items: center;

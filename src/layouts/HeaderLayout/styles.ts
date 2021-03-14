@@ -18,13 +18,13 @@ export const styledComponents = {
   LayoutContainer: styled.View<ViewProps>`
     flex: 1;
     flex-direction: column;
+    margin-top: ${Constants.statusBarHeight}px;
   `,
   HeaderContainer: styled.View<IHeaderProps>`
     flex: 1;
     flex-direction: row;
     max-height: ${(props) => props.maxHeight};
     height: ${(props) => props.height};
-    margin-top: ${Constants.statusBarHeight}px;
     justify-content: space-between;
     align-items: center;
     background-color: ${(props) => props.backgroundColor};
