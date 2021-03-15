@@ -19,8 +19,10 @@ export const Container = styled.View<ViewProps>`
 `;
 
 export const LoginForm = styled.View<ViewProps>`
+  flex: 1;
   margin-top: 56px;
   margin-bottom: 40px;
+  align-items: center;
 `;
 
 export const SubmitButton = styled.TouchableOpacity<TouchableOpacityProps>`

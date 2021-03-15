@@ -1,15 +1,17 @@
 /* eslint-disable no-template-curly-in-string */
 // Package imports.
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
-import auth, { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 import * as Yup from 'yup';
-import { ErrorMessage, Formik } from 'formik';
+import { Formik } from 'formik';
 
-import { HelperText, TextInput } from 'react-native-paper';
+import {
+  Button, Dialog, HelperText, Paragraph, Portal, TextInput,
+} from 'react-native-paper';
 
 // Style imports.
 import {
@@ -29,11 +31,21 @@ interface LoginForm {
   email: string,
   password: string,
 }
+interface IDialogState {
+  open: boolean,
+  title: string,
+  message: string,
+}
 
 // Component export.
 export default function Login() : JSX.Element {
   // Variable declaration.
   const navigation = useNavigation();
+  const [dialog, setDialog] = useState<IDialogState>({
+    open: false,
+    title: '',
+    message: '',
+  });
 
   if (auth().currentUser) {
     navigation.navigate('Authorized');
@@ -45,19 +57,19 @@ export default function Login() : JSX.Element {
   }, [navigation]);
 
   const signIn = async ({ email, password }: LoginForm): Promise<void> => {
-    console.log(email);
-    console.log(password);
-    // try {
-    //   const response = await auth().signInWithEmailAndPassword(email, password);
-    //   console.log(response);
-    //   if (response && response.user) {
-    //     // Autenticou
-    //     navigation.navigate('Authorized');
-    //   }
-    // } catch (e) {
-    //   // Erro
-    //   console.log(e);
-    // }
+    try {
+      const response = await auth().signInWithEmailAndPassword(email, password);
+      if (response && response.user) {
+        // Autenticou
+        navigation.navigate('Authorized');
+      }
+    } catch (e) {
+      setDialog({
+        open: true,
+        title: 'Autenticação',
+        message: `E-mail e/ou senha incorretos.\n\nDetalhes: ${e}`,
+      });
+    }
   };
 
   return (
@@ -78,6 +90,20 @@ export default function Login() : JSX.Element {
       }}
     >
       <Container>
+        <Portal>
+          <Dialog
+            visible={dialog.open}
+            onDismiss={() => setDialog({ ...dialog, open: false })}
+          >
+            <Dialog.Title>{dialog.title}</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>{dialog.message}</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setDialog({ ...dialog, open: false })}>Fechar</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
         <Formik
           initialValues={{
             email: '',
@@ -107,13 +133,14 @@ export default function Login() : JSX.Element {
                 value={values.email}
                 mode="flat"
                 keyboardType="email-address"
-                dense
+                autoFocus
                 error={Boolean(touched.email && errors.email)}
                 selectionColor={Theme.elements.statusBarPrimary}
                 underlineColor={Theme.elements.headerText}
                 style={{
                   backgroundColor: 'transparent',
                   maxHeight: 56,
+                  width: 312,
                 }}
               />
               <HelperText
@@ -136,6 +163,7 @@ export default function Login() : JSX.Element {
                 style={{
                   backgroundColor: 'transparent',
                   maxHeight: 56,
+                  width: 312,
                 }}
               />
               <HelperText
