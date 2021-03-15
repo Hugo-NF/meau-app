@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 
 import MenuDrawer from 'react-native-side-drawer';
@@ -26,6 +27,7 @@ interface IRoutesDrawer {
 
 interface IHeaderLayoutProps {
   headerShown: boolean,
+  requireAuth?: boolean,
   headerStyles?: IHeaderProps,
   title: string,
   titleStyles?: ITitleProps,
@@ -38,6 +40,7 @@ interface IHeaderLayoutProps {
 
 export default function HeaderLayout({
   headerShown,
+  requireAuth,
   headerStyles,
   title,
   titleStyles,
@@ -48,6 +51,16 @@ export default function HeaderLayout({
   // Hooks
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigation = useNavigation();
+
+  if (requireAuth && auth().currentUser == null) {
+    navigation.reset({
+      index: 0,
+      routes: [
+        { name: 'Home' },
+        { name: 'Unauthorized' },
+      ],
+    });
+  }
 
   const {
     ActionButton, HeaderContainer, HeaderTitle, LayoutContainer,
@@ -113,6 +126,7 @@ export default function HeaderLayout({
 }
 
 HeaderLayout.defaultProps = {
+  requireAuth: false,
   headerStyles: {
     maxHeight: '56px',
     height: '56px',

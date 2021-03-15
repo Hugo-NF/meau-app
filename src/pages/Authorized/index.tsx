@@ -4,7 +4,7 @@ import { Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import auth, { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 import { styledComponents } from './styles';
 import { Theme } from '../../constants';
@@ -22,7 +22,10 @@ export default function Authorized(): JSX.Element {
 
   const logout = async (): Promise<void> => {
     await auth().signOut();
-    navigation.navigate('Login');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Home' }],
+    });
   };
 
   return (

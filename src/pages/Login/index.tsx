@@ -48,7 +48,10 @@ export default function Login() : JSX.Element {
   });
 
   if (auth().currentUser) {
-    navigation.navigate('Authorized');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Authorized' }],
+    });
   }
 
   // Layout effects.
@@ -61,7 +64,10 @@ export default function Login() : JSX.Element {
       const response = await auth().signInWithEmailAndPassword(email, password);
       if (response && response.user) {
         // Autenticou
-        navigation.navigate('Authorized');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Authorized' }],
+        });
       }
     } catch (e) {
       setDialog({
