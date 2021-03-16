@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  Text,
   TextInput,
   TextInputProps,
   View,
 } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { defaultStyles } from './styles';
 
@@ -13,14 +13,22 @@ interface ITextInputCheckProps extends TextInputProps {
   validation: (_: string) => boolean,
   containerStyle?: Record<string, unknown>,
   textInputStyle?: Record<string, unknown>,
+  checkEnabled?: boolean,
+  checkSize?: number,
   checkStyle?: Record<string, unknown>,
 }
 
 export default function TextInputCheck({
-  containerStyle, textInputStyle, checkStyle, validation, ...props
+  containerStyle,
+  textInputStyle,
+  checkEnabled,
+  checkSize,
+  checkStyle,
+  validation,
+  ...props
 }: ITextInputCheckProps): JSX.Element {
-  const [shouldShow, setShouldShow] = useState(false);
-  const onChangeText = (text: string): void => { setShouldShow(validation(text)); };
+  const [shouldShowCheck, setShouldShowCheck] = useState(false);
+  const onChangeText = (text: string): void => { setShouldShowCheck(validation(text)); };
 
   const containerStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.container, containerStyle);
   const textInputStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.textInput, textInputStyle);
@@ -35,11 +43,9 @@ export default function TextInputCheck({
         {...props}
         onChangeText={onChangeText}
       />
-      <Text style={checkStyles}>
-        {shouldShow && (
-        <Text>&#10003;</Text>
-        )}
-      </Text>
+      {checkEnabled && shouldShowCheck && (
+        <MaterialCommunityIcons name="check" size={checkSize} style={checkStyles} />
+      )}
     </View>
   );
 }
@@ -47,5 +53,7 @@ export default function TextInputCheck({
 TextInputCheck.defaultProps = {
   containerStyle: {},
   textInputStyle: {},
+  checkEnabled: true,
+  checkSize: 24,
   checkStyle: {},
 };
