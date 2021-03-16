@@ -11,8 +11,8 @@ import { useNavigation } from '@react-navigation/native';
 import { navigationOptions, styles, styledComponents } from './styles';
 
 // Component imports.
-import AsyncButton from '../../components/AsyncButton';
-import TextInputCheck from '../../components/TextInputCheck';
+import AsyncButton from '../../../components/AsyncButton';
+import TextInputCheck from '../../../components/TextInputCheck';
 
 // Enum declarations.
 enum Age {

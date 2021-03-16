@@ -3,7 +3,7 @@ import { TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.
-import { Theme } from '../../constants';
+import { Theme } from '../../../constants';
 
 // Styled components.
 export const styledComponents = {
