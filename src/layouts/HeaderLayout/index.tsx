@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
+import { Text } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 
-import MenuDrawer from 'react-native-side-drawer';
-
 import { Theme } from '../../constants';
-import DrawerContent from '../../components/DrawerContent';
 
 import { styledComponents, IHeaderProps, ITitleProps } from './styles';
 
@@ -87,6 +85,7 @@ export default function HeaderLayout({
               size={24}
               color={buttonType?.iconColor}
             />
+            <Text>{drawerOpen ? 'Aberto' : 'Fechado'}</Text>
           </ActionButton>
         );
       case 'share':

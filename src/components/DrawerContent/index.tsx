@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { CloseButton, DrawerContainer } from './styles';
 
@@ -13,6 +14,7 @@ const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Elemen
       onPress={() => setDrawerOpen(false)}
     >
       <Ionicons name="md-close" size={24} color="red" />
+      <Text>{drawerOpen ? 'Aberto' : 'Fechado'}</Text>
     </CloseButton>
   </DrawerContainer>
 
