@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-import MenuDrawer from 'react-native-side-drawer';
-
 import { Theme } from '../../constants';
 import DrawerContent from '../../components/DrawerContent';
 
