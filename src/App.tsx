@@ -1,8 +1,8 @@
 // Package imports.
 import React from 'react';
 import AppLoading from 'expo-app-loading';
-
 import { StatusBar } from 'expo-status-bar';
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 // React Navigation Stack.
 import 'react-native-gesture-handler';
@@ -21,6 +21,16 @@ import {
 
 // Module imports.
 import Routes from './routes';
+import { Theme } from './constants';
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: Theme.default.primary,
+    accent: Theme.default.secondary,
+  },
+};
 
 export default function App() : JSX.Element {
   const [fontsLoaded] = useFonts({
@@ -34,9 +44,11 @@ export default function App() : JSX.Element {
   }
 
   return (
-    <NavigationContainer>
-      <StatusBar translucent />
-      <Routes />
-    </NavigationContainer>
+    <PaperProvider theme={theme}>
+      <NavigationContainer>
+        <StatusBar translucent />
+        <Routes />
+      </NavigationContainer>
+    </PaperProvider>
   );
 }

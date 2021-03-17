@@ -1,5 +1,5 @@
 // Package imports.
-import { PixelRatio, TextProps, ViewProps } from 'react-native';
+import { TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.
@@ -9,7 +9,7 @@ import { Theme } from '../../constants';
 export const styledComponents = {
   Container: styled.View<ViewProps>`
     flex: 1;
-    align-items: center;
+    background-color: ${Theme.default.background};
   `,
 
   InfoText: styled.Text<TextProps>`
@@ -26,10 +26,15 @@ export const styledComponents = {
     height: 80px;
   `,
 
+  FormContainer: styled.View<ViewProps>`
+    flex: 1;
+    align-items: center;
+  `,
+
   SessionText: styled.Text<TextProps>`
-    width: 100%;
+    width: 90%;
     margin-bottom: 32px;
-    margin-left: ${PixelRatio.getPixelSizeForLayoutSize(20)}px;
+    margin-left: 28px;
     color: ${Theme.default.primary};
     text-transform: uppercase;
     text-align: left;
@@ -40,19 +45,6 @@ export const styledComponents = {
   `,
 };
 
-// Navigation options.
-export const navigationOptions = {
-  headerStyle: {
-    backgroundColor: Theme.elements.headerPrimary,
-  },
-  headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Cadastro pessoal',
-  headerTitleStyle: {
-    fontFamily: 'Roboto_500Medium',
-    fontSize: 20,
-  },
-};
-
 // Styles.
 export const styles = {
   asyncButton: {
@@ -61,8 +53,8 @@ export const styles = {
     height: '50px',
     backgroundColor: Theme.default.primary,
     borderRadius: '5px',
-    marginTop: '10px',
-    marginBottom: '54px',
+    marginTop: '32px',
+    marginBottom: '24px',
   },
 
   headerLeftIcon: {
@@ -71,5 +63,4 @@ export const styles = {
     marginLeft: 16,
     marginTop: 16,
   },
-
 };

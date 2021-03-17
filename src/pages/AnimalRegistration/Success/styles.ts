@@ -14,10 +14,9 @@ export const navigationOptions = {
 };
 
 export const Container = styled.View<ViewProps>`
-    display: flex;
+    flex: 1;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
 `;
 
 export const Title = styled.Text<TextProps>`
