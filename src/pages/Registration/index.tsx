@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import React, { useLayoutEffect, useState } from 'react';
 
 import {
@@ -16,7 +17,6 @@ import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import { useNavigation } from '@react-navigation/native';
 
-import TextInputCheck from '../../components/TextInputCheck';
 import AsyncButton from '../../components/AsyncButton';
 import HeaderLayout from '../../layouts/HeaderLayout';
 
@@ -33,12 +33,12 @@ interface IDialogState {
 
 interface signUpForm {
   fullName: string,
-  age: integer,
+  age: number,
   email: string,
   state: string,
   city: string,
   address: string,
-  phoneNumber: integer,
+  phoneNumber: string,
   username: string,
   password: string,
   passwordConfirmation: string,
@@ -46,7 +46,6 @@ interface signUpForm {
 
 // Component.
 export default function Registration() : JSX.Element {
-
   // Variable declaration.
   const navigation = useNavigation();
   const {
@@ -75,35 +74,32 @@ export default function Registration() : JSX.Element {
     phoneNumber,
     username,
     password,
-    passwordConfirmation,
-  } : signUpForm) : void {
-
+  } : signUpForm) : Promise<void> {
     auth().createUserWithEmailAndPassword(email, password)
-    .then(async (user) => {
-      database().ref("users").child(user.uid).set({
-        address: address,
-        age: age,
-        city: city,
-        email: email,
-        full_name: fullName,
-        phone_number: phoneNumber,
-        state: state,
-        username: username,
-      });
+      .then(async (credential) => {
+        database().ref('users').child(credential.user.uid).set({
+          address,
+          age,
+          city,
+          email,
+          full_name: fullName,
+          phone_number: phoneNumber,
+          state,
+          username,
+        });
 
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Authorized' }],
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Authorized' }],
+        });
+      })
+      .catch((e) => {
+        setDialog({
+          open: true,
+          title: 'Cadastro',
+          message: `Ocorreu um erro ao realizar seu cadastro!\n\nDetalhes: ${e}`,
+        });
       });
-    })
-    .catch((e) => {
-      setDialog({
-        open: true,
-        title: 'Cadastro',
-        message: `Ocorreu um erro ao realizar seu cadastro!\n\nDetalhes: ${e}`,
-      });
-    });
-
   }
 
   // Component return.
@@ -143,7 +139,7 @@ export default function Registration() : JSX.Element {
           <Formik
             initialValues={{
               fullName: '',
-              age: '',
+              age: 0,
               email: '',
               state: '',
               city: '',
@@ -154,18 +150,18 @@ export default function Registration() : JSX.Element {
               passwordConfirmation: '',
             }}
             validationSchema={Yup.object().shape({
-              fullName: Yup.string().required("Nome completo é obrigatório"),
-              age: Yup.number().positive().integer(),
-              email: Yup.string().required("E-mail é obrigatório").email(),
-              state: Yup.string().max(2, "Deve conter apenas 2 caracteres"),
+              fullName: Yup.string().required('Nome completo é obrigatório'),
+              age: Yup.number(),
+              email: Yup.string().required('E-mail é obrigatório').email('Deve ser um e-mail válido'),
+              state: Yup.string().max(2, 'Deve conter apenas 2 caracteres'),
               city: Yup.string(),
               address: Yup.string(),
-              phoneNumber: Yup.number().positive(),
-              username: Yup.string().required("Usuário é obrigatório"),
-              password: Yup.string().required("Senha é obrigatória"),
+              phoneNumber: Yup.string(),
+              username: Yup.string().required('Usuário é obrigatório'),
+              password: Yup.string().required('Senha é obrigatória').min(6, 'Deve ter pelo menos ${min} caracteres'),
               passwordConfirmation: Yup.string()
-                .required("Confirmação de senha é obrigatória")
-                .equals([Yup.ref('password')], "Deve ser igual à senha"),
+                .required('Confirmação de senha é obrigatória')
+                .equals([Yup.ref('password')], 'Deve ser igual à senha'),
             })}
             onSubmit={(data) => signUp(data)}
           >
@@ -204,6 +200,7 @@ export default function Registration() : JSX.Element {
                   onBlur={handleBlur('age')}
                   value={values.age}
                   mode="flat"
+                  keyboardType="number-pad"
                   error={Boolean(touched.age && errors.age)}
                   {...styles.textInput}
                 />
@@ -339,7 +336,8 @@ export default function Registration() : JSX.Element {
                 <View>
                   <AsyncButton
                     styles={styles.asyncButton}
-                    asyncAction={true}
+                    asyncAction
+                    disabled={isSubmitting}
                     callback={handleSubmit as (values: unknown) => void}
                   >
                     <ButtonText>Fazer cadastro</ButtonText>
