@@ -9,10 +9,14 @@ import { Theme } from '../../constants';
 
 // Styled components.
 export const styledComponents = {
+  Center: styled.View<ViewProps>`
+    flex-direction: row;
+    justify-content: center;
+  `,
+
   Container: styled.View<ViewProps>`
     flex: 1;
     align-items: center;
-    justify-content: space-around;
     background-color: ${Theme.default.background};
   `,
 
@@ -20,8 +24,8 @@ export const styledComponents = {
     font-family: 'Courgette_400Regular';
     font-size: 72px;
     color: ${Theme.default.secondary};
-    margin-top: 52px;
     margin-bottom: 52px;
+    margin-top: 0;
   `,
 
   Message: styled.Text<TextProps>`
@@ -32,6 +36,7 @@ export const styledComponents = {
     margin-left: 48px;
     margin-right: 48px;
     margin-bottom: 48px;
+    margin-top: 0;
     text-align: center;
   `,
 
@@ -52,7 +57,6 @@ export const styledComponents = {
   LogoContainer: styled.Image<ImageProps>`
     width: 144px;
     height: 44px;
-    margin-top: 68px;
     margin-bottom: 32px;
   `,
 };
