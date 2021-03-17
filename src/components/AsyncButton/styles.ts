@@ -23,6 +23,7 @@ export const Button = styled.TouchableOpacity<ButtonType>`
   flex: ${(props) => props.flex};
   flex-direction: ${(props) => props.flexDirection};
   width: ${(props) => props.width};
+  height: ${(props) => props.height};
   max-height: ${(props) => props.height};
   background-color: ${(props) => props.backgroundColor};
   margin-top: ${(props) => props.marginTop};

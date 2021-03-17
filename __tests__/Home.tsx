@@ -24,9 +24,9 @@ describe('Home', () => {
   );
 
   // Tests.
-  it('should render Bugstenium Rocks!', async () => {
+  it('should render Olá!', async () => {
     const { findByText } = render(component);
-    const mainText = await findByText(/Bugstenium rocks!/i);
+    const mainText = await findByText(/Olá!/i);
     expect(mainText).toBeTruthy();
   });
 });

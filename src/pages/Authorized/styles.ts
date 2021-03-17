@@ -10,7 +10,7 @@ export const styledComponents = {
   Container: styled.View<ViewProps>`
     flex: 1;
     align-items: center;
-    background-color: ${Theme.default.background};
+    justify-content: center;
   `,
 
   Title: styled.Text<TextProps>`
@@ -46,7 +46,7 @@ export const styles = {
     marginTop: '0px',
     marginLeft: '10px',
     marginRight: '10px',
-    width: '60%',
+    width: '232px',
     height: '40px',
     alignItems: 'center',
     borderRadius: '2px',
