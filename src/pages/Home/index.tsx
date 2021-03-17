@@ -29,8 +29,6 @@ export default function Home() : JSX.Element {
         backgroundColor: Theme.default.background,
         height: '56px',
         maxHeight: '56px',
-        marginTop: 0,
-        marginBottom: 0,
       }}
       leftAction={{
         hidden: false,
@@ -75,6 +73,15 @@ export default function Home() : JSX.Element {
             }}
           >
             <ButtonText>Cadastrar animal</ButtonText>
+          </AsyncButton>
+          <AsyncButton
+            styles={styles.asyncButton}
+            asyncAction={false}
+            callback={() => {
+              navigation.navigate('AnimalRegistrationSuccess');
+            }}
+          >
+            <ButtonText>Eba</ButtonText>
           </AsyncButton>
           <AsyncButton
             styles={{

@@ -3,7 +3,8 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Importing our pages.
-import AnimalRegistration from './pages/AnimalRegistration';
+import AnimalRegistration from './pages/Animal/Registration';
+import AnimalRegistrationSuccess from './pages/Animal/Success';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
@@ -22,6 +23,10 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="AnimalRegistration"
         component={AnimalRegistration}
+      />
+      <AppStack.Screen
+        name="AnimalRegistrationSuccess"
+        component={AnimalRegistrationSuccess}
       />
       <AppStack.Screen
         name="Home"
