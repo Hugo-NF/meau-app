@@ -72,5 +72,5 @@ export const styles = {
       maxHeight: 56,
       width: 312,
     },
-  }
+  },
 };

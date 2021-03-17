@@ -14,7 +14,7 @@ import {
 import * as Yup from 'yup';
 
 import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 
 import AsyncButton from '../../components/AsyncButton';
@@ -77,7 +77,7 @@ export default function Registration() : JSX.Element {
   } : signUpForm) : Promise<void> {
     auth().createUserWithEmailAndPassword(email, password)
       .then(async (credential) => {
-        database().ref('users').child(credential.user.uid).set({
+        firestore().collection('users').doc(credential.user.uid).set({
           address,
           age,
           city,
@@ -200,7 +200,7 @@ export default function Registration() : JSX.Element {
                   onBlur={handleBlur('age')}
                   value={values.age}
                   mode="flat"
-                  keyboardType="number-pad"
+                  keyboardType="numeric"
                   error={Boolean(touched.age && errors.age)}
                   {...styles.textInput}
                 />
