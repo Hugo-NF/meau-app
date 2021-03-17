@@ -63,4 +63,14 @@ export const styles = {
     marginLeft: 16,
     marginTop: 16,
   },
+
+  textInput: {
+    selectionColor: Theme.elements.statusBarPrimary,
+    underlineColor: Theme.elements.headerText,
+    style: {
+      backgroundColor: 'transparent',
+      maxHeight: 56,
+      width: 312,
+    },
+  },
 };
