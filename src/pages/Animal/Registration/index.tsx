@@ -10,13 +10,13 @@ import { useNavigation } from '@react-navigation/native';
 import { styles, styledComponents } from './styles';
 
 // Layout import
-import HeaderLayout from '../../layouts/HeaderLayout';
+import HeaderLayout from '../../../layouts/HeaderLayout';
 
 // Component imports.
-import AsyncButton from '../../components/AsyncButton';
-import TextInputCheck from '../../components/TextInputCheck';
+import AsyncButton from '../../../components/AsyncButton';
+import TextInputCheck from '../../../components/TextInputCheck';
 
-import { Theme } from '../../constants';
+import { Theme } from '../../../constants';
 
 // Enum declarations.
 enum Age {
