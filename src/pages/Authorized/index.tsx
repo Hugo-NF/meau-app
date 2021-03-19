@@ -31,7 +31,7 @@ export default function Authorized(): JSX.Element {
   return (
     <Container>
       <Text>Você está logado! E-mail: {auth().currentUser?.email}</Text>
-      <AsyncButton callback={logout}><Text>Logout</Text></AsyncButton>
+      <AsyncButton asyncAction callback={logout}><Text>Logout</Text></AsyncButton>
     </Container>
   );
 }
