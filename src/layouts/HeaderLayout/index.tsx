@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 
+import { ScrollView } from 'react-native-gesture-handler';
 import { Theme } from '../../constants';
 
 import { styledComponents, IHeaderProps, ITitleProps } from './styles';
@@ -103,7 +104,13 @@ export default function HeaderLayout({
 
   return (
     <LayoutContainer>
-      {/* <MenuDrawer
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* <MenuDrawer
         open={drawerOpen}
         drawerContent={DrawerContent({ drawerOpen, setDrawerOpen })}
         drawerPercentage={75}
@@ -111,14 +118,16 @@ export default function HeaderLayout({
         opacity={0.1}
         position="left"
       > */}
-      {headerShown && (
+        {headerShown && (
         <HeaderContainer {...headerStyles}>
           {!leftAction?.hidden && (renderActionButton(leftAction))}
           <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
           {!rightAction?.hidden && (renderActionButton(rightAction))}
         </HeaderContainer>
-      )}
-      {children}
+        )}
+
+        {children}
+      </ScrollView>
       {/* </MenuDrawer> */}
     </LayoutContainer>
   );
