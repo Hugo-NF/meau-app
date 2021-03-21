@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 // Package imports.
 import React, { useLayoutEffect, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
@@ -19,7 +18,7 @@ import storage from '@react-native-firebase/storage';
 
 // User modules.
 import AsyncButton from '../../components/AsyncButton';
-import { Theme } from '../../constants';
+import { Theme, Values } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Theme imports.
@@ -201,7 +200,8 @@ export default function Registration() : JSX.Element {
             address: Yup.string(),
             phoneNumber: Yup.string(),
             username: Yup.string().required('Usuário é obrigatório'),
-            password: Yup.string().required('Senha é obrigatória').min(6, 'Deve ter pelo menos ${min} caracteres'),
+            password: Yup.string().required('Senha é obrigatória')
+              .min(Values.passwordMinLength, `Deve ter pelo menos ${Values.passwordMinLength} caracteres`),
             passwordConfirmation: Yup.string()
               .required('Confirmação de senha é obrigatória')
               .equals([Yup.ref('password')], 'Deve ser igual à senha'),

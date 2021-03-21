@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 // Package imports.
 import React, { useLayoutEffect, useState } from 'react';
 
@@ -25,7 +24,7 @@ import {
 import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Project imports.
-import { Theme } from '../../constants';
+import { Theme, Values } from '../../constants';
 
 interface LoginForm {
   email: string,
@@ -117,7 +116,8 @@ export default function Login() : JSX.Element {
           }}
           validationSchema={Yup.object().shape({
             email: Yup.string().required('E-mail é obrigatório').email('Deve ser um e-mail válido'),
-            password: Yup.string().required('Senha é obrigatória').min(6, 'Deve conter pelo menos ${min} caracteres'),
+            password: Yup.string().required('Senha é obrigatória')
+              .min(Values.passwordMinLength, `Deve ter pelo menos ${Values.passwordMinLength} caracteres`),
           })}
           onSubmit={(data) => signIn(data)}
         >
