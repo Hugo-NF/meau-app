@@ -1,27 +1,34 @@
 /* eslint-disable no-template-curly-in-string */
+// Package imports.
 import React, { useLayoutEffect, useState } from 'react';
-
-import { View } from 'react-native';
-
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Formik } from 'formik';
+import { TouchableOpacity, View } from 'react-native';
+import * as ImagePicker from 'react-native-image-picker';
 import {
   Button, Dialog, HelperText, Paragraph, Portal, TextInput,
 } from 'react-native-paper';
 import * as Yup from 'yup';
-
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
+// Firebase modules.
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+
+// User modules.
 import AsyncButton from '../../components/AsyncButton';
+import { Theme } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
 
-import { Theme } from '../../constants';
-
+// Theme imports.
 import { styles, styledComponents } from './styles';
 
-// Interfaces.
+// Type declarations.
+type picturePath = string | null;
+
+// Interface declarations.
 interface IDialogState {
   open: boolean,
   title: string,
@@ -46,7 +53,16 @@ export default function Registration() : JSX.Element {
   // Variable declaration.
   const navigation = useNavigation();
   const {
-    ButtonText, Container, InfoText, SessionText, FormContainer,
+    ButtonText,
+    Container,
+    FormContainer,
+    IconUndertext,
+    InfoText,
+    PhotoContainer,
+    PhotoPreview,
+    PhotoSelect,
+    PhotoSelectContainer,
+    SectionText,
   } = styledComponents;
 
   const [dialog, setDialog] = useState<IDialogState>({
@@ -55,12 +71,33 @@ export default function Registration() : JSX.Element {
     message: '',
   });
 
+  const [profilePicturePath, setProfilePicturePath] = useState<picturePath>(null);
+
   // Layout effects.
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
   }, [navigation]);
 
   // Functions declaration.
+  function selectProfilePicture() : void {
+    ImagePicker.launchImageLibrary({
+      includeBase64: false,
+      maxWidth: 2000,
+      maxHeight: 2000,
+      mediaType: 'photo',
+    }, (response) => {
+      if (!response.didCancel && !response.errorCode) {
+        setProfilePicturePath(response.uri || null);
+      } else if (response.errorCode) {
+        setDialog({
+          open: true,
+          title: 'Escolha de imagem',
+          message: `Ocorreu um erro ao escolher a imagem!\n\nDetalhes: ${response.errorMessage}`,
+        });
+      }
+    });
+  }
+
   async function signUp({
     fullName,
     age,
@@ -74,7 +111,16 @@ export default function Registration() : JSX.Element {
   } : signUpForm) : Promise<void> {
     auth().createUserWithEmailAndPassword(email, password)
       .then(async (credential) => {
-        firestore().collection('users').doc(credential.user.uid).set({
+        const userUID = credential.user.uid;
+        let profilePictureRef = null;
+
+        if (profilePicturePath != null) {
+          profilePictureRef = `users/${userUID}/profile_picture.jpg`;
+
+          await storage().ref(profilePictureRef).putFile(profilePicturePath);
+        }
+
+        firestore().collection('users').doc(userUID).set({
           address,
           age,
           city,
@@ -83,6 +129,7 @@ export default function Registration() : JSX.Element {
           phone_number: phoneNumber,
           state,
           username,
+          profile_picture_ref: profilePictureRef,
         });
 
         navigation.reset({
@@ -174,7 +221,7 @@ export default function Registration() : JSX.Element {
               <InfoText>
                 As informações preenchidas serão divulgadas apenas para a pessoa com a qual você realizar o processo de adoção e/ou apadrinhamento, após a formalização do processo.
               </InfoText>
-              <SessionText>Informações Pessoais</SessionText>
+              <SectionText>Informações Pessoais</SectionText>
               <TextInput
                 placeholder="Nome completo"
                 onChangeText={handleChange('fullName')}
@@ -281,7 +328,7 @@ export default function Registration() : JSX.Element {
               >
                 {touched.phoneNumber && errors.phoneNumber}
               </HelperText>
-              <SessionText>Informações de perfil</SessionText>
+              <SectionText>Informações de perfil</SectionText>
               <TextInput
                 placeholder="Nome de usuário"
                 onChangeText={handleChange('username')}
@@ -329,6 +376,27 @@ export default function Registration() : JSX.Element {
               >
                 {touched.passwordConfirmation && errors.passwordConfirmation}
               </HelperText>
+              <SectionText>Foto de perfil</SectionText>
+              {profilePicturePath == null
+                ? (
+                  <PhotoSelectContainer>
+                    <PhotoSelect onPress={() => selectProfilePicture()}>
+                      <MaterialIcons
+                        name="control-point"
+                        size={24}
+                        {...styles.addPhotoIcon}
+                      />
+                      <IconUndertext>adicionar foto</IconUndertext>
+                    </PhotoSelect>
+                  </PhotoSelectContainer>
+                )
+                : (
+                  <PhotoContainer>
+                    <TouchableOpacity onPress={() => selectProfilePicture()}>
+                      <PhotoPreview source={{ uri: profilePicturePath }} />
+                    </TouchableOpacity>
+                  </PhotoContainer>
+                )}
               <View>
                 <AsyncButton
                   styles={styles.asyncButton}

@@ -96,13 +96,6 @@ export const styles = {
     marginTop: -2,
   },
 
-  headerLeftIcon: {
-    color: Theme.elements.buttonText,
-    marginBottom: 16,
-    marginLeft: 16,
-    marginTop: 16,
-  },
-
   radioForm: {
     animation: false,
     buttonColor: Theme.elements.radioButtom,
