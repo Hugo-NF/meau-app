@@ -34,6 +34,8 @@ const Theme = {
     radioButtom: '#757575',
     checkPrimary: '#589B9B',
     checkSecondary: '#F7A800',
+    photoBackground: '#E6E7E7',
+    photoIcon: '#757575',
   },
   named: {
     blue: '#007BFF',
