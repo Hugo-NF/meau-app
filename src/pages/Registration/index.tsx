@@ -8,7 +8,8 @@ import {
   Button, Dialog, HelperText, Paragraph, Portal, TextInput,
 } from 'react-native-paper';
 import * as Yup from 'yup';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 
 // Firebase modules.
@@ -36,12 +37,12 @@ interface IDialogState {
 
 interface signUpForm {
   fullName: string,
-  age: number,
+  birthDate: Date | null,
   email: string,
-  state: string,
-  city: string,
-  address: string,
-  phoneNumber: string,
+  state: string | null,
+  city: string | null,
+  address: string | null,
+  phoneNumber: string | null,
   username: string,
   password: string,
   passwordConfirmation: string,
@@ -52,6 +53,11 @@ export default function Registration() : JSX.Element {
   // Variable declaration.
   const navigation = useNavigation();
   const {
+    BirthDateButton,
+    BirthDateContainer,
+    BirthDatePlaceholderText,
+    BirthDateRow,
+    BirthDateText,
     ButtonText,
     Container,
     FormContainer,
@@ -69,8 +75,21 @@ export default function Registration() : JSX.Element {
     title: '',
     message: '',
   });
-
   const [profilePicturePath, setProfilePicturePath] = useState<picturePath>(null);
+  const [showDateTimePicker, setShowDateTimePicker] = useState<boolean>(false);
+
+  const initialFormValues : signUpForm = {
+    fullName: '',
+    birthDate: null,
+    email: '',
+    state: null,
+    city: null,
+    address: null,
+    phoneNumber: null,
+    username: '',
+    password: '',
+    passwordConfirmation: '',
+  };
 
   // Layout effects.
   useLayoutEffect(() => {
@@ -78,6 +97,14 @@ export default function Registration() : JSX.Element {
   }, [navigation]);
 
   // Functions declaration.
+  function dateToBrazilianString(date : Date) : string {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
   function selectProfilePicture() : void {
     ImagePicker.launchImageLibrary({
       includeBase64: false,
@@ -97,9 +124,13 @@ export default function Registration() : JSX.Element {
     });
   }
 
+  function setDateHoursToUTCMidday(date: Date): void {
+    date.setUTCHours(12, 0, 0);
+  }
+
   async function signUp({
     fullName,
-    age,
+    birthDate,
     email,
     state,
     city,
@@ -119,9 +150,11 @@ export default function Registration() : JSX.Element {
           await storage().ref(profilePictureRef).putFile(profilePicturePath);
         }
 
+        if (birthDate != null) setDateHoursToUTCMidday(birthDate);
+
         firestore().collection('users').doc(userUID).set({
           address,
-          age,
+          birth_date: birthDate,
           city,
           email,
           full_name: fullName,
@@ -179,26 +212,15 @@ export default function Registration() : JSX.Element {
           </Dialog>
         </Portal>
         <Formik
-          initialValues={{
-            fullName: '',
-            age: 0,
-            email: '',
-            state: '',
-            city: '',
-            address: '',
-            phoneNumber: '',
-            username: '',
-            password: '',
-            passwordConfirmation: '',
-          }}
+          initialValues={initialFormValues}
           validationSchema={Yup.object().shape({
             fullName: Yup.string().required('Nome completo é obrigatório'),
-            age: Yup.number(),
+            birthDate: Yup.date().nullable(),
             email: Yup.string().required('E-mail é obrigatório').email('Deve ser um e-mail válido'),
-            state: Yup.string().max(2, 'Deve conter apenas 2 caracteres'),
-            city: Yup.string(),
-            address: Yup.string(),
-            phoneNumber: Yup.string(),
+            state: Yup.string().max(2, 'Deve conter apenas 2 caracteres').nullable(),
+            city: Yup.string().nullable(),
+            address: Yup.string().nullable(),
+            phoneNumber: Yup.string().nullable(),
             username: Yup.string().required('Usuário é obrigatório'),
             password: Yup.string().required('Senha é obrigatória')
               .min(Values.passwordMinLength, `Deve ter pelo menos ${Values.passwordMinLength} caracteres`),
@@ -216,6 +238,7 @@ export default function Registration() : JSX.Element {
             touched,
             errors,
             isSubmitting,
+            setFieldValue,
           }) => (
             <FormContainer>
               <InfoText>
@@ -237,21 +260,51 @@ export default function Registration() : JSX.Element {
               >
                 {touched.fullName && errors.fullName}
               </HelperText>
-              <TextInput
-                placeholder="Idade"
-                onChangeText={handleChange('age')}
-                onBlur={handleBlur('age')}
-                value={values.age}
-                mode="flat"
-                keyboardType="numeric"
-                error={Boolean(touched.age && errors.age)}
-                {...styles.textInput}
-              />
+              <BirthDateContainer>
+                <BirthDateRow>
+                  <TouchableOpacity onPress={() => setShowDateTimePicker(true)}>
+                    <BirthDateButton>
+                      <MaterialCommunityIcons
+                        name="calendar"
+                        size={24}
+                        {...styles.icon}
+                      />
+                    </BirthDateButton>
+                  </TouchableOpacity>
+                  {values.birthDate != null
+                    ? (
+                      <BirthDateText>
+                        Data de nascimento: {
+                      dateToBrazilianString(values.birthDate)
+                    }
+                      </BirthDateText>
+                    )
+                    : (
+                      <BirthDatePlaceholderText>
+                        Data de nascimento
+                      </BirthDatePlaceholderText>
+                    )}
+                </BirthDateRow>
+              </BirthDateContainer>
+              {showDateTimePicker
+                && (
+                <DateTimePicker
+                  onChange={(_, selectedDate) => {
+                    setShowDateTimePicker(false);
+                    setFieldValue('birthDate', selectedDate || values.birthDate);
+                  }}
+                  value={values.birthDate || new Date()}
+                  display="spinner"
+                  minimumDate={new Date(1900, 0)}
+                  maximumDate={new Date()}
+                  mode="date"
+                />
+                )}
               <HelperText
                 type="error"
-                visible={Boolean(touched.age && errors.age)}
+                visible={Boolean(touched.birthDate && errors.birthDate)}
               >
-                {touched.age && errors.age}
+                {touched.birthDate && errors.birthDate}
               </HelperText>
               <TextInput
                 placeholder="E-mail"
@@ -272,7 +325,7 @@ export default function Registration() : JSX.Element {
                 placeholder="Estado"
                 onChangeText={handleChange('state')}
                 onBlur={handleBlur('state')}
-                value={values.state}
+                value={values.state != null ? values.state : undefined}
                 mode="flat"
                 error={Boolean(touched.state && errors.state)}
                 {...styles.textInput}
@@ -287,7 +340,7 @@ export default function Registration() : JSX.Element {
                 placeholder="Cidade"
                 onChangeText={handleChange('city')}
                 onBlur={handleBlur('city')}
-                value={values.city}
+                value={values.city != null ? values.city : undefined}
                 mode="flat"
                 error={Boolean(touched.city && errors.city)}
                 {...styles.textInput}
@@ -302,7 +355,7 @@ export default function Registration() : JSX.Element {
                 placeholder="Endereço"
                 onChangeText={handleChange('address')}
                 onBlur={handleBlur('address')}
-                value={values.address}
+                value={values.address != null ? values.address : undefined}
                 mode="flat"
                 error={Boolean(touched.address && errors.address)}
                 {...styles.textInput}
@@ -317,7 +370,7 @@ export default function Registration() : JSX.Element {
                 placeholder="Telefone"
                 onChangeText={handleChange('phoneNumber')}
                 onBlur={handleBlur('phoneNumber')}
-                value={values.phoneNumber}
+                value={values.phoneNumber != null ? values.phoneNumber : undefined}
                 mode="flat"
                 error={Boolean(touched.phoneNumber && errors.phoneNumber)}
                 {...styles.textInput}
@@ -384,7 +437,7 @@ export default function Registration() : JSX.Element {
                       <MaterialIcons
                         name="control-point"
                         size={24}
-                        {...styles.addPhotoIcon}
+                        {...styles.icon}
                       />
                       <IconUndertext>adicionar foto</IconUndertext>
                     </PhotoSelect>
