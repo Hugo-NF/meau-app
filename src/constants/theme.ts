@@ -14,6 +14,8 @@ const Theme = {
     text: '#757575',
     buttonText: '#434343',
     invalidText: '#BDBDBD',
+    placeholderText: '#BDBDBD',
+    fieldText: '#575756',
     label: '#F7A800',
     divider: '#E0E0E0',
     statusBarPrimary: '#88C9BF',
@@ -37,6 +39,8 @@ const Theme = {
     photoBackground: '#E6E7E7',
     photoIcon: '#757575',
     animalPhotosInputBackground: '#F1F2F2',
+    icon: '#757575',
+    iconBackground: '#E6E7E7',
   },
   named: {
     blue: '#007BFF',

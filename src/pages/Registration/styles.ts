@@ -13,6 +13,46 @@ import { Theme } from '../../constants';
 // Styled components.
 export const styledComponents = {
 
+  BirthDateButton: styled.View<ViewProps>`
+    align-items: center;
+    background-color: ${Theme.elements.iconBackground};
+    border-radius: 2px;
+    height: 30px;
+    justify-content: center;
+    margin-right: 12px;
+    width: 30px;
+  `,
+
+  BirthDateContainer: styled.View<ViewProps>`
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+    justify-content: flex-start;
+    margin-left: 28px;
+    margin-right: 16px;
+  `,
+
+  BirthDatePlaceholderText: styled.Text<TextProps>`
+    color: ${Theme.elements.placeholderText};
+    font-family: 'Roboto_400Regular';
+    font-size: 14px;
+  `,
+
+  BirthDateRow: styled.View<ViewProps>`
+    flex: 1;
+    flex-direction: row;
+    flex-grow: 1;
+    align-items: center;
+    justify-content: flex-start;
+  `,
+
+  BirthDateText: styled.Text<TextProps>`
+    color: ${Theme.elements.fieldText};
+    font-family: 'Roboto_400Regular';
+    font-size: 14px;
+  `,
+
   ButtonText: styled.Text<TextProps>`
     color: ${Theme.elements.buttonText};
     font-family: 'Roboto_400Regular';
@@ -52,7 +92,7 @@ export const styledComponents = {
 
   PhotoContainer: styled.View<ViewProps>`
     align-items: center;
-    background-color: ${Theme.elements.photoBackground};
+    background-color: ${Theme.elements.iconBackground};
     border-radius: 2px;
     height: 128px;
     justify-content: center;
@@ -72,7 +112,7 @@ export const styledComponents = {
 
   PhotoSelectContainer: styled.View<ViewProps>`
     align-items: center;
-    background-color: ${Theme.elements.photoBackground};
+    background-color: ${Theme.elements.iconBackground};
     border-radius: 2px;
     height: 128px;
     padding-bottom: 48px;
@@ -93,10 +133,6 @@ export const styledComponents = {
 
 // Styles.
 export const styles = {
-  addPhotoIcon: {
-    color: Theme.elements.photoIcon,
-  },
-
   asyncButton: {
     flex: 1,
     width: '250px',
@@ -105,6 +141,10 @@ export const styles = {
     borderRadius: '5px',
     marginTop: '32px',
     marginBottom: '24px',
+  },
+
+  icon: {
+    color: Theme.elements.icon,
   },
 
   textInput: {
