@@ -36,6 +36,7 @@ const Theme = {
     checkSecondary: '#F7A800',
     photoBackground: '#E6E7E7',
     photoIcon: '#757575',
+    animalPhotosInputBackground: '#F1F2F2',
   },
   named: {
     blue: '#007BFF',

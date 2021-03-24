@@ -28,7 +28,10 @@ export default function TextInputCheck({
   ...props
 }: ITextInputCheckProps): JSX.Element {
   const [shouldShowCheck, setShouldShowCheck] = useState(false);
-  const onChangeText = (text: string): void => { setShouldShowCheck(validation(text)); };
+  const onChangeText = (text: string): void => {
+    setShouldShowCheck(validation(text));
+    if (props.onChangeText) props.onChangeText(text);
+  };
 
   const containerStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.container, containerStyle);
   const textInputStyles = StyleSheet.compose<Record<string, unknown>>(defaultStyles.textInput, textInputStyle);
