@@ -1,5 +1,7 @@
 // Package imports.
-import { TextProps, ViewProps } from 'react-native';
+import {
+  ImageProps, TextProps, TouchableOpacityProps, ViewProps,
+} from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.
@@ -38,12 +40,12 @@ export const styledComponents = {
 
   Container: styled.View<ViewProps>`
     flex: 1;
+    align-items: center;
     background-color: ${Theme.default.background};
   `,
 
   Form: styled.View<ViewProps>`
-    align-items: flex-start;
-    margin-left: 24px;
+    align-items: stretch;
   `,
 
   FormHeaderText: styled.Text<TextProps>`
@@ -83,6 +85,30 @@ export const styledComponents = {
     margin-bottom: 8px;
     margin-top: 20px;
     width: 100%;
+  `,
+
+  PictureThumbnail: styled.Image<ImageProps>`
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+  `,
+
+  PicturesInput: styled.TouchableOpacity<TouchableOpacityProps>`
+    width: 312px;
+    height: 128px;
+    background: ${Theme.elements.animalPhotosInputBackground};
+    margin-top: 16px;
+    align-items: center;
+    flex-direction: row;
+  `,
+
+  PicturesInputInternal: styled.View<ViewProps>`
+    width: 100%;
+    align-items: center;
+  `,
+
+  PicturesInputText: styled.Text<TextProps>`
+    color: ${Theme.elements.text}
   `,
 
 };
@@ -150,5 +176,13 @@ export const styles = {
 
   textInputCheck: {
     color: Theme.elements.checkSecondary,
+  },
+
+  picturesGrid: {
+    width: 312,
+  },
+
+  addPhotoIcon: {
+    color: 'black',
   },
 };
