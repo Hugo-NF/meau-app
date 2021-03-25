@@ -15,10 +15,12 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 
 // Style imports.
-import { HelperText } from 'react-native-paper';
+import {
+  Button, Dialog, HelperText, Paragraph, Portal,
+} from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 import {
-  FlatList, ActivityIndicator, Alert,
+  FlatList, ActivityIndicator,
 } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import { styles, styledComponents } from './styles';
@@ -97,12 +99,23 @@ interface IUploadedPicture {
   item: {localUri: string, remoteName: string}
 }
 
+interface IDialogState {
+  open: boolean,
+  title: string,
+  message: string,
+}
+
 // Component export.
 export default function AnimalRegistration() : JSX.Element {
   // Variable declaration.
   const navigation = useNavigation();
   const [animalPictures, setAnimalPictures] = useState<IUploadedPicture[]>([]);
   const [uploadLock, setUploadLock] = useState(false);
+  const [dialog, setDialog] = useState<IDialogState>({
+    open: false,
+    title: '',
+    message: '',
+  });
 
   // Layout effects.
   useLayoutEffect(() => {
@@ -141,13 +154,11 @@ export default function AnimalRegistration() : JSX.Element {
 
   const signUp = async (data: ISignUp) : Promise<void> => {
     if (!auth().currentUser) {
-      Alert.alert(
-        'É preciso estar logado',
-        'Usuário precisa estar logado para realizar o cadastro',
-        [
-          { text: 'Ok' },
-        ],
-      );
+      setDialog({
+        open: true,
+        title: 'É preciso estar logado',
+        message: 'Usuário precisa estar logado para realizar o cadastro',
+      });
       return;
     }
 
@@ -159,7 +170,14 @@ export default function AnimalRegistration() : JSX.Element {
       ...data,
     }).then(() => {
       navigation.navigate('AnimalRegistrationSuccess');
-    });
+    })
+      .catch(() => {
+        setDialog({
+          open: true,
+          title: 'Falha ao cadastrar animal',
+          message: 'Ocorreu um erro ao tentar cadastrar animal no servidor',
+        });
+      });
   };
 
   const uploadPhoto = (): void => {
@@ -173,13 +191,11 @@ export default function AnimalRegistration() : JSX.Element {
         const { uri: localUri } = response;
         const extension = fileExtension(localUri);
         if (!extension) {
-          Alert.alert(
-            'Falha ao fazer upload',
-            'Falha ao obter extensão do arquivo',
-            [
-              { text: 'Ok' },
-            ],
-          );
+          setDialog({
+            open: true,
+            title: 'Falha ao fazer upload',
+            message: 'Falha ao obter extensão do arquivo',
+          });
           return;
         }
 
@@ -193,29 +209,21 @@ export default function AnimalRegistration() : JSX.Element {
           setUploadLock(false);
         })
           .catch(() => {
-            Alert.alert(
-              'Falha ao fazer upload',
-              'Falha ao enviar imagem ao servidor',
-              [
-                { text: 'Ok' },
-              ],
-            );
+            setDialog({
+              open: true,
+              title: 'Falha ao fazer upload',
+              message: 'Falha ao enviar imagem ao servidor',
+            });
           });
       } else if (response.errorCode) {
-        Alert.alert(
-          'Falha ao fazer upload',
-          `Erro ao carregar imagem do dispositivo: ${response.errorCode}`,
-          [
-            { text: 'Ok' },
-          ],
-        );
+        setDialog({
+          open: true,
+          title: 'Falha ao fazer upload',
+          message: `Erro ao carregar imagem do dispositivo: ${response.errorCode}`,
+        });
       }
     });
   };
-
-  function enumValues<T>(e: typeof T): T[] {
-    return Object.keys(e).filter((k) => typeof e[k] === 'number').map((k) => e[k]);
-  }
 
   return (
     <HeaderLayout
@@ -236,6 +244,20 @@ export default function AnimalRegistration() : JSX.Element {
       }}
     >
       <Container>
+        <Portal>
+          <Dialog
+            visible={dialog.open}
+            onDismiss={() => setDialog({ ...dialog, open: false })}
+          >
+            <Dialog.Title>{dialog.title}</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>{dialog.message}</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setDialog({ ...dialog, open: false })}>Fechar</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
         <Formik<ISignUp>
           initialValues={{
             name: '',
@@ -269,10 +291,10 @@ export default function AnimalRegistration() : JSX.Element {
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('O nome do animal é obrigatório'),
-            specie: Yup.mixed<Species>().oneOf(enumValues(Species), 'Selecione a espécie'),
-            sex: Yup.mixed<Sex>().oneOf(enumValues(Sex), 'Selecione a espécie'),
-            size: Yup.mixed<Size>().oneOf(enumValues(Size), 'Selecione o porte'),
-            age: Yup.mixed<Age>().oneOf(enumValues(Age), 'Selecione a idade'),
+            specie: Yup.mixed<Species | null>().notOneOf([null], 'Selecione a espécie'),
+            sex: Yup.mixed<Sex | null>().notOneOf([null], 'Selecione a espécie'),
+            size: Yup.mixed<Size | null>().notOneOf([null], 'Selecione o porte'),
+            age: Yup.mixed<Age | null>().notOneOf([null], 'Selecione a idade'),
           })}
           onSubmit={(data) => signUp(data)}
         >
