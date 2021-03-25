@@ -2,17 +2,6 @@ import { TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 import { Theme } from '../../../constants';
 
-export const navigationOptions = {
-  headerStyle: {
-    backgroundColor: Theme.elements.headerSecondary,
-  },
-  headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Cadastro do Animal',
-  headerTitleStyle: {
-    fontFamily: 'Roboto_500Medium',
-  },
-};
-
 export const Container = styled.View<ViewProps>`
     flex: 1;
     justify-content: space-between;
