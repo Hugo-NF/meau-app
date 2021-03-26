@@ -1,9 +1,11 @@
 // Package imports.
-import { TextProps, ViewProps } from 'react-native';
+import {
+  ImageProps, TextProps, TouchableOpacityProps, ViewProps,
+} from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.
-import { Theme } from '../../constants';
+import { Theme } from '../../../constants';
 
 // Styled components.
 export const styledComponents = {
@@ -33,17 +35,17 @@ export const styledComponents = {
     color: ${Theme.elements.text};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
-    marginBottom: 1px;
+    margin-bottom: 1px;
   `,
 
   Container: styled.View<ViewProps>`
     flex: 1;
+    align-items: center;
     background-color: ${Theme.default.background};
   `,
 
   Form: styled.View<ViewProps>`
-    align-items: flex-start;
-    margin-left: 24px;
+    align-items: stretch;
   `,
 
   FormHeaderText: styled.Text<TextProps>`
@@ -68,7 +70,7 @@ export const styledComponents = {
     color: ${Theme.elements.invalidText};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
-    marginBottom: 1px;
+    margin-bottom: 1px;
   `,
 
   LabeledCheckBox: styled.View<ViewProps>`
@@ -85,22 +87,30 @@ export const styledComponents = {
     width: 100%;
   `,
 
-  TextInputContainer: styled.View<ViewProps>`
-    margin-bottom: -36px;
-    margin-top: 8px;
+  PictureThumbnail: styled.Image<ImageProps>`
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
   `,
-};
 
-// Navigation options.
-export const navigationOptions = {
-  headerStyle: {
-    backgroundColor: Theme.elements.headerSecondaryDark,
-  },
-  headerTintColor: Theme.elements.headerText,
-  headerTitle: 'Cadastro do Animal',
-  headerTitleStyle: {
-    fontFamily: 'Roboto_500Medium',
-  },
+  PicturesInput: styled.TouchableOpacity<TouchableOpacityProps>`
+    width: 312px;
+    height: 128px;
+    background: ${Theme.elements.animalPhotosInputBackground};
+    margin-top: 16px;
+    align-items: center;
+    flex-direction: row;
+  `,
+
+  PicturesInputInternal: styled.View<ViewProps>`
+    width: 100%;
+    align-items: center;
+  `,
+
+  PicturesInputText: styled.Text<TextProps>`
+    color: ${Theme.elements.text}
+  `,
+
 };
 
 // Styles.
@@ -110,13 +120,6 @@ export const styles = {
     // apps' specification.
     marginBottom: -2,
     marginTop: -2,
-  },
-
-  headerLeftIcon: {
-    color: Theme.elements.buttonText,
-    marginBottom: 16,
-    marginLeft: 16,
-    marginTop: 16,
   },
 
   radioForm: {
@@ -137,7 +140,7 @@ export const styles = {
       marginTop: 0,
       width: 102,
     },
-    selectedButtonColor: Theme.elements.radioButtom,
+    selectedButtonColor: Theme.elements.active,
     style: {
       marginBottom: 0,
       marginLeft: 2,
@@ -159,5 +162,27 @@ export const styles = {
     marginBottom: '24px',
     marginTop: '24px',
     width: '232px',
+  },
+
+  textInput: {
+    width: 288,
+  },
+
+  textInputContainer: {
+    width: 312,
+    marginBottom: 0,
+    marginTop: 8,
+  },
+
+  textInputCheck: {
+    color: Theme.elements.checkSecondary,
+  },
+
+  picturesGrid: {
+    width: 312,
+  },
+
+  addPhotoIcon: {
+    color: 'black',
   },
 };

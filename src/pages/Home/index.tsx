@@ -1,74 +1,109 @@
-import React from 'react';
-
-import { Text } from 'react-native';
+import React, { useLayoutEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
+import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
-import { Entypo } from '@expo/vector-icons';
-
+import HeaderLayout from '../../layouts/HeaderLayout';
 import AsyncButton from '../../components/AsyncButton';
-import TextInputCheck from '../../components/TextInputCheck';
-import { Theme } from '../../constants';
-import { Container } from './styles';
+
+import { styledComponents, styles } from './styles';
+import { Images, Theme } from '../../constants';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
 
+  useLayoutEffect(() => {
+    setStatusBarBackgroundColor('transparent', true);
+  }, [navigation]);
+
+  const {
+    Center, Container, Title, Message, ButtonText, LoginText, LogoContainer,
+  } = styledComponents;
+
   return (
-    <Container>
-      <Text onPress={() => navigation.navigate('Login')}>Bugstenium rocks!</Text>
-      <AsyncButton
-        styles={{
-          flex: 1,
-          width: '30%',
-          height: '32px',
-          backgroundColor: Theme.default.secondary,
-          borderRadius: '5px',
-          marginTop: '10px',
-        }}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('Login');
-        }}
-      >
-        <Entypo name="lock" size={16} />
-        <Text>Login</Text>
-      </AsyncButton>
-      <AsyncButton
-        styles={{
-          flex: 1,
-          width: '30%',
-          height: '32px',
-          backgroundColor: Theme.default.secondary,
-          borderRadius: '5px',
-          marginTop: '10px',
-        }}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('Unauthorized');
-        }}
-      >
-        <Text>Ops</Text>
-      </AsyncButton>
-      <AsyncButton
-        styles={{
-          flex: 1,
-          width: '30%',
-          height: '32px',
-          backgroundColor: Theme.default.secondary,
-          borderRadius: '5px',
-          marginTop: '10px',
-        }}
-        asyncAction={false}
-        callback={() => {
-          navigation.navigate('AnimalRegistration');
-        }}
-      >
-        <Text>Animal form</Text>
-      </AsyncButton>
-      <Text>Exemplo de TextInputCheck:</Text>
-      <TextInputCheck validation={() => true} placeholder="E-mail" />
-      <TextInputCheck validation={() => true} containerStyle={{ backgroundColor: '#eee' }} placeholder="E-mail estilizado" />
-    </Container>
+    <HeaderLayout
+      headerShown
+      title=""
+      headerStyles={{
+        backgroundColor: Theme.default.background,
+        height: '56px',
+        maxHeight: '56px',
+      }}
+      leftAction={{
+        hidden: false,
+        actionType: 'drawer',
+      }}
+      rightAction={{
+        hidden: true,
+      }}
+    >
+      <Container>
+        <Center>
+          <Title>Olá!</Title>
+        </Center>
+        <Message>
+          Bem vindo ao Meau!{'\n'}
+          Aqui você pode adotar, doar e ajudar cães e gatos com facilidade. Qual o seu interesse?
+        </Message>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('Unauthorized');
+          }}
+        >
+          <ButtonText>Ops</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('Registration');
+          }}
+        >
+          <ButtonText>Cadastro</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('AnimalRegistration');
+          }}
+        >
+          <ButtonText>Cadastrar animal</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('AnimalRegistrationSuccess');
+          }}
+        >
+          <ButtonText>Eba</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={{
+            backgroundColor: 'transparent',
+            marginBottom: '68px',
+            marginTop: '32px',
+            marginLeft: '10px',
+            marginRight: '10px',
+            width: '60%',
+            height: '40px',
+            alignItems: 'center',
+            borderRadius: '2px',
+          }}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('Login');
+          }}
+        >
+          <LoginText>login</LoginText>
+        </AsyncButton>
+        <Center>
+          <LogoContainer source={Images.MeauBlue} resizeMode="contain" />
+        </Center>
+      </Container>
+    </HeaderLayout>
   );
 }
