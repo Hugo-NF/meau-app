@@ -292,6 +292,17 @@ export default function AnimalRegistration() : JSX.Element {
             sex: Yup.mixed<Sex | null>().notOneOf([null], 'Selecione a espécie'),
             size: Yup.mixed<Size | null>().notOneOf([null], 'Selecione o porte'),
             age: Yup.mixed<Age | null>().notOneOf([null], 'Selecione a idade'),
+            adoptionRequirements: Yup.object().shape({
+              postAdoptionMonitoringPeriod: Yup.mixed<number | null>().when('postAdoptionMonitoring', {
+                is: true,
+                then: Yup.mixed<number | null>().required('Selecione o período de acompanhamento'),
+              }),
+            }),
+            diseases: Yup.string().when('healthCondition.sick', {
+              is: true,
+              then: Yup.string().required('Escreva as doenças do animal'),
+              otherwise: Yup.string().length(0, 'Marque que o animal está doente para preencher'),
+            }),
           })}
           onSubmit={(data) => registerAnimal(data)}
         >
@@ -527,6 +538,12 @@ export default function AnimalRegistration() : JSX.Element {
                 onChangeText={handleChange('diseases')}
                 value={values.diseases}
               />
+              <HelperText
+                type="error"
+                visible={Boolean(touched.diseases && errors.diseases)}
+              >
+                {touched.diseases && errors.diseases}
+              </HelperText>
               <FormLabelText>EXIGÊNCIAS PARA ADOÇÃO</FormLabelText>
               <SingleCheckBoxRow>
                 <CheckBox
@@ -611,6 +628,12 @@ export default function AnimalRegistration() : JSX.Element {
                         : <InvalidCheckBoxText>6 meses</InvalidCheckBoxText>
                     }
                 </SingleCheckBoxRow>
+                <HelperText
+                  type="error"
+                  visible={Boolean(touched.adoptionRequirements?.postAdoptionMonitoringPeriod && errors.adoptionRequirements?.postAdoptionMonitoringPeriod)}
+                >
+                  {touched.adoptionRequirements?.postAdoptionMonitoringPeriod && errors.adoptionRequirements?.postAdoptionMonitoringPeriod}
+                </HelperText>
               </IndentedSubsection>
               <FormLabelText>SOBRE O ANIMAL</FormLabelText>
               <TextInputCheck
