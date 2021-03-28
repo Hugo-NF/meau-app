@@ -165,6 +165,7 @@ export const styles = {
   },
 
   textInput: {
+    backgroundColor: 'transparent',
     width: 312,
     marginBottom: 0,
     marginTop: 8,

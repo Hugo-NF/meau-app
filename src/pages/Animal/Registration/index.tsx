@@ -124,9 +124,6 @@ export default function AnimalRegistration() : JSX.Element {
     setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
   }, [navigation]);
 
-  // Functions.
-  const notEmpty = (text: string) : boolean => text !== '';
-
   // Styled components.
   const {
     ButtonContainer,
@@ -314,8 +311,10 @@ export default function AnimalRegistration() : JSX.Element {
                 fieldName="name"
                 formikHelpers={formikHelpers}
                 placeholder="Nome do animal"
-                label="Nome do animal"
+                theme={{ colors: { primary: Theme.default.secondary } }}
+                underlineColor={Theme.default.secondary}
                 style={styles.textInput}
+                mode="flat"
               />
               <FormLabelText>FOTOS DO ANIMAL</FormLabelText>
               {(animalPictures.length > 0)
@@ -517,9 +516,11 @@ export default function AnimalRegistration() : JSX.Element {
               <CustomTextInput
                 fieldName="diseases"
                 formikHelpers={formikHelpers}
+                theme={{ colors: { primary: Theme.default.secondary } }}
+                underlineColor={Theme.default.secondary}
                 placeholder="Doenças do animal"
-                label="Doenças do animal"
                 style={styles.textInput}
+                mode="flat"
               />
               <FormLabelText>EXIGÊNCIAS PARA ADOÇÃO</FormLabelText>
               <SingleCheckBoxRow>
@@ -616,9 +617,12 @@ export default function AnimalRegistration() : JSX.Element {
               <CustomTextInput
                 fieldName="about"
                 formikHelpers={formikHelpers}
+                dense
                 placeholder="Compartilhe a história do animal"
-                label="Compartilhe a história do animal"
+                theme={{ colors: { primary: Theme.default.secondary } }}
+                underlineColor={Theme.default.secondary}
                 style={styles.textInput}
+                mode="flat"
               />
               <ButtonContainer>
                 <AsyncButton
