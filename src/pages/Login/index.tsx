@@ -117,7 +117,7 @@ export default function Login() : JSX.Element {
           validationSchema={Yup.object().shape({
             email: Yup.string().required('E-mail é obrigatório').email('Deve ser um e-mail válido'),
             password: Yup.string().required('Senha é obrigatória')
-              .min(Values.passwordMinLength, `Deve ter pelo menos ${Values.passwordMinLength} caracteres`),
+              .min(Values.PASSWORD_MIN_LENGTH, `Deve ter pelo menos ${Values.PASSWORD_MIN_LENGTH} caracteres`),
           })}
           onSubmit={(data) => signIn(data)}
         >

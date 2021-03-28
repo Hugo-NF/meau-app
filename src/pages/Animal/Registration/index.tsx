@@ -31,8 +31,8 @@ import HeaderLayout from '../../../layouts/HeaderLayout';
 // Component imports.
 import AsyncButton from '../../../components/AsyncButton';
 import TextInputCheck from '../../../components/TextInputCheck';
-
-import { Theme } from '../../../constants';
+import { Theme, Values } from '../../../constants';
+import FileOperations from '../../../utils/FileOperations';
 
 // Enum declarations.
 enum Age {
@@ -81,9 +81,11 @@ type Temperament = {
   shy: boolean,
   vigilant: boolean,
 }
-interface ISignUp {
+
+// Interface declarations.
+interface IRegisterAnimal {
   name: string,
-  specie: Species | null,
+  species: Species | null,
   sex: Sex | null,
   size: Size | null,
   age: Age | null,
@@ -96,7 +98,7 @@ interface ISignUp {
 
 interface IUploadedPicture {
   id: string,
-  item: {localUri: string, remoteName: string}
+  localUri: string,
 }
 
 interface IDialogState {
@@ -146,13 +148,7 @@ export default function AnimalRegistration() : JSX.Element {
     PicturesInputText,
   } = styledComponents;
 
-  const fileExtension = (fileName: string): (string | null) => {
-    const splitted = fileName.split('.');
-    if (splitted.length < 2) return null;
-    return splitted[splitted.length - 1];
-  };
-
-  const signUp = async (data: ISignUp) : Promise<void> => {
+  const registerAnimal = async (data: IRegisterAnimal) : Promise<void> => {
     if (!auth().currentUser) {
       setDialog({
         open: true,
@@ -166,7 +162,7 @@ export default function AnimalRegistration() : JSX.Element {
 
     firestore().collection('animals').add({
       owner: firestore().collection('users').doc(userUID),
-      pictures: animalPictures.map((p) => p.item.remoteName),
+      pictures: animalPictures.map((p) => p.id),
       ...data,
     }).then(() => {
       navigation.navigate('AnimalRegistrationSuccess');
@@ -189,7 +185,7 @@ export default function AnimalRegistration() : JSX.Element {
     }, (response) => {
       if (!response.didCancel && !response.errorCode && response.uri) {
         const { uri: localUri } = response;
-        const extension = fileExtension(localUri);
+        const extension = FileOperations.fileExtension(localUri);
         if (!extension) {
           setDialog({
             open: true,
@@ -199,12 +195,13 @@ export default function AnimalRegistration() : JSX.Element {
           return;
         }
 
-        const remoteName = `${uuidv4()}.${extension}`;
-        const remoteUri = `animals/${remoteName}`;
+        const pictureID = uuidv4();
+        const remoteName = `${pictureID}.${extension}`;
+        const remoteUri = `${Values.IMAGE_DIRECTORY}/${remoteName}`;
 
         setUploadLock(true);
         storage().ref(remoteUri).putFile(localUri).then(() => {
-          animalPictures.push({ id: uuidv4(), item: { localUri, remoteName } });
+          animalPictures.push({ id: pictureID, localUri });
           setAnimalPictures(animalPictures.slice());
           setUploadLock(false);
         })
@@ -258,10 +255,10 @@ export default function AnimalRegistration() : JSX.Element {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-        <Formik<ISignUp>
+        <Formik<IRegisterAnimal>
           initialValues={{
             name: '',
-            specie: null,
+            species: null,
             sex: null,
             size: null,
             age: null,
@@ -291,12 +288,23 @@ export default function AnimalRegistration() : JSX.Element {
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('O nome do animal é obrigatório'),
-            specie: Yup.mixed<Species | null>().notOneOf([null], 'Selecione a espécie'),
+            species: Yup.mixed<Species | null>().notOneOf([null], 'Selecione a espécie'),
             sex: Yup.mixed<Sex | null>().notOneOf([null], 'Selecione a espécie'),
             size: Yup.mixed<Size | null>().notOneOf([null], 'Selecione o porte'),
             age: Yup.mixed<Age | null>().notOneOf([null], 'Selecione a idade'),
+            adoptionRequirements: Yup.object().shape({
+              postAdoptionMonitoringPeriod: Yup.mixed<number | null>().when('postAdoptionMonitoring', {
+                is: true,
+                then: Yup.mixed<number | null>().required('Selecione o período de acompanhamento'),
+              }),
+            }),
+            diseases: Yup.string().when('healthCondition.sick', {
+              is: true,
+              then: Yup.string().required('Escreva as doenças do animal'),
+              otherwise: Yup.string().length(0, 'Marque que o animal está doente para preencher'),
+            }),
           })}
-          onSubmit={(data) => signUp(data)}
+          onSubmit={(data) => registerAnimal(data)}
         >
           {({
             setFieldValue,
@@ -331,7 +339,7 @@ export default function AnimalRegistration() : JSX.Element {
                     horizontal
                     style={styles.picturesGrid}
                     data={animalPictures}
-                    renderItem={(picture) => <PictureThumbnail source={{ uri: picture.item.item.localUri }} />}
+                    renderItem={(picture) => <PictureThumbnail source={{ uri: picture.item.localUri }} />}
                   />
                 )}
               <PicturesInput onPress={() => uploadPhoto()}>
@@ -351,15 +359,15 @@ export default function AnimalRegistration() : JSX.Element {
                   { label: 'Cachorro', value: Species.Dog },
                   { label: 'Gato', value: Species.Cat },
                 ]}
-                initial={values.specie || -1}
-                onPress={(value) => setFieldValue('specie', value)}
+                initial={values.species || -1}
+                onPress={(value) => setFieldValue('species', value)}
                 {...styles.radioForm}
               />
               <HelperText
                 type="error"
-                visible={Boolean(touched.specie && errors.specie)}
+                visible={Boolean(touched.species && errors.species)}
               >
-                {touched.specie && errors.specie}
+                {touched.species && errors.species}
               </HelperText>
               <FormLabelText>SEXO</FormLabelText>
               <RadioForm
@@ -530,6 +538,12 @@ export default function AnimalRegistration() : JSX.Element {
                 onChangeText={handleChange('diseases')}
                 value={values.diseases}
               />
+              <HelperText
+                type="error"
+                visible={Boolean(touched.diseases && errors.diseases)}
+              >
+                {touched.diseases && errors.diseases}
+              </HelperText>
               <FormLabelText>EXIGÊNCIAS PARA ADOÇÃO</FormLabelText>
               <SingleCheckBoxRow>
                 <CheckBox
@@ -614,6 +628,12 @@ export default function AnimalRegistration() : JSX.Element {
                         : <InvalidCheckBoxText>6 meses</InvalidCheckBoxText>
                     }
                 </SingleCheckBoxRow>
+                <HelperText
+                  type="error"
+                  visible={Boolean(touched.adoptionRequirements?.postAdoptionMonitoringPeriod && errors.adoptionRequirements?.postAdoptionMonitoringPeriod)}
+                >
+                  {touched.adoptionRequirements?.postAdoptionMonitoringPeriod && errors.adoptionRequirements?.postAdoptionMonitoringPeriod}
+                </HelperText>
               </IndentedSubsection>
               <FormLabelText>SOBRE O ANIMAL</FormLabelText>
               <TextInputCheck

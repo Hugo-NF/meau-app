@@ -7,6 +7,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import {
   Button, Dialog, HelperText, Paragraph, Portal, TextInput,
 } from 'react-native-paper';
+import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -21,6 +22,7 @@ import storage from '@react-native-firebase/storage';
 import AsyncButton from '../../components/AsyncButton';
 import { Theme, Values } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
+import FileOperations from '../../utils/FileOperations';
 
 // Theme imports.
 import { styles, styledComponents } from './styles';
@@ -35,14 +37,14 @@ interface IDialogState {
   message: string,
 }
 
-interface signUpForm {
+interface ISignUpForm {
   fullName: string,
   birthDate: Date | null,
   email: string,
-  state: string | null,
-  city: string | null,
-  address: string | null,
-  phoneNumber: string | null,
+  state: string,
+  city: string,
+  address: string,
+  phoneNumber: string,
   username: string,
   password: string,
   passwordConfirmation: string,
@@ -78,14 +80,14 @@ export default function Registration() : JSX.Element {
   const [profilePicturePath, setProfilePicturePath] = useState<picturePath>(null);
   const [showDateTimePicker, setShowDateTimePicker] = useState<boolean>(false);
 
-  const initialFormValues : signUpForm = {
+  const initialFormValues : ISignUpForm = {
     fullName: '',
     birthDate: null,
     email: '',
-    state: null,
-    city: null,
-    address: null,
-    phoneNumber: null,
+    state: '',
+    city: '',
+    address: '',
+    phoneNumber: '',
     username: '',
     password: '',
     passwordConfirmation: '',
@@ -138,16 +140,23 @@ export default function Registration() : JSX.Element {
     phoneNumber,
     username,
     password,
-  } : signUpForm) : Promise<void> {
+  } : ISignUpForm) : Promise<void> {
     auth().createUserWithEmailAndPassword(email, password)
       .then(async (credential) => {
         const userUID = credential.user.uid;
-        let profilePictureRef = null;
+        let profilePicture = '';
 
         if (profilePicturePath != null) {
-          profilePictureRef = `users/${userUID}/profile_picture.jpg`;
+          const profilePictureFileExtension = FileOperations.fileExtension(profilePicturePath);
 
-          await storage().ref(profilePictureRef).putFile(profilePicturePath);
+          profilePictureFileExtension != null
+            ? profilePicture = `${uuidv4()}.${profilePictureFileExtension}`
+            : profilePicture = uuidv4();
+
+          await storage()
+            .ref(Values.IMAGE_DIRECTORY)
+            .child(profilePicture)
+            .putFile(profilePicturePath);
         }
 
         if (birthDate != null) setDateHoursToUTCMidday(birthDate);
@@ -161,7 +170,7 @@ export default function Registration() : JSX.Element {
           phone_number: phoneNumber,
           state,
           username,
-          profile_picture_ref: profilePictureRef,
+          profile_picture: profilePicture,
         });
 
         navigation.reset({
@@ -217,13 +226,13 @@ export default function Registration() : JSX.Element {
             fullName: Yup.string().required('Nome completo é obrigatório'),
             birthDate: Yup.date().nullable(),
             email: Yup.string().required('E-mail é obrigatório').email('Deve ser um e-mail válido'),
-            state: Yup.string().max(2, 'Deve conter apenas 2 caracteres').nullable(),
-            city: Yup.string().nullable(),
-            address: Yup.string().nullable(),
-            phoneNumber: Yup.string().nullable(),
+            state: Yup.string().max(2, 'Deve conter apenas 2 caracteres'),
+            city: Yup.string(),
+            address: Yup.string(),
+            phoneNumber: Yup.string(),
             username: Yup.string().required('Usuário é obrigatório'),
             password: Yup.string().required('Senha é obrigatória')
-              .min(Values.passwordMinLength, `Deve ter pelo menos ${Values.passwordMinLength} caracteres`),
+              .min(Values.PASSWORD_MIN_LENGTH, `Deve ter pelo menos ${Values.PASSWORD_MIN_LENGTH} caracteres`),
             passwordConfirmation: Yup.string()
               .required('Confirmação de senha é obrigatória')
               .equals([Yup.ref('password')], 'Deve ser igual à senha'),
