@@ -121,26 +121,18 @@ export default function Login() : JSX.Element {
           })}
           onSubmit={(data) => signIn(data)}
         >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            touched,
-            errors,
-            isSubmitting,
-          }) => (
+          {(formikHelpers) => (
             <LoginForm>
               <TextInput
                 label="E-mail"
                 placeholder="E-mail"
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
+                onChangeText={formikHelpers.handleChange('email')}
+                onBlur={formikHelpers.handleBlur('email')}
+                value={formikHelpers.values.email}
                 mode="flat"
                 keyboardType="email-address"
                 autoFocus
-                error={Boolean(touched.email && errors.email)}
+                error={Boolean(formikHelpers.touched.email && formikHelpers.errors.email)}
                 selectionColor={Theme.elements.statusBarPrimary}
                 underlineColor={Theme.elements.headerText}
                 style={{
@@ -151,18 +143,18 @@ export default function Login() : JSX.Element {
               />
               <HelperText
                 type="error"
-                visible={Boolean(touched.email && errors.email)}
+                visible={Boolean(formikHelpers.touched.email && formikHelpers.errors.email)}
               >
-                {touched.email && errors.email}
+                {formikHelpers.touched.email && formikHelpers.errors.email}
               </HelperText>
               <TextInput
                 label="Senha"
                 placeholder="Senha"
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
+                onChangeText={formikHelpers.handleChange('password')}
+                onBlur={formikHelpers.handleBlur('password')}
+                value={formikHelpers.values.password}
                 mode="flat"
-                error={Boolean(touched.password && errors.password)}
+                error={Boolean(formikHelpers.touched.password && formikHelpers.errors.password)}
                 secureTextEntry
                 selectionColor={Theme.elements.statusBarPrimary}
                 underlineColor={Theme.elements.headerText}
@@ -174,13 +166,13 @@ export default function Login() : JSX.Element {
               />
               <HelperText
                 type="error"
-                visible={Boolean(touched.password && errors.password)}
+                visible={Boolean(formikHelpers.touched.password && formikHelpers.errors.password)}
               >
-                {touched.password && errors.password}
+                {formikHelpers.touched.password && formikHelpers.errors.password}
               </HelperText>
               <SubmitButton
-                disabled={isSubmitting}
-                onPress={handleSubmit as (values: unknown) => void}
+                disabled={formikHelpers.isSubmitting}
+                onPress={formikHelpers.handleSubmit as (values: unknown) => void}
               >
                 <ButtonText>Entrar</ButtonText>
               </SubmitButton>
