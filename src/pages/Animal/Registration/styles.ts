@@ -165,17 +165,9 @@ export const styles = {
   },
 
   textInput: {
-    width: 288,
-  },
-
-  textInputContainer: {
     width: 312,
     marginBottom: 0,
     marginTop: 8,
-  },
-
-  textInputCheck: {
-    color: Theme.elements.checkSecondary,
   },
 
   picturesGrid: {
