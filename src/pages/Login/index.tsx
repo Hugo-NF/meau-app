@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 import {
-  Button, Dialog, HelperText, Paragraph, Portal, TextInput,
+  Button, Dialog, Paragraph, Portal,
 } from 'react-native-paper';
 
 // Style imports.
@@ -24,6 +24,7 @@ import {
 import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Project imports.
+import CustomTextInput from '../../components/CustomTextInput';
 import { Theme, Values } from '../../constants';
 
 interface LoginForm {
@@ -123,16 +124,14 @@ export default function Login() : JSX.Element {
         >
           {(formikHelpers) => (
             <LoginForm>
-              <TextInput
+              <CustomTextInput
+                fieldName="email"
+                formikHelpers={formikHelpers}
                 label="E-mail"
                 placeholder="E-mail"
-                onChangeText={formikHelpers.handleChange('email')}
-                onBlur={formikHelpers.handleBlur('email')}
-                value={formikHelpers.values.email}
                 mode="flat"
                 keyboardType="email-address"
                 autoFocus
-                error={Boolean(formikHelpers.touched.email && formikHelpers.errors.email)}
                 selectionColor={Theme.elements.statusBarPrimary}
                 underlineColor={Theme.elements.headerText}
                 style={{
@@ -141,20 +140,12 @@ export default function Login() : JSX.Element {
                   width: 312,
                 }}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(formikHelpers.touched.email && formikHelpers.errors.email)}
-              >
-                {formikHelpers.touched.email && formikHelpers.errors.email}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="password"
+                formikHelpers={formikHelpers}
                 label="Senha"
                 placeholder="Senha"
-                onChangeText={formikHelpers.handleChange('password')}
-                onBlur={formikHelpers.handleBlur('password')}
-                value={formikHelpers.values.password}
                 mode="flat"
-                error={Boolean(formikHelpers.touched.password && formikHelpers.errors.password)}
                 secureTextEntry
                 selectionColor={Theme.elements.statusBarPrimary}
                 underlineColor={Theme.elements.headerText}
@@ -164,12 +155,6 @@ export default function Login() : JSX.Element {
                   width: 312,
                 }}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(formikHelpers.touched.password && formikHelpers.errors.password)}
-              >
-                {formikHelpers.touched.password && formikHelpers.errors.password}
-              </HelperText>
               <SubmitButton
                 disabled={formikHelpers.isSubmitting}
                 onPress={formikHelpers.handleSubmit as (values: unknown) => void}
