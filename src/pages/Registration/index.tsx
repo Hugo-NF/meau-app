@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 
 // Firebase modules.
 import auth from '@react-native-firebase/auth';
@@ -173,10 +173,7 @@ export default function Registration() : JSX.Element {
           profile_picture: profilePicture,
         });
 
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Authorized' }],
-        });
+        navigation.dispatch(StackActions.replace('Authorized'));
       })
       .catch((e) => {
         setDialog({

@@ -2,7 +2,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 
 import * as Yup from 'yup';
@@ -46,13 +46,6 @@ export default function Login() : JSX.Element {
     message: '',
   });
 
-  if (auth().currentUser) {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Authorized' }],
-    });
-  }
-
   // Layout effects.
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
@@ -62,11 +55,7 @@ export default function Login() : JSX.Element {
     try {
       const response = await auth().signInWithEmailAndPassword(email, password);
       if (response && response.user) {
-        // Autenticou
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Authorized' }],
-        });
+        navigation.dispatch(StackActions.replace('Authorized'));
       }
     } catch (e) {
       setDialog({

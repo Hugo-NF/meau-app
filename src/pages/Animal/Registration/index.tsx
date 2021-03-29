@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import RadioForm from 'react-native-simple-radio-button';
 import CheckBox from '@react-native-community/checkbox';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -165,7 +165,7 @@ export default function AnimalRegistration() : JSX.Element {
       pictures: animalPictures.map((p) => p.id),
       ...data,
     }).then(() => {
-      navigation.navigate('AnimalRegistrationSuccess');
+      navigation.dispatch(StackActions.replace('AnimalRegistrationSuccess'));
     })
       .catch(() => {
         setDialog({
