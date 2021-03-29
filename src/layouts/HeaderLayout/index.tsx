@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Text } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import { Ionicons } from '@expo/vector-icons';
 
 import { ScrollView } from 'react-native-gesture-handler';
+import SideMenu from 'react-native-side-menu-updated';
+
+import DrawerContent from '../../components/DrawerContent';
+
 import { Theme } from '../../constants';
 
 import { styledComponents, IHeaderProps, ITitleProps } from './styles';
@@ -86,7 +89,6 @@ export default function HeaderLayout({
               size={24}
               color={buttonType?.iconColor}
             />
-            <Text>{drawerOpen ? 'Aberto' : 'Fechado'}</Text>
           </ActionButton>
         );
       case 'share':
@@ -102,6 +104,14 @@ export default function HeaderLayout({
     }
   };
 
+  const RenderedDrawer = (
+    <DrawerContent
+      key="drawer-component"
+      drawerOpen={drawerOpen}
+      setDrawerOpen={setDrawerOpen}
+    />
+  );
+
   return (
     <LayoutContainer>
       <ScrollView
@@ -110,25 +120,23 @@ export default function HeaderLayout({
           justifyContent: 'space-between',
         }}
       >
-        {/* <MenuDrawer
-        open={drawerOpen}
-        drawerContent={DrawerContent({ drawerOpen, setDrawerOpen })}
-        drawerPercentage={75}
-        animationTime={250}
-        opacity={0.1}
-        position="left"
-      > */}
-        {headerShown && (
-        <HeaderContainer {...headerStyles}>
-          {!leftAction?.hidden && (renderActionButton(leftAction))}
-          <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
-          {!rightAction?.hidden && (renderActionButton(rightAction))}
-        </HeaderContainer>
-        )}
+        <SideMenu
+          isOpen={drawerOpen}
+          menu={RenderedDrawer}
+          menuPosition="left"
+          openMenuOffset={304}
+        >
+          {headerShown && (
+          <HeaderContainer {...headerStyles}>
+            {!leftAction?.hidden && (renderActionButton(leftAction))}
+            <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
+            {!rightAction?.hidden && (renderActionButton(rightAction))}
+          </HeaderContainer>
+          )}
 
-        {children}
+          {children}
+        </SideMenu>
       </ScrollView>
-      {/* </MenuDrawer> */}
     </LayoutContainer>
   );
 }
