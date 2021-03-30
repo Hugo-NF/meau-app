@@ -9,7 +9,8 @@ import {
 } from 'react-native-paper';
 import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 

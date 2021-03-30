@@ -18,7 +18,7 @@ import storage from '@react-native-firebase/storage';
 import {
   Button, Dialog, HelperText, Paragraph, Portal,
 } from 'react-native-paper';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   FlatList, ActivityIndicator,
 } from 'react-native';
@@ -312,7 +312,7 @@ export default function AnimalRegistration() : JSX.Element {
                 formikHelpers={formikHelpers}
                 placeholder="Nome do animal"
                 theme={{ colors: { primary: Theme.default.secondary } }}
-                underlineColor={Theme.default.secondary}
+                underlineColor={Theme.elements.headerText}
                 style={styles.textInput}
                 mode="flat"
               />
@@ -517,7 +517,7 @@ export default function AnimalRegistration() : JSX.Element {
                 fieldName="diseases"
                 formikHelpers={formikHelpers}
                 theme={{ colors: { primary: Theme.default.secondary } }}
-                underlineColor={Theme.default.secondary}
+                underlineColor={Theme.elements.headerText}
                 placeholder="Doenças do animal"
                 style={styles.textInput}
                 mode="flat"
@@ -620,7 +620,7 @@ export default function AnimalRegistration() : JSX.Element {
                 dense
                 placeholder="Compartilhe a história do animal"
                 theme={{ colors: { primary: Theme.default.secondary } }}
-                underlineColor={Theme.default.secondary}
+                underlineColor={Theme.elements.headerText}
                 style={styles.textInput}
                 mode="flat"
               />
