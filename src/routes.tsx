@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Unauthorized from './pages/Unauthorized';
 import Authorized from './pages/Authorized';
+import { MyPets } from './pages/Animal/MyPets';
 
 // Routes.
 export default function Routes() : JSX.Element {
@@ -47,6 +48,10 @@ export default function Routes() : JSX.Element {
       <AppStack.Screen
         name="Authorized"
         component={Authorized}
+      />
+      <AppStack.Screen
+        name="MyPets"
+        component={MyPets}
       />
     </AppStack.Navigator>
   );
