@@ -11,42 +11,46 @@ import { defaultProps, styledComponents } from './styles';
 type InfiniteScrollState<T> = {
   data: Array<T>,
   error: string | null,
-  loading: boolean,
   loadingMore: boolean,
   page: number,
 }
 
 // Interface declaration.
 interface IInfiniteScroll<T> {
-  containerStyles?: Record<string, unknown>,
+  activityIndicatorColor?: string,
   contentBatchSize: number,
-  dataFetchQuery: (pageNumber: number, pageSize: number) => Promise<Array<T>>,
+  contentContainerStyles?: Record<string, unknown>,
+  dataFetchQuery: (lastEntry: T, pageNumber: number, pageSize: number) => Promise<Array<T>>,
   formatContent: (queryResponseData : T) => JSX.Element,
+  loadingContainerStyles?: Record<string, unknown>,
 }
 
 // Styled components.
-const {
-  LoadingMoreContainer,
-} = styledComponents;
+const { LoadingContainer } = styledComponents;
 
 // Component implementation.
 const InfiniteScroll = <T, _>({
-  containerStyles, contentBatchSize, dataFetchQuery, formatContent,
+  activityIndicatorColor,
+  contentBatchSize,
+  contentContainerStyles,
+  dataFetchQuery,
+  formatContent,
+  loadingContainerStyles,
 }: IInfiniteScroll<T>): JSX.Element => {
   // Variable declaration.
   const [infiniteScrollState, setInfiniteScrollState] = useState<InfiniteScrollState<T>>({
     data: [],
     error: null,
-    loading: true,
     loadingMore: false,
     page: 1,
   });
 
   // Functions declaration.
   function fetchData() : void {
+    const lastDataElement = infiniteScrollState.data[infiniteScrollState.data.length - 1];
     const { page } = infiniteScrollState;
 
-    dataFetchQuery(page, contentBatchSize)
+    dataFetchQuery(lastDataElement, page, contentBatchSize)
       .then((response) => {
         const contentReceived = response;
 
@@ -54,7 +58,6 @@ const InfiniteScroll = <T, _>({
           setInfiniteScrollState({
             ...infiniteScrollState,
             data: contentReceived,
-            loading: false,
           });
         } else {
           setInfiniteScrollState({
@@ -81,20 +84,30 @@ const InfiniteScroll = <T, _>({
     fetchData();
   }
 
-  function renderFooter() : JSX.Element | null {
-    if (infiniteScrollState.loadingMore) {
-      return (
-        <LoadingMoreContainer>
-          <ActivityIndicator />
-        </LoadingMoreContainer>
-      );
-    }
+  function renderLoading() : JSX.Element | null {
+    return (
+      <LoadingContainer style={{...loadingContainerStyles}}>
+        <ActivityIndicator size="large" color={activityIndicatorColor} />
+      </LoadingContainer>
+    );
+  }
+
+  function renderLoadingMore() : JSX.Element | null {
+    if (infiniteScrollState.loadingMore)
+      return renderLoading();
 
     return null;
   }
 
-  function componentDidMount() : void {
-    fetchData();
+  function componentDidMount() : () => void {
+    let mounted = true;
+
+    if(mounted)
+      fetchData();
+
+    return function cleanUp() : void {
+      mounted = false;
+    };
   }
 
   // Component effects.
@@ -103,13 +116,14 @@ const InfiniteScroll = <T, _>({
   // JSX returned.
   return (
     <FlatList
-      contentContainerStyle={{ ...containerStyles }}
+      contentContainerStyle={{ ...contentContainerStyles }}
       data={infiniteScrollState.data}
       renderItem={({ item }) => formatContent(item)}
       onEndReached={fetchMoreData}
-      onEndReachedThreshold={0.4}
+      onEndReachedThreshold={0.9}
       initialNumToRender={contentBatchSize}
-      ListFooterComponent={renderFooter}
+      ListEmptyComponent={renderLoading}
+      ListFooterComponent={renderLoadingMore}
     />
   );
 };
