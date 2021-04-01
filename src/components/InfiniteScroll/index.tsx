@@ -86,15 +86,14 @@ const InfiniteScroll = <T, _>({
 
   function renderLoading() : JSX.Element | null {
     return (
-      <LoadingContainer style={{...loadingContainerStyles}}>
+      <LoadingContainer style={{ ...loadingContainerStyles }}>
         <ActivityIndicator size="large" color={activityIndicatorColor} />
       </LoadingContainer>
     );
   }
 
   function renderLoadingMore() : JSX.Element | null {
-    if (infiniteScrollState.loadingMore)
-      return renderLoading();
+    if (infiniteScrollState.loadingMore) return renderLoading();
 
     return null;
   }
@@ -102,8 +101,7 @@ const InfiniteScroll = <T, _>({
   function componentDidMount() : () => void {
     let mounted = true;
 
-    if(mounted)
-      fetchData();
+    if (mounted) fetchData();
 
     return function cleanUp() : void {
       mounted = false;
