@@ -98,6 +98,7 @@ interface IRegisterAnimal {
 
 interface IUploadedPicture {
   id: string,
+  remoteName: string,
   localUri: string,
 }
 
@@ -159,7 +160,7 @@ export default function AnimalRegistration() : JSX.Element {
 
     firestore().collection('animals').add({
       owner: firestore().collection('users').doc(userUID),
-      pictures: animalPictures.map((p) => p.id),
+      pictures: animalPictures.map((p) => p.remoteName),
       ...data,
     }).then(() => {
       navigation.navigate('AnimalRegistrationSuccess');
@@ -198,7 +199,7 @@ export default function AnimalRegistration() : JSX.Element {
 
         setUploadLock(true);
         storage().ref(remoteUri).putFile(localUri).then(() => {
-          animalPictures.push({ id: pictureID, localUri });
+          animalPictures.push({ id: uuidv4(), remoteName, localUri });
           setAnimalPictures(animalPictures.slice());
           setUploadLock(false);
         })
