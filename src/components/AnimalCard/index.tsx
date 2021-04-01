@@ -17,7 +17,7 @@ export const AnimalCard = ({
 
   imageUrlPromise.then((image) => {
     setPetImage(image);
-  });
+  }).catch((() => null));
 
   return (
     <CardBox>
