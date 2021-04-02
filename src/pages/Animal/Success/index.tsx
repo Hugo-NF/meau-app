@@ -43,7 +43,7 @@ export default function AnimalRegistrationSuccess() : JSX.Element {
           <AsyncButton
             styles={styles.submitButton}
             asyncAction={false}
-            callback={() : null => null}
+            callback={() => navigation.navigate('MyPets')}
           >
             <ButtonText>MEUS PETS</ButtonText>
           </AsyncButton>
