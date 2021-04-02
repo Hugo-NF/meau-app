@@ -43,7 +43,7 @@ export const MyPets = (): JSX.Element => {
             <AnimalCard
               imageUrlPromise={storage().ref('images/pet.jpg').getDownloadURL()}
               body={
-                <Text style={{ textAlign: 'center', lineHeight: 20 }}>3 NOVOS INTERESSADOS{'\n'}APADRINHAMENTO | AJUDA</Text>
+                <Text style={{ textAlign: 'center', lineHeight: 20, fontSize: 12 }}>3 NOVOS INTERESSADOS{'\n'}APADRINHAMENTO | AJUDA</Text>
               }
               title="Pequi"
               headerOptions={(
