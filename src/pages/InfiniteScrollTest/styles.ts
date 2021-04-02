@@ -9,6 +9,7 @@ import { Theme } from '../../constants';
 export const styledComponents = {
   Container: styled.View<ViewProps>`
     flex: 1;
+    flex-direction: column;
     align-items: center;
     background-color: ${Theme.default.background};
   `,

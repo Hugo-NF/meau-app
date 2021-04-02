@@ -1,5 +1,5 @@
 // Package imports.
-import { ViewProps } from 'react-native';
+import { TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.
@@ -10,10 +10,12 @@ export const defaultProps = {
   activityIndicatorColor: Theme.default.primary,
 
   contentContainerStyles: {
-    flex: 1,
-    flexDirection: 'column',
-    height: '80%',
-    width: '80%',
+    paddingBottom: 20,
+    paddingTop: 20,
+  },
+
+  errorContainerStyles: {
+
   },
 
   loadingContainerStyles: {
@@ -24,9 +26,17 @@ export const defaultProps = {
 // Styled components.
 export const styledComponents = {
 
+  ErrorContainer: styled.View<ViewProps>`
+    position: relative;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  `,
+
+  ErrorMessage: styled.Text<TextProps>`
+    color: ${Theme.default.danger};
+  `,
+
   LoadingContainer: styled.View<ViewProps>`
-    padding-bottom: 20px;
-    padding-top: 20px;
     position: relative;
     margin-bottom: 20px;
     margin-top: 20px;

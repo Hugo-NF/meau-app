@@ -7,10 +7,8 @@ import firestore from '@react-native-firebase/firestore';
 
 // Component imports.
 import InfiniteScroll from '../../components/InfiniteScroll';
-import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Style imports.
-import { Theme } from '../../constants';
 import { styledComponents } from './styles';
 
 // Type declaration.
@@ -37,11 +35,11 @@ export default function InfiniteScrollTest() : JSX.Element {
 
   // Function declaration.
   async function ReturnUsers(
-    lastElement : User, pageNumber : number, pageSize : number,
+    lastElement : User | null, pageNumber : number, pageSize : number,
   ) : Promise<Array<User>> {
     let firestoreQuery;
 
-    if (pageNumber === 1) {
+    if (pageNumber === 1 || lastElement == null) {
       firestoreQuery = firestore()
         .collection('users')
         .orderBy('username')
@@ -89,32 +87,12 @@ export default function InfiniteScrollTest() : JSX.Element {
 
   // JSX returned.
   return (
-    <HeaderLayout
-      headerShown
-      title=""
-      headerStyles={{
-        backgroundColor: Theme.default.background,
-        height: '56px',
-        maxHeight: '56px',
-      }}
-      leftAction={{
-        hidden: false,
-        actionType: 'drawer',
-      }}
-      rightAction={{
-        hidden: true,
-      }}
-    >
-      <Container>
-        <InfiniteScroll
-          contentContainerStyles={{
-            marginTop: 80,
-          }}
-          contentBatchSize={5}
-          dataFetchQuery={ReturnUsers}
-          formatContent={formatUser}
-        />
-      </Container>
-    </HeaderLayout>
+    <Container>
+      <InfiniteScroll
+        contentBatchSize={10}
+        dataFetchQuery={ReturnUsers}
+        formatContent={formatUser}
+      />
+    </Container>
   );
 }

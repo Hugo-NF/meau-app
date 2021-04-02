@@ -1,7 +1,7 @@
 // Component to implement an infinite scroll for any type of content.
 
 // Package imports.
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 // Style imports.
@@ -9,6 +9,7 @@ import { defaultProps, styledComponents } from './styles';
 
 // Type declaration.
 type InfiniteScrollState<T> = {
+  allDataFetched: boolean,
   data: Array<T>,
   error: string | null,
   loadingMore: boolean,
@@ -20,13 +21,14 @@ interface IInfiniteScroll<T> {
   activityIndicatorColor?: string,
   contentBatchSize: number,
   contentContainerStyles?: Record<string, unknown>,
-  dataFetchQuery: (lastEntry: T, pageNumber: number, pageSize: number) => Promise<Array<T>>,
+  dataFetchQuery: (lastEntry: T | null, pageNumber: number, pageSize: number) => Promise<Array<T>>,
+  errorContainerStyles?: Record<string, unknown>,
   formatContent: (queryResponseData : T) => JSX.Element,
   loadingContainerStyles?: Record<string, unknown>,
 }
 
 // Styled components.
-const { LoadingContainer } = styledComponents;
+const { ErrorContainer, ErrorMessage, LoadingContainer } = styledComponents;
 
 // Component implementation.
 const InfiniteScroll = <T, _>({
@@ -34,57 +36,120 @@ const InfiniteScroll = <T, _>({
   contentBatchSize,
   contentContainerStyles,
   dataFetchQuery,
+  errorContainerStyles,
   formatContent,
   loadingContainerStyles,
 }: IInfiniteScroll<T>): JSX.Element => {
   // Variable declaration.
   const [infiniteScrollState, setInfiniteScrollState] = useState<InfiniteScrollState<T>>({
+    allDataFetched: false,
     data: [],
     error: null,
     loadingMore: false,
     page: 1,
   });
 
-  // Functions declaration.
-  function fetchData() : void {
-    const lastDataElement = infiniteScrollState.data[infiniteScrollState.data.length - 1];
-    const { page } = infiniteScrollState;
-
-    dataFetchQuery(lastDataElement, page, contentBatchSize)
+  // Callbacks declaration.
+  const fetchInitialData = useCallback(() : void => {
+    dataFetchQuery(null, 1, contentBatchSize)
       .then((response) => {
         const contentReceived = response;
 
-        if (page === 1) {
+        if (contentReceived.length === 0) {
           setInfiniteScrollState({
-            ...infiniteScrollState,
-            data: contentReceived,
+            allDataFetched: true,
+            data: [],
+            error: 'No data found',
+            loadingMore: false,
+            page: 1,
           });
         } else {
           setInfiniteScrollState({
-            ...infiniteScrollState,
-            data: infiniteScrollState.data.concat(contentReceived),
+            allDataFetched: false,
+            data: contentReceived,
+            error: null,
             loadingMore: false,
+            page: 2,
           });
         }
       })
       .catch((err) => {
         setInfiniteScrollState({
-          ...infiniteScrollState,
+          allDataFetched: false,
+          data: [],
           error: err,
+          loadingMore: false,
+          page: 1,
         });
       });
+  }, [contentBatchSize, dataFetchQuery]);
+
+  // Function declarations.
+  function componentDidMount() : () => void {
+    let mounted = true;
+
+    if (mounted) fetchInitialData();
+
+    return function cleanUp() : void {
+      mounted = false;
+    };
   }
 
   function fetchMoreData() : void {
-    setInfiniteScrollState({
-      ...infiniteScrollState,
-      page: infiniteScrollState.page + 1,
-      loadingMore: true,
-    });
-    fetchData();
+    if (!infiniteScrollState.loadingMore && !infiniteScrollState.allDataFetched) {
+      setInfiniteScrollState({
+        ...infiniteScrollState,
+        loadingMore: true,
+      });
+
+      const lastDataElement = infiniteScrollState.data[infiniteScrollState.data.length - 1];
+      const { page } = infiniteScrollState;
+
+      dataFetchQuery(lastDataElement, page, contentBatchSize)
+        .then((response) => {
+          const contentReceived = response;
+
+          if (contentReceived.length === 0) {
+            setInfiniteScrollState({
+              ...infiniteScrollState,
+              allDataFetched: true,
+              loadingMore: false,
+              error: null,
+            });
+          } else {
+            setInfiniteScrollState({
+              ...infiniteScrollState,
+              data: infiniteScrollState.data.concat(contentReceived),
+              error: null,
+              loadingMore: false,
+              page: infiniteScrollState.page + 1,
+            });
+          }
+        })
+        .catch((err) => {
+          setInfiniteScrollState({
+            ...infiniteScrollState,
+            error: err,
+          });
+        });
+    }
   }
 
-  function renderLoading() : JSX.Element | null {
+  function renderError() : JSX.Element | null {
+    if (infiniteScrollState.error != null) {
+      return (
+        <ErrorContainer style={{ ...errorContainerStyles }}>
+          <ErrorMessage>
+            Erro ao buscar dados: {infiniteScrollState.error}
+          </ErrorMessage>
+        </ErrorContainer>
+      );
+    }
+
+    return null;
+  }
+
+  function renderLoading() : JSX.Element {
     return (
       <LoadingContainer style={{ ...loadingContainerStyles }}>
         <ActivityIndicator size="large" color={activityIndicatorColor} />
@@ -98,30 +163,22 @@ const InfiniteScroll = <T, _>({
     return null;
   }
 
-  function componentDidMount() : () => void {
-    let mounted = true;
-
-    if (mounted) fetchData();
-
-    return function cleanUp() : void {
-      mounted = false;
-    };
-  }
-
   // Component effects.
-  useEffect(componentDidMount);
+  useEffect(componentDidMount, [fetchInitialData]);
 
   // JSX returned.
   return (
     <FlatList
       contentContainerStyle={{ ...contentContainerStyles }}
       data={infiniteScrollState.data}
-      renderItem={({ item }) => formatContent(item)}
-      onEndReached={fetchMoreData}
-      onEndReachedThreshold={0.9}
       initialNumToRender={contentBatchSize}
       ListEmptyComponent={renderLoading}
       ListFooterComponent={renderLoadingMore}
+      ListHeaderComponent={renderError}
+      nestedScrollEnabled
+      onEndReached={fetchMoreData}
+      onEndReachedThreshold={0.1}
+      renderItem={({ item }) => formatContent(item)}
     />
   );
 };
