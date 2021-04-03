@@ -67,3 +67,5 @@ web-build/
 
 # Jest
 .jest
+
+.vscode/
