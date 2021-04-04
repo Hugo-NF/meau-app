@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { ScrollView } from 'react-native-gesture-handler';
 import SideMenu from 'react-native-side-menu-updated';
