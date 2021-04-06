@@ -94,7 +94,6 @@ export default function HeaderLayout({
   const RenderedDrawer = (
     <DrawerContent
       key="drawer-component"
-      drawerOpen={drawerOpen}
       setDrawerOpen={setDrawerOpen}
     />
   );

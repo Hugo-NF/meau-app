@@ -16,7 +16,6 @@ import { Theme } from '../../constants';
 import { getNameInitials } from '../../utils/getNameInitials';
 
 export interface IDrawerProps {
-  drawerOpen: boolean,
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
@@ -25,7 +24,7 @@ const getImageUri = async (ref: string) : Promise<string> => {
   return imageRef.getDownloadURL();
 };
 
-const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Element => {
+const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
   const navigation = useNavigation();
   const { currentUser } = useAuth();
