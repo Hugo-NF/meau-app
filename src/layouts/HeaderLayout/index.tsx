@@ -12,7 +12,7 @@ import { Theme } from '../../constants';
 
 import { styledComponents, IHeaderProps, ITitleProps } from './styles';
 
-type HeaderActions = 'back' | 'drawer' | 'share';
+type HeaderActions = 'back' | 'drawer' | 'share' | 'search';
 
 interface IButtonAction {
   hidden?: boolean,
@@ -83,6 +83,16 @@ export default function HeaderLayout({
           <ActionButton>
             <Ionicons
               name="share-social"
+              size={24}
+              color={buttonType?.iconColor}
+            />
+          </ActionButton>
+        );
+      case 'search':
+        return (
+          <ActionButton onPress={() => navigation.goBack()}>
+            <Ionicons
+              name="search"
               size={24}
               color={buttonType?.iconColor}
             />

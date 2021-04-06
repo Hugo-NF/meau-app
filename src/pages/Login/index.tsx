@@ -56,7 +56,7 @@ export default function Login() : JSX.Element {
     try {
       const response = await auth().signInWithEmailAndPassword(email, password);
       if (response && response.user) {
-        navigation.dispatch(StackActions.replace('Authorized'));
+        navigation.dispatch(StackActions.replace('AnimalFeed'));
       }
     } catch (e) {
       setDialog({

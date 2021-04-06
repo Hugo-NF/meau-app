@@ -10,15 +10,15 @@ export const CardBox = styled.View<ViewProps>`
     width: 344px;
     background: ${Theme.default.background};
     elevation: 3;
-    border-radius: 4px;
+    border-radius: 6px;
     margin-bottom: 8px;
 `;
 
 export const CardHeader = styled.View<CardHeaderProps>`
     height: 32px;
     background: ${(props) => props.backgroundColor};
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
     flex-direction: row;
     padding-left: 16px;
     padding-right: 16px;
