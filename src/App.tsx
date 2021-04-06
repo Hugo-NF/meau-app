@@ -22,6 +22,7 @@ import {
 // Module imports.
 import Routes from './routes';
 import { Theme } from './constants';
+import GlobalState from './services/contextService';
 
 const theme = {
   ...DefaultTheme,
@@ -44,11 +45,13 @@ export default function App() : JSX.Element {
   }
 
   return (
-    <PaperProvider theme={theme}>
-      <NavigationContainer>
-        <StatusBar translucent />
-        <Routes />
-      </NavigationContainer>
-    </PaperProvider>
+    <GlobalState>
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
+          <StatusBar translucent />
+          <Routes />
+        </NavigationContainer>
+      </PaperProvider>
+    </GlobalState>
   );
 }

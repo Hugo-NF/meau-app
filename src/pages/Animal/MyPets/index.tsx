@@ -38,7 +38,6 @@ export const MyPets = (): JSX.Element => {
   return (
     <HeaderLayout
       headerShown
-      requireAuth
       title="Meus Pets"
       headerStyles={{
         backgroundColor: Theme.elements.headerPrimaryDark,
