@@ -21,10 +21,11 @@ export default function Authorized(): JSX.Element {
   }, [navigation]);
 
   const logout = async (): Promise<void> => {
-    await auth().signOut();
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Home' }],
+    await auth().signOut().then(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
     });
   };
 
