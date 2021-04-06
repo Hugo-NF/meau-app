@@ -222,7 +222,6 @@ export default function AnimalRegistration() : JSX.Element {
   return (
     <HeaderLayout
       headerShown
-      requireAuth
       title="Cadastro do Animal"
       headerStyles={{
         backgroundColor: Theme.elements.headerSecondaryDark,
