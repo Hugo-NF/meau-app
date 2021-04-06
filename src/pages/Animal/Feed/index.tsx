@@ -2,14 +2,15 @@ import { useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import storage from '@react-native-firebase/storage';
-import { Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { AnimalCard } from '../../../components/AnimalCard';
 import { Theme, Values } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import { Container } from './styles';
+import {
+  CardText, CardTextContainer, CardTextRow, Container,
+} from './styles';
 
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
@@ -55,9 +56,20 @@ const FeedPets = (): JSX.Element => {
             <AnimalCard
               key={uuidv4()}
               imageUrlPromise={storage().ref(`${Values.IMAGE_DIRECTORY}/${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
-              body={
-                <Text style={{ textAlign: 'center', lineHeight: 20 }}>MACHO ADULTO MÉDIO{'\n'}SAMAMBAIA SUL - DISTRITO FEDERAL</Text>
-              }
+              body={(
+                <CardTextContainer>
+                  <CardTextRow>
+                    <CardText>MACHO</CardText>
+                    <CardText>ADULTO</CardText>
+                    <CardText>MÉDIO</CardText>
+                  </CardTextRow>
+                  <CardTextRow>
+                    <CardText>
+                      SAMAMBAIA SUL - DISTRITO FEDERAL
+                    </CardText>
+                  </CardTextRow>
+                </CardTextContainer>
+              )}
               title={pet.name}
               headerOptions={(
                 <MaterialCommunityIcons

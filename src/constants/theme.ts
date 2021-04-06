@@ -41,6 +41,7 @@ const Theme = {
     animalPhotosInputBackground: '#F1F2F2',
     icon: '#757575',
     iconBackground: '#E6E7E7',
+    cardText: '#434343',
   },
   named: {
     blue: '#007BFF',
