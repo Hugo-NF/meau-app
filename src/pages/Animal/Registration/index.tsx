@@ -146,15 +146,6 @@ export default function AnimalRegistration() : JSX.Element {
   } = styledComponents;
 
   const registerAnimal = async (data: IRegisterAnimal) : Promise<void> => {
-    if (!auth().currentUser) {
-      setDialog({
-        open: true,
-        title: 'É preciso estar logado',
-        message: 'Usuário precisa estar logado para realizar o cadastro',
-      });
-      return;
-    }
-
     const userUID = auth().currentUser?.uid;
 
     firestore().collection('animals').add({

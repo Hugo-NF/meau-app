@@ -13,6 +13,7 @@ import { styledComponents, styles } from './styles';
 
 import { useAuth } from '../../services/context';
 import { Theme } from '../../constants';
+import { getNameInitials } from '../../utils/getNameInitials';
 
 export interface IDrawerProps {
   drawerOpen: boolean,
@@ -86,9 +87,9 @@ const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Elemen
           <AvatarContainer>
             {userDetails?.photo === undefined
               ? (
-                <Avatar.Icon
+                <Avatar.Text
                   size={64}
-                  icon="account"
+                  label={getNameInitials(userDetails.displayName)}
                   style={{ backgroundColor: Theme.default.background, ...styles.Avatar }}
                 />
               ) : (
