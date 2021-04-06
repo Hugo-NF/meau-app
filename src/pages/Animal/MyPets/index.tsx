@@ -60,7 +60,7 @@ export const MyPets = (): JSX.Element => {
                 imageUrlPromise={storage().ref(`${Values.IMAGE_DIRECTORY}/${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
                 body={
                   <Text style={{ textAlign: 'center', lineHeight: 20 }}>0 NOVOS INTERESSADOS{'\n'}ADOÇÃO</Text>
-              }
+                }
                 title={pet.name}
                 headerOptions={(
                   <MaterialCommunityIcons
@@ -68,7 +68,9 @@ export const MyPets = (): JSX.Element => {
                     size={24}
                     color={Theme.elements.headerText}
                   />
-              )}
+                )}
+                headerBackground={Theme.elements.headerPrimary}
+                pet={{ id: pet.id }}
               />
             ))
           }
