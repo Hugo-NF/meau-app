@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 
 // Firebase modules.
 import auth from '@react-native-firebase/auth';
@@ -176,10 +176,7 @@ export default function Registration() : JSX.Element {
           profile_picture: profilePicture,
         });
 
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Authorized' }],
-        });
+        navigation.dispatch(StackActions.replace('Authorized'));
       })
       .catch((e) => {
         setDialog({
