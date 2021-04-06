@@ -12,6 +12,9 @@ import {
   LogoutButton,
   LogoutText,
 } from './styles';
+
+import { useAuth } from '../../services/context';
+
 import { Theme } from '../../constants';
 
 export interface IDrawerProps {
@@ -27,6 +30,8 @@ const getImageUri = async (ref: string) : Promise<string> => {
 const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Element => {
   const navigation = useNavigation();
   const [imageUri, setImageUri] = useState('');
+
+  const { currentUser } = useAuth();
 
   const logout = async (): Promise<void> => {
     await auth().signOut();
@@ -45,11 +50,13 @@ const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Elemen
     });
 
   return (
-    <ScrollView>
+    <ScrollView nestedScrollEnabled>
       <DrawerContainer>
-        <AvatarContainer>
-          <Avatar.Image size={64} source={{ uri: imageUri }} />
-        </AvatarContainer>
+        {currentUser !== null && (
+          <AvatarContainer>
+            <Avatar.Image size={64} source={{ uri: imageUri }} />
+          </AvatarContainer>
+        )}
         <List.Section style={{ width: '100%' }}>
           <List.Accordion title="Hugo Fonseca">
             <List.Item title="Meu perfil" />

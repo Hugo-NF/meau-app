@@ -101,29 +101,29 @@ export default function HeaderLayout({
 
   return (
     <LayoutContainer>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: 'space-between',
-        }}
+      <SideMenu
+        isOpen={drawerOpen}
+        menu={RenderedDrawer}
+        menuPosition="left"
+        openMenuOffset={304}
       >
-        <SideMenu
-          isOpen={drawerOpen}
-          menu={RenderedDrawer}
-          menuPosition="left"
-          openMenuOffset={304}
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'space-between',
+          }}
         >
           {headerShown && (
-          <HeaderContainer {...headerStyles}>
-            {!leftAction?.hidden && (renderActionButton(leftAction))}
-            <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
-            {!rightAction?.hidden && (renderActionButton(rightAction))}
-          </HeaderContainer>
+            <HeaderContainer {...headerStyles}>
+              {!leftAction?.hidden && (renderActionButton(leftAction))}
+              <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
+              {!rightAction?.hidden && (renderActionButton(rightAction))}
+            </HeaderContainer>
           )}
 
           {children}
-        </SideMenu>
-      </ScrollView>
+        </ScrollView>
+      </SideMenu>
     </LayoutContainer>
   );
 }
