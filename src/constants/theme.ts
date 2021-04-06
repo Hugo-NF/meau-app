@@ -39,6 +39,7 @@ const Theme = {
     photoBackground: '#E6E7E7',
     photoIcon: '#757575',
     drawerBackground: '#F7F7F7',
+    settingsDrawerBackground: 'E6E7E8',
     animalPhotosInputBackground: '#F1F2F2',
     icon: '#757575',
     iconBackground: '#E6E7E7',

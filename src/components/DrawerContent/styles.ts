@@ -3,30 +3,54 @@ import styled from 'styled-components/native';
 
 import { Theme } from '../../constants';
 
-export const DrawerContainer = styled.View<ViewProps>`
-  flex: 1;
-  background-color: ${Theme.elements.drawerBackground};
-`;
+export const styledComponents = {
+  DrawerContainer: styled.View<ViewProps>`
+    flex: 1;
+    background-color: ${Theme.elements.drawerBackground};
+    justify-content: space-between;
+  `,
 
-export const AvatarContainer = styled.View<ViewProps>`
-  margin-top: 40px;
-  margin-left: 16px;
-  margin-bottom: 68px;
-`;
+  // height: Photo radius + marginTop + marginBottom
+  AvatarContainer: styled.View<ViewProps>`
+    height: 152px;
+    background-color: ${Theme.default.primary};
+  `,
 
-export const LogoutButton = styled.TouchableOpacity<TouchableOpacityProps>`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 48px;
-  max-height: 48px;
-  background-color: ${Theme.default.primary};
-`;
+  LogoutButton: styled.TouchableOpacity<TouchableOpacityProps>`
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    max-height: 48px;
+    background-color: ${Theme.default.primary};
+  `,
 
-export const LogoutText = styled.Text<TextProps>`
-  font-family: 'Roboto_400Medium';
-  font-size: 14px;
-  text-transform: uppercase;
-  color: ${Theme.elements.buttonText};
-`;
+  LogoutText: styled.Text<TextProps>`
+    font-family: 'Roboto_400Medium';
+    font-size: 14px;
+    text-transform: uppercase;
+    color: ${Theme.elements.buttonText};
+  `,
+};
+
+export const styles = {
+  Avatar: {
+    marginTop: 40,
+    marginLeft: 16,
+    marginBottom: 48,
+  },
+  SpacedListSection: { width: '100%' },
+  ListSection: { width: '100%', marginVertical: 0 },
+  SectionTitle: {
+    fontFamily: 'Roboto_400Medium',
+    fontSize: 14,
+    color: Theme.elements.buttonText,
+  },
+  ListItemText: {
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 14,
+    color: Theme.elements.buttonText,
+  },
+  ListAccordion: { paddingVertical: 0 },
+};
