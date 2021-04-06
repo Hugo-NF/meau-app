@@ -5,8 +5,6 @@ import { Theme } from '../../constants';
 
 export const DrawerContainer = styled.View<ViewProps>`
   flex: 1;
-  justify-content: flex-start;
-  align-items: flex-start;
   background-color: ${Theme.elements.drawerBackground};
 `;
 

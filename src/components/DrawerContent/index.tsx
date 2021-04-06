@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Divider, List, Avatar } from 'react-native-paper';
 import { ScrollView } from 'react-native';
+
 import {
   AvatarContainer,
   DrawerContainer,
@@ -33,6 +34,11 @@ const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Elemen
 
   const { currentUser } = useAuth();
 
+  const navigateTo = (route : string) : void => {
+    setDrawerOpen(false);
+    navigation.navigate(route);
+  };
+
   const logout = async (): Promise<void> => {
     await auth().signOut();
     navigation.reset({
@@ -49,6 +55,28 @@ const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Elemen
       console.error(error);
     });
 
+  if (currentUser === null) {
+    return (
+      <ScrollView nestedScrollEnabled>
+        <DrawerContainer>
+          <List.Section style={{ width: '100%' }}>
+            <List.Subheader>Opções</List.Subheader>
+            <List.Item
+              left={(props) => <List.Icon {...props} icon="login" />}
+              title="Login"
+              onPress={() => navigateTo('Login')}
+            />
+            <List.Item
+              left={(props) => <List.Icon {...props} icon="account-plus" />}
+              title="Cadastro"
+              onPress={() => navigateTo('Registration')}
+            />
+          </List.Section>
+        </DrawerContainer>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView nestedScrollEnabled>
       <DrawerContainer>
@@ -58,7 +86,10 @@ const DrawerContent = ({ drawerOpen, setDrawerOpen } : IDrawerProps): JSX.Elemen
           </AvatarContainer>
         )}
         <List.Section style={{ width: '100%' }}>
-          <List.Accordion title="Hugo Fonseca">
+          <List.Accordion
+            title="Hugo Fonseca"
+            left={(props) => <></>}
+          >
             <List.Item title="Meu perfil" />
             <List.Item title="Meus pets" />
             <List.Item title="Favoritos" />
