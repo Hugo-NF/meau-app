@@ -2,30 +2,27 @@ import { useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import storage from '@react-native-firebase/storage';
-import { Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { AnimalCard } from '../../../components/AnimalCard';
 import { Theme, Values } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import { Container } from './styles';
+import {
+  CardText, CardTextContainer, CardTextRow, Container,
+} from './styles';
 
-const MyPets = (): JSX.Element => {
+const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
 
   const [fetchedPets, setFetchedPets] = useState<FirebaseFirestoreTypes.DocumentData[]>([]);
 
   useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
+    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
   }, [navigation]);
 
   const fetchPets = (): void => {
-    const { currentUser } = auth();
-    const user = firestore().collection('users').doc(currentUser?.uid);
-
-    firestore().collection('animals').orderBy('name').where('owner', '==', user)
+    firestore().collection('animals').orderBy('name')
       .get()
       .then((result) => {
         const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
@@ -38,18 +35,19 @@ const MyPets = (): JSX.Element => {
   return (
     <HeaderLayout
       headerShown
-      title="Meus Pets"
+      title="Adotar"
       headerStyles={{
-        backgroundColor: Theme.elements.headerPrimaryDark,
+        backgroundColor: Theme.elements.headerSecondaryDark,
         maxHeight: '56px',
         height: '56px',
       }}
       leftAction={{
         hidden: false,
-        actionType: 'back',
+        actionType: 'drawer',
       }}
       rightAction={{
-        hidden: true,
+        hidden: false,
+        actionType: 'search',
       }}
     >
       <Container>
@@ -58,18 +56,29 @@ const MyPets = (): JSX.Element => {
             <AnimalCard
               key={uuidv4()}
               imageUrlPromise={storage().ref(`${Values.IMAGE_DIRECTORY}/${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
-              body={
-                <Text style={{ textAlign: 'center', lineHeight: 20 }}>0 NOVOS INTERESSADOS{'\n'}ADOÇÃO</Text>
-              }
+              body={(
+                <CardTextContainer>
+                  <CardTextRow>
+                    <CardText>MACHO</CardText>
+                    <CardText>ADULTO</CardText>
+                    <CardText>MÉDIO</CardText>
+                  </CardTextRow>
+                  <CardTextRow>
+                    <CardText>
+                      SAMAMBAIA SUL - DISTRITO FEDERAL
+                    </CardText>
+                  </CardTextRow>
+                </CardTextContainer>
+              )}
               title={pet.name}
               headerOptions={(
                 <MaterialCommunityIcons
-                  name="alert-circle"
+                  name="heart-outline"
                   size={24}
                   color={Theme.elements.headerText}
                 />
               )}
-              headerBackground={Theme.elements.headerPrimary}
+              headerBackground={Theme.elements.headerSecondary}
               pet={{ id: pet.id }}
             />
           ))
@@ -79,4 +88,4 @@ const MyPets = (): JSX.Element => {
   );
 };
 
-export default MyPets;
+export default FeedPets;

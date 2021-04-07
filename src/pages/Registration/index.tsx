@@ -176,7 +176,7 @@ export default function Registration() : JSX.Element {
           profile_picture: profilePicture,
         });
 
-        navigation.dispatch(StackActions.replace('Authorized'));
+        navigation.dispatch(StackActions.replace('AnimalFeed'));
       })
       .catch((e) => {
         setDialog({

@@ -1,17 +1,18 @@
 // Package imports.
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { MyPets } from './pages/Animal/MyPets';
 import InfiniteScrollTest from './pages/InfiniteScrollTest';
 
 // Importing our pages.
+import AnimalFeed from './pages/Animal/Feed';
 import AnimalRegistration from './pages/Animal/Registration';
 import AnimalRegistrationSuccess from './pages/Animal/Success';
+import MyPets from './pages/Animal/MyPets';
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Unauthorized from './pages/Unauthorized';
-import Authorized from './pages/Authorized';
 import Context from './services/context';
 
 interface IRouteRule {
@@ -48,21 +49,21 @@ export default class Routes extends React.Component {
     {
       name: 'Login',
       component: Login,
-      privateComponent: Authorized,
+      privateComponent: AnimalFeed,
     },
     {
       name: 'Registration',
       component: Registration,
-      privateComponent: Authorized,
+      privateComponent: AnimalFeed,
     },
     {
       name: 'Unauthorized',
       component: Unauthorized,
-      privateComponent: Authorized,
+      privateComponent: AnimalFeed,
     },
     {
-      name: 'Authorized',
-      component: Authorized,
+      name: 'AnimalFeed',
+      component: AnimalFeed,
       requireSession: true,
     },
     {
