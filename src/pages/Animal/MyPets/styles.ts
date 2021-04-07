@@ -1,8 +1,9 @@
 import { ViewProps } from 'react-native';
 import styled from 'styled-components/native';
+import { Theme } from '../../../constants';
 
 export const Container = styled.View<ViewProps>`
-    margin-top: 8px;
-    align-items: center;
-    flex: 1;
+  flex: 1;
+  align-items: center;
+  background-color: ${Theme.default.background};
 `;
