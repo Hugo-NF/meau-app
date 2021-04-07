@@ -6,6 +6,7 @@ export const Container = styled.View<ViewProps>`
     flex: 1;
     justify-content: space-between;
     align-items: center;
+    background-color: ${Theme.default.background};
 `;
 
 export const Title = styled.Text<TextProps>`

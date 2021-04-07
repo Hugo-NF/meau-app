@@ -12,19 +12,19 @@ export const CardText = styled.Text<TextProps>`
 `;
 
 export const CardTextContainer = styled.View<ViewProps>`
-   flex: 1;
-   flexDirection: column;
-   justifyContent: center;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 export const CardTextRow = styled.View<ViewProps>`
-   flex: 1;
-   flexDirection: row;
-   justifyContent: space-around;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-around;
 `;
 
 export const Container = styled.View<ViewProps>`
-    margin-top: 8px;
-    align-items: center;
-    flex: 1;
+  align-items: center;
+  flex: 1;
+  background-color: ${Theme.default.background}
 `;
