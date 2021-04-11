@@ -3,7 +3,6 @@ import React, { useLayoutEffect, useState } from 'react';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { StackActions, useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
 
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -11,6 +10,9 @@ import { Formik } from 'formik';
 import {
   Button, Dialog, Paragraph, Portal,
 } from 'react-native-paper';
+
+// Service imports.
+import userAPI from '../../services/user/api';
 
 // Style imports.
 import {
@@ -54,7 +56,7 @@ export default function Login() : JSX.Element {
 
   const signIn = async ({ email, password }: LoginForm): Promise<void> => {
     try {
-      const response = await auth().signInWithEmailAndPassword(email, password);
+      const response = await userAPI.signInWithEmailAndPassword(email, password);
       if (response && response.user) {
         navigation.dispatch(StackActions.replace('AnimalFeed'));
       }

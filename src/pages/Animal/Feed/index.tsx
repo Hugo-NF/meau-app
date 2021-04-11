@@ -1,16 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import storage from '@react-native-firebase/storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { AnimalCard } from '../../../components/AnimalCard';
-import { Theme, Values } from '../../../constants';
+import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import {
   CardText, CardTextContainer, CardTextRow, Container,
 } from './styles';
+
+// Service imports.
+import animalAPI from '../../../services/animal/api';
 
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
@@ -22,8 +24,7 @@ const FeedPets = (): JSX.Element => {
   }, [navigation]);
 
   const fetchPets = (): void => {
-    firestore().collection('animals').orderBy('name')
-      .get()
+    animalAPI.animalFirestoreCollection().orderBy('name').get()
       .then((result) => {
         const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
         setFetchedPets(data);
@@ -55,7 +56,7 @@ const FeedPets = (): JSX.Element => {
           fetchedPets.map((pet) => (
             <AnimalCard
               key={uuidv4()}
-              imageUrlPromise={storage().ref(`${Values.IMAGE_DIRECTORY}/${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
+              imageUrlPromise={animalAPI.animalStoragePictureDir().child(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
               body={(
                 <CardTextContainer>
                   <CardTextRow>

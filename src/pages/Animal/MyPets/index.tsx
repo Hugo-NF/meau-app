@@ -1,16 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import storage from '@react-native-firebase/storage';
 import { Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
 import { AnimalCard } from '../../../components/AnimalCard';
-import { Theme, Values } from '../../../constants';
+import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Container } from './styles';
+
+// Service imports.
+import animalAPI from '../../../services/animal/api';
+import userAPI from '../../../services/user/api';
 
 const MyPets = (): JSX.Element => {
   const navigation = useNavigation();
@@ -22,10 +24,12 @@ const MyPets = (): JSX.Element => {
   }, [navigation]);
 
   const fetchPets = (): void => {
-    const { currentUser } = auth();
-    const user = firestore().collection('users').doc(currentUser?.uid);
+    const currentUser = userAPI.currentUser();
+    const user = userAPI.userFirestoreDocument(currentUser?.uid);
 
-    firestore().collection('animals').orderBy('name').where('owner', '==', user)
+    animalAPI.animalFirestoreCollection()
+      .orderBy('name')
+      .where('owner', '==', user)
       .get()
       .then((result) => {
         const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
@@ -57,7 +61,7 @@ const MyPets = (): JSX.Element => {
           fetchedPets.map((pet) => (
             <AnimalCard
               key={uuidv4()}
-              imageUrlPromise={storage().ref(`${Values.IMAGE_DIRECTORY}/${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
+              imageUrlPromise={animalAPI.animalStoragePictureDir().child(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
               body={
                 <Text style={{ textAlign: 'center', lineHeight: 20 }}>0 NOVOS INTERESSADOS{'\n'}ADOÇÃO</Text>
               }

@@ -13,7 +13,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Unauthorized from './pages/Unauthorized';
-import Context from './services/context';
+import Context from './contexts/user/context';
 
 interface IRouteRule {
   name: string,

@@ -14,10 +14,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { StackActions, useNavigation } from '@react-navigation/native';
 
-// Firebase modules.
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+// Service imports.
+import userAPI from '../../services/user/api';
 
 // User modules.
 import AsyncButton from '../../components/AsyncButton';
@@ -144,7 +142,7 @@ export default function Registration() : JSX.Element {
     username,
     password,
   } : ISignUpForm) : Promise<void> {
-    auth().createUserWithEmailAndPassword(email, password)
+    userAPI.createUserWithEmailAndPassword(email, password)
       .then(async (credential) => {
         const userUID = credential.user.uid;
         let profilePicture = '';
@@ -156,15 +154,14 @@ export default function Registration() : JSX.Element {
             ? profilePicture = `${uuidv4()}.${profilePictureFileExtension}`
             : profilePicture = uuidv4();
 
-          await storage()
-            .ref(Values.IMAGE_DIRECTORY)
+          await userAPI.userStorageProfilePictureDir()
             .child(profilePicture)
             .putFile(profilePicturePath);
         }
 
         if (birthDate != null) setDateHoursToUTCMidday(birthDate);
 
-        firestore().collection('users').doc(userUID).set({
+        userAPI.userFirestoreDocument(userUID).set({
           address,
           birth_date: birthDate,
           city,
