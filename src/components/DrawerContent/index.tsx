@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react';
 
-import auth from '@react-native-firebase/auth';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import { useNavigation } from '@react-navigation/native';
@@ -24,42 +24,53 @@ const getImageUri = async (ref: string) : Promise<string> => {
   return imageRef.getDownloadURL();
 };
 
-const fetchProfile = async () : Promise<{displayName: string | undefined, photo: string | undefined}> => {
-  const { currentUser } = useAuth();
-  const userDocument = await firestore().collection('users').doc(currentUser?.uid).get();
-  const userData = userDocument.data();
+const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promise<{displayName: string, photo: string | undefined} | undefined> => {
+  console.log('CurrentUser: ', currentUser);
+  if (currentUser != null) {
+    const userDocument = await firestore().collection('users').doc(currentUser?.uid).get();
+    const userData = userDocument.data();
 
-  if (userData?.profile_picture) {
-    try {
-      const imageRef = await getImageUri(`${Values.IMAGE_DIRECTORY}/${userData?.profile_picture}`);
-      return {
-        displayName: userData?.username,
-        photo: imageRef,
-      };
-    } catch (exc) {
+    if (userData?.profile_picture) {
+      try {
+        const imageRef = await getImageUri(`${Values.IMAGE_DIRECTORY}/${userData?.profile_picture}`);
+        return {
+          displayName: userData?.username,
+          photo: imageRef,
+        };
+      } catch (exc) {
+        return {
+          displayName: userData?.username,
+          photo: undefined,
+        };
+      }
+    } else {
       return {
         displayName: userData?.username,
         photo: undefined,
       };
     }
-  } else {
-    return {
-      displayName: userData?.username,
-      photo: undefined,
-    };
   }
+  return undefined;
 };
 
 const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
   const navigation = useNavigation();
+  const { currentUser } = useAuth();
 
   // User state
   const [userDetails, setUserDetails] = useState<{displayName: string, photo: string | undefined} | null>(null);
-  const promise = fetchProfile();
   useEffect(() => {
-    promise.then((data) => console.log(data));
-  }, []);
+    fetchProfile(currentUser).then((data) => {
+      if (data !== undefined) {
+        setUserDetails({
+          displayName: data.displayName,
+          photo: data?.photo,
+        });
+      }
+      console.log('Promise: ', data);
+    });
+  }, [currentUser]);
 
   // Styles
   const {
