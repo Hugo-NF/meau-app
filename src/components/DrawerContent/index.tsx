@@ -69,7 +69,7 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
         });
       }
       console.log('Promise: ', data);
-    });
+    }).catch(() => null);
   }, [currentUser]);
 
   // Styles
