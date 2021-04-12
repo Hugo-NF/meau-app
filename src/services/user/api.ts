@@ -8,9 +8,6 @@ import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { FirebaseStorageTypes } from '@react-native-firebase/storage';
 
-// Context imports.
-import { useAuth } from '../../contexts/user/context';
-
 // User module imports.
 import { Values } from '../../constants';
 
@@ -46,7 +43,7 @@ const api = {
   },
 
   currentUser() : FirebaseAuthTypes.User | null {
-    const { currentUser } = useAuth();
+    const { currentUser } = auth();
     return currentUser;
   },
 
