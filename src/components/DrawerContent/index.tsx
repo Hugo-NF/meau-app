@@ -13,6 +13,7 @@ import { Theme } from '../../constants';
 import { getNameInitials } from '../../utils/getNameInitials';
 
 import userAPI from '../../services/user/api';
+import { useAuth } from '../../contexts/user/context';
 
 export interface IDrawerProps {
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -49,7 +50,7 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
 const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
   const navigation = useNavigation();
-  const currentUser = userAPI.currentUser();
+  const { currentUser } = useAuth();
 
   // User state
   const [userDetails, setUserDetails] = useState<{displayName: string, photo: string | undefined} | null>(null);
