@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { Text } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { ScrollView } from 'react-native-gesture-handler';
+import SideMenu from 'react-native-side-menu-updated';
+
+import DrawerContent from '../../components/DrawerContent';
+
 import { Theme } from '../../constants';
 
 import { styledComponents, IHeaderProps, ITitleProps } from './styles';
@@ -67,13 +70,12 @@ export default function HeaderLayout({
         );
       case 'drawer':
         return (
-          <ActionButton onPress={() => setDrawerOpen(true)}>
+          <ActionButton onPress={() => setDrawerOpen(!drawerOpen)}>
             <Ionicons
               name="menu-sharp"
               size={24}
               color={buttonType?.iconColor}
             />
-            <Text>{drawerOpen ? 'Aberto' : 'Fechado'}</Text>
           </ActionButton>
         );
       case 'share':
@@ -101,31 +103,36 @@ export default function HeaderLayout({
 
   return (
     <LayoutContainer>
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: 'space-between',
-        }}
-      >
-        {/* <MenuDrawer
-        open={drawerOpen}
-        drawerContent={DrawerContent({ drawerOpen, setDrawerOpen })}
-        drawerPercentage={75}
-        animationTime={250}
-        opacity={0.1}
-        position="left"
-      > */}
-        {headerShown && (
-        <HeaderContainer {...headerStyles}>
-          {!leftAction?.hidden && (renderActionButton(leftAction))}
-          <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
-          {!rightAction?.hidden && (renderActionButton(rightAction))}
-        </HeaderContainer>
+      <SideMenu
+        autoClosing
+        isOpen={drawerOpen}
+        onChange={(isOpen: boolean) => setDrawerOpen(isOpen)}
+        menu={(
+          <DrawerContent
+            key="drawer-component"
+            setDrawerOpen={setDrawerOpen}
+          />
         )}
+        menuPosition="left"
+        openMenuOffset={304}
+      >
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'space-between',
+          }}
+        >
+          {headerShown && (
+            <HeaderContainer {...headerStyles}>
+              {!leftAction?.hidden && (renderActionButton(leftAction))}
+              <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
+              {!rightAction?.hidden && (renderActionButton(rightAction))}
+            </HeaderContainer>
+          )}
 
-        {children}
-      </ScrollView>
-      {/* </MenuDrawer> */}
+          {children}
+        </ScrollView>
+      </SideMenu>
     </LayoutContainer>
   );
 }
