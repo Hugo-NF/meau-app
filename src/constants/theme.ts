@@ -13,6 +13,7 @@ const Theme = {
   elements: {
     text: '#757575',
     buttonText: '#434343',
+    buttonTextDisabled: '#999',
     invalidText: '#BDBDBD',
     placeholderText: '#BDBDBD',
     fieldText: '#575756',

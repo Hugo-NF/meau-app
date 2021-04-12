@@ -147,7 +147,7 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
           >
             <List.Item
               title="Meu perfil"
-              titleStyle={styles.ListItemText}
+              titleStyle={styles.ListItemTextDisabled}
             />
             <List.Item
               title="Meus pets"
@@ -156,11 +156,11 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
             />
             <List.Item
               title="Favoritos"
-              titleStyle={styles.ListItemText}
+              titleStyle={styles.ListItemTextDisabled}
             />
             <List.Item
               title="Chat"
-              titleStyle={styles.ListItemText}
+              titleStyle={styles.ListItemTextDisabled}
             />
           </List.Accordion>
         </List.Section>
@@ -190,12 +190,24 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
             titleStyle={styles.SectionTitle}
           >
             <List.Item
+              title="Dicas"
+              titleStyle={styles.ListItemTextDisabled}
+            />
+            <List.Item
+              title="Eventos"
+              titleStyle={styles.ListItemTextDisabled}
+            />
+            <List.Item
+              title="Legislação"
+              titleStyle={styles.ListItemTextDisabled}
+            />
+            <List.Item
               title="Termo de adoção"
-              titleStyle={styles.ListItemText}
+              titleStyle={styles.ListItemTextDisabled}
             />
             <List.Item
               title="Histórias de adoção"
-              titleStyle={styles.ListItemText}
+              titleStyle={styles.ListItemTextDisabled}
             />
           </List.Accordion>
         </List.Section>
@@ -208,7 +220,7 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
           >
             <List.Item
               title="Privacidade"
-              titleStyle={styles.ListItemText}
+              titleStyle={styles.ListItemTextDisabled}
             />
           </List.Accordion>
         </List.Section>

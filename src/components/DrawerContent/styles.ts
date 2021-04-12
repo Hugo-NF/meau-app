@@ -52,5 +52,10 @@ export const styles = {
     fontSize: 14,
     color: Theme.elements.buttonText,
   },
+  ListItemTextDisabled: {
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 14,
+    color: Theme.elements.buttonTextDisabled,
+  },
   ListAccordion: { paddingVertical: 0 },
 };
