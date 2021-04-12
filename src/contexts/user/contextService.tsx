@@ -12,7 +12,7 @@ export default class GlobalState extends React.Component<Record<string, unknown>
     super(props);
 
     this.state = {
-      currentUser: null,
+      currentUser: auth().currentUser,
     };
 
     auth().onAuthStateChanged((user) => { this.setState({ currentUser: user }); });

@@ -13,6 +13,7 @@ const Theme = {
   elements: {
     text: '#757575',
     buttonText: '#434343',
+    buttonTextDisabled: '#999',
     invalidText: '#BDBDBD',
     placeholderText: '#BDBDBD',
     fieldText: '#575756',
@@ -38,6 +39,8 @@ const Theme = {
     checkSecondary: '#F7A800',
     photoBackground: '#E6E7E7',
     photoIcon: '#757575',
+    drawerBackground: '#F7F7F7',
+    settingsDrawerBackground: 'E6E7E8',
     animalPhotosInputBackground: '#F1F2F2',
     icon: '#757575',
     iconBackground: '#E6E7E7',
