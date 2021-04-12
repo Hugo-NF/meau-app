@@ -178,6 +178,7 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
             />
             <List.Item
               title="Adotar um pet"
+              onPress={() => navigateTo('AnimalFeed')}
               titleStyle={styles.ListItemText}
             />
           </List.Accordion>
