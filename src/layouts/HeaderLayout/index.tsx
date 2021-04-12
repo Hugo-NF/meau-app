@@ -70,7 +70,7 @@ export default function HeaderLayout({
         );
       case 'drawer':
         return (
-          <ActionButton onPress={() => setDrawerOpen(true)}>
+          <ActionButton onPress={() => setDrawerOpen(!drawerOpen)}>
             <Ionicons
               name="menu-sharp"
               size={24}
@@ -101,18 +101,18 @@ export default function HeaderLayout({
     }
   };
 
-  const RenderedDrawer = (
-    <DrawerContent
-      key="drawer-component"
-      setDrawerOpen={setDrawerOpen}
-    />
-  );
-
   return (
     <LayoutContainer>
       <SideMenu
+        autoClosing
         isOpen={drawerOpen}
-        menu={RenderedDrawer}
+        onChange={(isOpen: boolean) => setDrawerOpen(isOpen)}
+        menu={(
+          <DrawerContent
+            key="drawer-component"
+            setDrawerOpen={setDrawerOpen}
+          />
+        )}
         menuPosition="left"
         openMenuOffset={304}
       >
