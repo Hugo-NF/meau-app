@@ -42,14 +42,16 @@ export default function InfiniteScrollTest() : JSX.Element {
     let query;
 
     if (pageNumber === 1 || lastElement == null) {
-      query = userAPI.userFirestoreCollection()
-        .orderBy('username')
-        .limit(pageSize);
+      query = userAPI.createQuery({
+        limit: pageSize,
+        orderBy: 'username',
+      });
     } else {
-      query = userAPI.userFirestoreCollection()
-        .orderBy('username')
-        .startAfter(lastElement.username)
-        .limit((pageNumber - 1) * pageSize);
+      query = userAPI.createQuery({
+        limit: (pageNumber - 1) * pageSize,
+        orderBy: 'username',
+        startAfter: lastElement.username,
+      });
     }
 
     return query.get()

@@ -56,7 +56,7 @@ export default function Login() : JSX.Element {
 
   const signIn = async ({ email, password }: LoginForm): Promise<void> => {
     try {
-      const response = await userAPI.signInWithEmailAndPassword(email, password);
+      const response = await userAPI.signIn(email, password);
       if (response && response.user) {
         navigation.dispatch(StackActions.replace('AnimalFeed'));
       }

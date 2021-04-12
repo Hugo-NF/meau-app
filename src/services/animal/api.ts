@@ -11,43 +11,43 @@ import { Values } from '../../constants';
 
 // Service implementation.
 const api = {
-  animalFirestoreCollection() : FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData> {
+
+  animalCollection() : FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData> {
     return firestore().collection('animals');
   },
 
-  animalFirestoreDocument(
+  animalDocument(
     animalUID : string | undefined,
   ) : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData> {
-    return this.animalFirestoreCollection().doc(animalUID);
+    return this.animalCollection().doc(animalUID);
   },
 
-  animalStoragePictureDir() : FirebaseStorageTypes.Reference {
+  animalPictureDir() : FirebaseStorageTypes.Reference {
     return storage().ref(Values.IMAGE_DIRECTORY);
   },
 
-  animalStoragePictures(
-    animalUID : string | undefined,
-  ) : Promise<Array<FirebaseStorageTypes.Reference>> {
-    return new Promise((resolve, reject) => {
-      this.animalFirestoreDocument(animalUID).get()
-        .then(
-          (response) => {
-            const pictures : Array<string> = response.data()?.pictures;
-
-            if (pictures !== null && pictures.length !== 0) {
-              resolve(
-                pictures.map(
-                  (picture) => storage().ref(Values.IMAGE_DIRECTORY).child(picture),
-                ),
-              );
-            } else {
-              resolve([]);
-            }
-          },
-        )
-        .catch((err) => reject(err));
-    });
+  getAll(
+    orderBy = 'name',
+  ) : Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return this.animalCollection().orderBy(orderBy).get();
   },
+
+  getOwnedByUser(
+    userUID : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
+    orderBy = 'name',
+  ) : Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return this.animalCollection()
+      .orderBy(orderBy)
+      .where('owner', '==', userUID)
+      .get();
+  },
+
+  getPictureDownloadURL(
+    pictureID : string,
+  ) : Promise<string> {
+    return this.animalPictureDir().child(pictureID).getDownloadURL();
+  },
+
 };
 
 // Export default.

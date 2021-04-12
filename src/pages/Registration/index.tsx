@@ -142,7 +142,7 @@ export default function Registration() : JSX.Element {
     username,
     password,
   } : ISignUpForm) : Promise<void> {
-    userAPI.createUserWithEmailAndPassword(email, password)
+    userAPI.createAuth(email, password)
       .then(async (credential) => {
         const userUID = credential.user.uid;
         let profilePicture = '';
@@ -154,14 +154,15 @@ export default function Registration() : JSX.Element {
             ? profilePicture = `${uuidv4()}.${profilePictureFileExtension}`
             : profilePicture = uuidv4();
 
-          await userAPI.userStorageProfilePictureDir()
-            .child(profilePicture)
-            .putFile(profilePicturePath);
+          await userAPI.uploadProfilePicture(
+            profilePicture,
+            profilePicturePath,
+          );
         }
 
         if (birthDate != null) setDateHoursToUTCMidday(birthDate);
 
-        userAPI.userFirestoreDocument(userUID).set({
+        userAPI.setDocumentData(userUID, {
           address,
           birth_date: birthDate,
           city,

@@ -11,39 +11,50 @@ import { FirebaseStorageTypes } from '@react-native-firebase/storage';
 // User module imports.
 import { Values } from '../../constants';
 
+// Type declarations.
+type QueryParams = {
+  orderBy? : string | undefined,
+  startAfter? : FirebaseFirestoreTypes.DocumentFieldType | undefined,
+  limit? : number | undefined
+}
+
 // Service implementation.
 const api = {
-  createUserWithEmailAndPassword(
+  createAuth(
     email : string, password : string,
   ) : Promise<FirebaseAuthTypes.UserCredential> {
     return auth().createUserWithEmailAndPassword(email, password);
+  },
+
+  createQuery(
+    queryParams : QueryParams = {
+      orderBy: 'username',
+    },
+  ) : FirebaseFirestoreTypes.Query {
+    let query : FirebaseFirestoreTypes.Query = this.userCollection();
+
+    if (queryParams.orderBy !== undefined) query = query.orderBy(queryParams.orderBy);
+
+    if (queryParams.startAfter !== undefined) query = query.startAfter(queryParams.startAfter);
+
+    if (queryParams.limit !== undefined) query = query.limit(queryParams.limit);
+
+    return query;
   },
 
   currentUser() : FirebaseAuthTypes.User | null {
     return auth().currentUser;
   },
 
-  signInWithEmailAndPassword(
-    email : string, password : string,
-  ) : Promise<FirebaseAuthTypes.UserCredential> {
-    return auth().signInWithEmailAndPassword(email, password);
+  currentUserDocument() : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData> {
+    return this.userDocument(this.currentUser()?.uid);
   },
 
-  userFirestoreCollection() : FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData> {
-    return firestore().collection('users');
-  },
-
-  userFirestoreDocument(
-    userUID : string | undefined,
-  ) : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData> {
-    return this.userFirestoreCollection().doc(userUID);
-  },
-
-  userStorageProfilePicture(
+  getProfilePicture(
     userUID : string | undefined,
   ) : Promise<FirebaseStorageTypes.Reference | null> {
     return new Promise((resolve, reject) => {
-      this.userFirestoreDocument(userUID).get()
+      this.userDocument(userUID).get()
         .then(
           (response) => {
             const profilePicture = response.data()?.profilePicture;
@@ -63,7 +74,50 @@ const api = {
     });
   },
 
-  userStorageProfilePictureDir() : FirebaseStorageTypes.Reference {
+  getUser(
+    userUID : string | undefined,
+  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return this.userDocument(userUID).get();
+  },
+
+  setDocumentData(
+    userUID : string, documentData : FirebaseFirestoreTypes.DocumentData,
+  ) : Promise<void> {
+    return this.userDocument(userUID).set(documentData);
+  },
+
+  signIn(
+    email : string, password : string,
+  ) : Promise<FirebaseAuthTypes.UserCredential> {
+    return auth().signInWithEmailAndPassword(email, password);
+  },
+
+  uploadProfilePicture(
+    profilePictureRemoteURI: string,
+    profilePictureLocalURI : string,
+  ) : Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.userProfilePictureDir()
+        .child(profilePictureRemoteURI)
+        .putFile(profilePictureLocalURI)
+        .then(() => {
+          resolve(profilePictureRemoteURI);
+        })
+        .catch((err) => reject(err));
+    });
+  },
+
+  userCollection() : FirebaseFirestoreTypes.CollectionReference<FirebaseFirestoreTypes.DocumentData> {
+    return firestore().collection('users');
+  },
+
+  userDocument(
+    userUID : string | undefined,
+  ) : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData> {
+    return this.userCollection().doc(userUID);
+  },
+
+  userProfilePictureDir() : FirebaseStorageTypes.Reference {
     return storage().ref(Values.IMAGE_DIRECTORY);
   },
 };

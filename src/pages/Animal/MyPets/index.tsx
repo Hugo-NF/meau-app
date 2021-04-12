@@ -24,13 +24,9 @@ const MyPets = (): JSX.Element => {
   }, [navigation]);
 
   const fetchPets = (): void => {
-    const currentUser = userAPI.currentUser();
-    const user = userAPI.userFirestoreDocument(currentUser?.uid);
+    const user = userAPI.currentUserDocument();
 
-    animalAPI.animalFirestoreCollection()
-      .orderBy('name')
-      .where('owner', '==', user)
-      .get()
+    animalAPI.getOwnedByUser(user)
       .then((result) => {
         const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
         setFetchedPets(data);
@@ -61,7 +57,9 @@ const MyPets = (): JSX.Element => {
           fetchedPets.map((pet) => (
             <AnimalCard
               key={uuidv4()}
-              imageUrlPromise={animalAPI.animalStoragePictureDir().child(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
+              imageUrlPromise={
+                animalAPI.getPictureDownloadURL(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`)
+              }
               body={
                 <Text style={{ textAlign: 'center', lineHeight: 20 }}>0 NOVOS INTERESSADOS{'\n'}ADOÇÃO</Text>
               }

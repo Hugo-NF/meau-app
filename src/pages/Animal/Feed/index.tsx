@@ -24,7 +24,7 @@ const FeedPets = (): JSX.Element => {
   }, [navigation]);
 
   const fetchPets = (): void => {
-    animalAPI.animalFirestoreCollection().orderBy('name').get()
+    animalAPI.getAll()
       .then((result) => {
         const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
         setFetchedPets(data);
@@ -56,7 +56,9 @@ const FeedPets = (): JSX.Element => {
           fetchedPets.map((pet) => (
             <AnimalCard
               key={uuidv4()}
-              imageUrlPromise={animalAPI.animalStoragePictureDir().child(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`).getDownloadURL()}
+              imageUrlPromise={
+                animalAPI.getPictureDownloadURL(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`)
+              }
               body={(
                 <CardTextContainer>
                   <CardTextRow>
