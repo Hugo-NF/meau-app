@@ -8,6 +8,9 @@ import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { FirebaseStorageTypes } from '@react-native-firebase/storage';
 
+// Context imports.
+import { useAuth } from '../../contexts/user/context';
+
 // User module imports.
 import { Values } from '../../constants';
 
@@ -43,14 +46,33 @@ const api = {
   },
 
   currentUser() : FirebaseAuthTypes.User | null {
-    return auth().currentUser;
+    const { currentUser } = useAuth();
+    return currentUser;
   },
 
   currentUserDocument() : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData> {
     return this.userDocument(this.currentUser()?.uid);
   },
 
-  getProfilePicture(
+  getPicture(
+    pictureUID : string,
+  ) : FirebaseStorageTypes.Reference {
+    return this.userProfilePictureDir().child(pictureUID);
+  },
+
+  getPictureDownloadURL(
+    pictureUID : string,
+  ) : Promise<string> {
+    return this.getPicture(pictureUID).getDownloadURL();
+  },
+
+  getUser(
+    userUID : string | undefined,
+  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return this.userDocument(userUID).get();
+  },
+
+  getUserProfilePicture(
     userUID : string | undefined,
   ) : Promise<FirebaseStorageTypes.Reference | null> {
     return new Promise((resolve, reject) => {
@@ -74,12 +96,6 @@ const api = {
     });
   },
 
-  getUser(
-    userUID : string | undefined,
-  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
-    return this.userDocument(userUID).get();
-  },
-
   setDocumentData(
     userUID : string, documentData : FirebaseFirestoreTypes.DocumentData,
   ) : Promise<void> {
@@ -90,6 +106,10 @@ const api = {
     email : string, password : string,
   ) : Promise<FirebaseAuthTypes.UserCredential> {
     return auth().signInWithEmailAndPassword(email, password);
+  },
+
+  signOut() : Promise<void> {
+    return auth().signOut();
   },
 
   uploadProfilePicture(

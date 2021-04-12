@@ -1,9 +1,7 @@
 /* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react';
 
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
 import { List, Avatar } from 'react-native-paper';
@@ -11,27 +9,23 @@ import { ScrollView } from 'react-native';
 
 import { styledComponents, styles } from './styles';
 
-import { useAuth } from '../../services/context';
-import { Values, Theme } from '../../constants';
+import { Theme } from '../../constants';
 import { getNameInitials } from '../../utils/getNameInitials';
+
+import userAPI from '../../services/user/api';
 
 export interface IDrawerProps {
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-const getImageUri = async (ref: string) : Promise<string> => {
-  const imageRef = storage().ref(ref);
-  return imageRef.getDownloadURL();
-};
-
 const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promise<{displayName: string, photo: string | undefined} | undefined> => {
   if (currentUser != null) {
-    const userDocument = await firestore().collection('users').doc(currentUser?.uid).get();
-    const userData = userDocument.data();
+    const user = await userAPI.getUser(currentUser?.uid);
+    const userData = user.data();
 
     if (userData?.profile_picture) {
       try {
-        const imageRef = await getImageUri(`${Values.IMAGE_DIRECTORY}/${userData?.profile_picture}`);
+        const imageRef = await userAPI.getPictureDownloadURL(userData?.profile_picture);
         return {
           displayName: userData?.username,
           photo: imageRef,
@@ -55,7 +49,7 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
 const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
   const navigation = useNavigation();
-  const { currentUser } = useAuth();
+  const currentUser = userAPI.currentUser();
 
   // User state
   const [userDetails, setUserDetails] = useState<{displayName: string, photo: string | undefined} | null>(null);
@@ -84,7 +78,7 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
   };
 
   const logout = async (): Promise<void> => {
-    await auth().signOut();
+    await userAPI.signOut();
     setUserDetails(null);
     navigation.reset({
       index: 0,
