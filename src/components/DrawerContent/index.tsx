@@ -25,7 +25,6 @@ const getImageUri = async (ref: string) : Promise<string> => {
 };
 
 const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promise<{displayName: string, photo: string | undefined} | undefined> => {
-  console.log('CurrentUser: ', currentUser);
   if (currentUser != null) {
     const userDocument = await firestore().collection('users').doc(currentUser?.uid).get();
     const userData = userDocument.data();
@@ -68,7 +67,6 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
           photo: data?.photo,
         });
       }
-      console.log('Promise: ', data);
     }).catch(() => null);
   }, [currentUser]);
 
