@@ -3,10 +3,12 @@ import React, { useLayoutEffect } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
 
 // Component imports.
 import InfiniteScroll from '../../components/InfiniteScroll';
+
+// Service imports.
+import userAPI from '../../services/user/api';
 
 // Style imports.
 import { styledComponents } from './styles';
@@ -37,22 +39,22 @@ export default function InfiniteScrollTest() : JSX.Element {
   async function ReturnUsers(
     lastElement : User | null, pageNumber : number, pageSize : number,
   ) : Promise<Array<User>> {
-    let firestoreQuery;
+    let query;
 
     if (pageNumber === 1 || lastElement == null) {
-      firestoreQuery = firestore()
-        .collection('users')
-        .orderBy('username')
-        .limit(pageSize);
+      query = userAPI.createQuery({
+        limit: pageSize,
+        orderBy: 'username',
+      });
     } else {
-      firestoreQuery = firestore()
-        .collection('users')
-        .orderBy('username')
-        .startAfter(lastElement.username)
-        .limit((pageNumber - 1) * pageSize);
+      query = userAPI.createQuery({
+        limit: (pageNumber - 1) * pageSize,
+        orderBy: 'username',
+        startAfter: lastElement.username,
+      });
     }
 
-    return firestoreQuery.get()
+    return query.get()
       .then((response) => {
         const userArray : Array<User> = [];
 

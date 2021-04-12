@@ -22,7 +22,7 @@ import {
 // Module imports.
 import Routes from './routes';
 import { Theme } from './constants';
-import GlobalState from './services/contextService';
+import GlobalState from './contexts/user/contextService';
 
 const theme = {
   ...DefaultTheme,
