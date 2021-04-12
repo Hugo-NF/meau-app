@@ -16,7 +16,7 @@ import userAPI from '../../services/user/api';
 import { useAuth } from '../../contexts/user/context';
 
 export interface IDrawerProps {
-  setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setParentDrawerOpen: (_: boolean) => void,
 }
 
 const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promise<{displayName: string, photo: string | undefined} | undefined> => {
@@ -47,7 +47,7 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
   return undefined;
 };
 
-const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
+const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
   const navigation = useNavigation();
   const { currentUser } = useAuth();
@@ -74,7 +74,7 @@ const DrawerContent = ({ setDrawerOpen } : IDrawerProps): JSX.Element => {
   } = styledComponents;
 
   const navigateTo = (route : string) : void => {
-    setDrawerOpen(false);
+    setParentDrawerOpen(false);
     navigation.navigate(route);
   };
 

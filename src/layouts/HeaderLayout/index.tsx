@@ -106,11 +106,10 @@ export default function HeaderLayout({
       <SideMenu
         autoClosing
         isOpen={drawerOpen}
-        onChange={(isOpen: boolean) => setDrawerOpen(isOpen)}
         menu={(
           <DrawerContent
             key="drawer-component"
-            setDrawerOpen={setDrawerOpen}
+            setParentDrawerOpen={setDrawerOpen}
           />
         )}
         menuPosition="left"
