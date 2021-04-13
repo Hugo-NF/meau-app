@@ -26,6 +26,12 @@ const api = {
     return storage().ref(Values.IMAGE_DIRECTORY);
   },
 
+  createAnimal(
+    documentData : FirebaseFirestoreTypes.DocumentData,
+  ) : Promise<FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>> {
+    return this.animalCollection().add(documentData);
+  },
+
   getAll(
     orderBy = 'name',
   ) : Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> {
@@ -46,6 +52,21 @@ const api = {
     pictureID : string,
   ) : Promise<string> {
     return this.animalPictureDir().child(pictureID).getDownloadURL();
+  },
+
+  uploadAnimalPicture(
+    profilePictureRemoteURI: string,
+    profilePictureLocalURI : string,
+  ) : Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.animalPictureDir()
+        .child(profilePictureRemoteURI)
+        .putFile(profilePictureLocalURI)
+        .then(() => {
+          resolve(profilePictureRemoteURI);
+        })
+        .catch((err) => reject(err));
+    });
   },
 
 };

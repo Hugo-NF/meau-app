@@ -9,10 +9,9 @@ import { StackActions, useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-// Firebase modules.
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+// Service imports.
+import animalAPI from '../../../services/animal/api';
+import userAPI from '../../../services/user/api';
 
 // Style imports.
 import {
@@ -31,7 +30,7 @@ import HeaderLayout from '../../../layouts/HeaderLayout';
 // Component imports.
 import AsyncButton from '../../../components/AsyncButton';
 import CustomTextInput from '../../../components/CustomTextInput';
-import { Theme, Values } from '../../../constants';
+import { Theme } from '../../../constants';
 import FileOperations from '../../../utils/FileOperations';
 
 // Enum declarations.
@@ -147,10 +146,10 @@ export default function AnimalRegistration() : JSX.Element {
   } = styledComponents;
 
   const registerAnimal = async (data: IRegisterAnimal) : Promise<void> => {
-    const userUID = auth().currentUser?.uid;
+    const userDocument = userAPI.currentUserDocument();
 
-    firestore().collection('animals').add({
-      owner: firestore().collection('users').doc(userUID),
+    animalAPI.createAnimal({
+      owner: userDocument,
       pictures: animalPictures.map((p) => p.remoteName),
       ...data,
     }).then(() => {
@@ -185,15 +184,15 @@ export default function AnimalRegistration() : JSX.Element {
         }
 
         const pictureID = uuidv4();
-        const remoteName = `${pictureID}.${extension}`;
-        const remoteUri = `${Values.IMAGE_DIRECTORY}/${remoteName}`;
+        const remoteUri = `${pictureID}.${extension}`;
 
         setUploadLock(true);
-        storage().ref(remoteUri).putFile(localUri).then(() => {
-          animalPictures.push({ id: uuidv4(), remoteName, localUri });
-          setAnimalPictures(animalPictures.slice());
-          setUploadLock(false);
-        })
+        animalAPI.uploadAnimalPicture(remoteUri, localUri)
+          .then((remoteName) => {
+            animalPictures.push({ id: uuidv4(), remoteName, localUri });
+            setAnimalPictures(animalPictures.slice());
+            setUploadLock(false);
+          })
           .catch(() => {
             setDialog({
               open: true,
