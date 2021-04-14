@@ -33,64 +33,19 @@ import CustomTextInput from '../../../components/CustomTextInput';
 import { Theme } from '../../../constants';
 import FileOperations from '../../../utils/FileOperations';
 
-// Enum declarations.
-enum Age {
-  Newborn,
-  Adult,
-  Elder,
-}
-
-enum Sex {
-  Male,
-  Female,
-}
-
-enum Size {
-  Small,
-  Medium,
-  Big,
-}
-
-enum Species {
-  Cat,
-  Dog,
-}
-
-// Type declarations.
-type AdoptionRequirements = {
-  housePhotos: boolean,
-  postAdoptionMonitoring: boolean,
-  postAdoptionMonitoringPeriod: number | null,
-  previousAnimalVisit: boolean,
-  signedTerm: boolean,
-}
-
-type HealthCondition = {
-  castrated: boolean,
-  dewormed: boolean,
-  sick: boolean,
-  vaccinated: boolean,
-}
-
-type Temperament = {
-  calm: boolean,
-  lazy: boolean,
-  loving: boolean,
-  playful: boolean,
-  shy: boolean,
-  vigilant: boolean,
-}
+// Type imports.
+import * as AnimalTypes from '../../../types/animal';
 
 // Interface declarations.
 interface IRegisterAnimal {
   name: string,
-  species: Species | null,
-  sex: Sex | null,
-  size: Size | null,
-  age: Age | null,
-  temperament: Temperament,
-  healthCondition: HealthCondition,
-  adoptionRequirements: AdoptionRequirements,
+  species: AnimalTypes.Species | null,
+  sex: AnimalTypes.Sex | null,
+  size: AnimalTypes.Size | null,
+  age: AnimalTypes.Age | null,
+  temperament: AnimalTypes.Temperament,
+  healthCondition: AnimalTypes.HealthCondition,
+  adoptionRequirements: AnimalTypes.AdoptionRequirements,
   diseases: string,
   about: string
 }
@@ -275,10 +230,10 @@ export default function AnimalRegistration() : JSX.Element {
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('O nome do animal é obrigatório'),
-            species: Yup.mixed<Species | null>().notOneOf([null], 'Selecione a espécie'),
-            sex: Yup.mixed<Sex | null>().notOneOf([null], 'Selecione a espécie'),
-            size: Yup.mixed<Size | null>().notOneOf([null], 'Selecione o porte'),
-            age: Yup.mixed<Age | null>().notOneOf([null], 'Selecione a idade'),
+            species: Yup.mixed<AnimalTypes.Species | null>().notOneOf([null], 'Selecione a espécie'),
+            sex: Yup.mixed<AnimalTypes.Sex | null>().notOneOf([null], 'Selecione a espécie'),
+            size: Yup.mixed<AnimalTypes.Size | null>().notOneOf([null], 'Selecione o porte'),
+            age: Yup.mixed<AnimalTypes.Age | null>().notOneOf([null], 'Selecione a idade'),
             adoptionRequirements: Yup.object().shape({
               postAdoptionMonitoringPeriod: Yup.mixed<number | null>().when('postAdoptionMonitoring', {
                 is: true,
@@ -330,8 +285,8 @@ export default function AnimalRegistration() : JSX.Element {
               <FormLabelText>ESPÉCIE</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Cachorro', value: Species.Dog },
-                  { label: 'Gato', value: Species.Cat },
+                  { label: 'Cachorro', value: AnimalTypes.Species.Dog },
+                  { label: 'Gato', value: AnimalTypes.Species.Cat },
                 ]}
                 initial={formikHelpers.values.species || -1}
                 onPress={(value) => formikHelpers.setFieldValue('species', value)}
@@ -346,8 +301,8 @@ export default function AnimalRegistration() : JSX.Element {
               <FormLabelText>SEXO</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Macho', value: Sex.Male },
-                  { label: 'Fêmea', value: Sex.Female },
+                  { label: 'Macho', value: AnimalTypes.Sex.Male },
+                  { label: 'Fêmea', value: AnimalTypes.Sex.Female },
                 ]}
                 initial={formikHelpers.values.sex || -1}
                 onPress={(value) => formikHelpers.setFieldValue('sex', value)}
@@ -362,9 +317,9 @@ export default function AnimalRegistration() : JSX.Element {
               <FormLabelText>PORTE</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Pequeno', value: Size.Small },
-                  { label: 'Médio', value: Size.Medium },
-                  { label: 'Grande', value: Size.Big },
+                  { label: 'Pequeno', value: AnimalTypes.Size.Small },
+                  { label: 'Médio', value: AnimalTypes.Size.Medium },
+                  { label: 'Grande', value: AnimalTypes.Size.Big },
                 ]}
                 initial={formikHelpers.values.size || -1}
                 onPress={(value) => formikHelpers.setFieldValue('size', value)}
@@ -379,9 +334,9 @@ export default function AnimalRegistration() : JSX.Element {
               <FormLabelText>IDADE</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Filhote', value: Age.Newborn },
-                  { label: 'Adulto', value: Age.Adult },
-                  { label: 'Idoso', value: Age.Elder },
+                  { label: 'Filhote', value: AnimalTypes.Age.Newborn },
+                  { label: 'Adulto', value: AnimalTypes.Age.Adult },
+                  { label: 'Idoso', value: AnimalTypes.Age.Elder },
                 ]}
                 initial={formikHelpers.values.age || -1}
                 onPress={(value) => formikHelpers.setFieldValue('age', value)}
