@@ -35,7 +35,7 @@ const api = {
 
   createQuery(
     queryParams : QueryParams = {
-      orderBy: 'username',
+      orderBy: 'name',
     },
   ) : FirebaseFirestoreTypes.Query {
     let query : FirebaseFirestoreTypes.Query = this.animalCollection();

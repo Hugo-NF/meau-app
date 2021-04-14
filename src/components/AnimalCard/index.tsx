@@ -18,7 +18,7 @@ interface IAnimalCardProps {
     onPress?: (pet: IAnimalCardPet) => void;
 }
 
-export const AnimalCard = ({
+const AnimalCard = ({
   title, body, headerOptions, imageUrlPromise, headerBackground, pet, onPress,
 } : IAnimalCardProps) : JSX.Element => {
   const [petImage, setPetImage] = useState('');
@@ -44,6 +44,8 @@ export const AnimalCard = ({
     </TouchableWithoutFeedback>
   );
 };
+
+export default AnimalCard;
 
 AnimalCard.defaultProps = {
   headerOptions: undefined,

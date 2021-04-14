@@ -5,7 +5,7 @@ import { Text } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
-import { AnimalCard } from '../../../components/AnimalCard';
+import AnimalCard from '../../../components/AnimalCard';
 import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Container } from './styles';

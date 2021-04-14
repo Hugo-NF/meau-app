@@ -1,40 +1,115 @@
 import { useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+
+import React, { useLayoutEffect } from 'react';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { v4 as uuidv4 } from 'uuid';
-import { AnimalCard } from '../../../components/AnimalCard';
-import { Theme } from '../../../constants';
+
 import HeaderLayout from '../../../layouts/HeaderLayout';
+
+import AnimalCard from '../../../components/AnimalCard';
+import InfiniteScroll from '../../../components/InfiniteScroll';
+
+import { Theme } from '../../../constants';
+
 import {
   CardText, CardTextContainer, CardTextRow, Container,
 } from './styles';
 
+// Typings imports
+import { Age, Sex, Size } from '../../../types/animal';
+
 // Service imports.
 import animalAPI from '../../../services/animal/api';
 
+type AnimalCardData = {
+  id: string;
+  name: string;
+  pictures: Array<string>;
+  age: Age;
+  sex: Sex;
+  size: Size;
+};
+
+const formatAnimal = (pet: AnimalCardData): JSX.Element => (
+  <AnimalCard
+    key={uuidv4()}
+    imageUrlPromise={
+      animalAPI.getPictureDownloadURL(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`)
+    }
+    body={(
+      <CardTextContainer>
+        <CardTextRow>
+          <CardText>{pet.sex}</CardText>
+          <CardText>{pet.size}</CardText>
+          <CardText>{pet.age}</CardText>
+        </CardTextRow>
+        {/* <CardTextRow>
+          <CardText>
+            SAMAMBAIA SUL - DISTRITO FEDERAL
+          </CardText>
+        </CardTextRow> */}
+      </CardTextContainer>
+    )}
+    title={pet.name}
+    headerOptions={(
+      <MaterialCommunityIcons
+        name="heart-outline"
+        size={24}
+        color={Theme.elements.headerText}
+      />
+    )}
+    headerBackground={Theme.elements.headerSecondary}
+    pet={{ id: pet.id }}
+  />
+);
+
+// Fetch pets function declaration
+const fetchPets = (
+  lastElement: FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData> | undefined, pageNumber: number, pageSize: number,
+): Promise<Array<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>>> => {
+  let query;
+  const orderBy = 'name';
+
+  if (pageNumber === 1 || lastElement == null) {
+    query = animalAPI.createQuery({
+      limit: pageSize,
+      orderBy,
+    });
+  } else {
+    query = animalAPI.createQuery({
+      limit: (pageNumber - 1) * pageSize,
+      orderBy,
+      startAfter: lastElement.name,
+    });
+  }
+
+  return query.get()
+    .then((response) => {
+      const animalArray: Array<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> = [];
+
+      response.forEach((childSnapshot) => {
+        const item = childSnapshot.data();
+        item.id = childSnapshot.id;
+        animalArray.push(item as FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>);
+      });
+
+      return animalArray;
+    });
+};
+
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
-
-  const [fetchedPets, setFetchedPets] = useState<FirebaseFirestoreTypes.DocumentData[]>([]);
 
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
   }, [navigation]);
 
-  const fetchPets = (): void => {
-    animalAPI.getAll()
-      .then((result) => {
-        const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
-        setFetchedPets(data);
-      });
-  };
-
-  useEffect(() => fetchPets(), []);
-
   return (
     <HeaderLayout
+      disableScrollView
       headerShown
       title="Adotar"
       headerStyles={{
@@ -52,40 +127,16 @@ const FeedPets = (): JSX.Element => {
       }}
     >
       <Container>
-        {
+        <InfiniteScroll
+          contentBatchSize={10}
+          dataFetchQuery={fetchPets}
+          formatContent={formatAnimal}
+        />
+        {/* {
           fetchedPets.map((pet) => (
-            <AnimalCard
-              key={uuidv4()}
-              imageUrlPromise={
-                animalAPI.getPictureDownloadURL(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`)
-              }
-              body={(
-                <CardTextContainer>
-                  <CardTextRow>
-                    <CardText>MACHO</CardText>
-                    <CardText>ADULTO</CardText>
-                    <CardText>MÉDIO</CardText>
-                  </CardTextRow>
-                  <CardTextRow>
-                    <CardText>
-                      SAMAMBAIA SUL - DISTRITO FEDERAL
-                    </CardText>
-                  </CardTextRow>
-                </CardTextContainer>
-              )}
-              title={pet.name}
-              headerOptions={(
-                <MaterialCommunityIcons
-                  name="heart-outline"
-                  size={24}
-                  color={Theme.elements.headerText}
-                />
-              )}
-              headerBackground={Theme.elements.headerSecondary}
-              pet={{ id: pet.id }}
-            />
+
           ))
-        }
+        } */}
       </Container>
     </HeaderLayout>
   );
