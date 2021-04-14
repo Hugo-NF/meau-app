@@ -56,7 +56,7 @@ export const styledComponents = {
   `,
 
   FormLabelText: styled.Text<TextProps>`
-    color: ${Theme.elements.label};
+    color: ${Theme.elements.labelSecondary};
     font-family: 'Roboto_400Regular';
     font-size: 12px;
     margin-top: 20px;

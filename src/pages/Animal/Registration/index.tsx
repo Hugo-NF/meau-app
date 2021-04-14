@@ -9,10 +9,6 @@ import { StackActions, useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-// Service imports.
-import animalAPI from '../../../services/animal/api';
-import userAPI from '../../../services/user/api';
-
 // Style imports.
 import {
   Button, Dialog, HelperText, Paragraph, Portal,
@@ -26,6 +22,10 @@ import { styles, styledComponents } from './styles';
 
 // Layout import
 import HeaderLayout from '../../../layouts/HeaderLayout';
+
+// Service imports.
+import animalAPI from '../../../services/animal/api';
+import userAPI from '../../../services/user/api';
 
 // Component imports.
 import AsyncButton from '../../../components/AsyncButton';
@@ -76,7 +76,7 @@ export default function AnimalRegistration() : JSX.Element {
 
   // Layout effects.
   useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
+    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, true);
   }, [navigation]);
 
   // Styled components.
@@ -288,7 +288,7 @@ export default function AnimalRegistration() : JSX.Element {
                   { label: 'Cachorro', value: AnimalTypes.Species.Dog },
                   { label: 'Gato', value: AnimalTypes.Species.Cat },
                 ]}
-                initial={formikHelpers.values.species || -1}
+                initial={formikHelpers.values.species as number || -1}
                 onPress={(value) => formikHelpers.setFieldValue('species', value)}
                 {...styles.radioForm}
               />
@@ -304,7 +304,7 @@ export default function AnimalRegistration() : JSX.Element {
                   { label: 'Macho', value: AnimalTypes.Sex.Male },
                   { label: 'Fêmea', value: AnimalTypes.Sex.Female },
                 ]}
-                initial={formikHelpers.values.sex || -1}
+                initial={formikHelpers.values.sex as number || -1}
                 onPress={(value) => formikHelpers.setFieldValue('sex', value)}
                 {...styles.radioForm}
               />
@@ -321,7 +321,7 @@ export default function AnimalRegistration() : JSX.Element {
                   { label: 'Médio', value: AnimalTypes.Size.Medium },
                   { label: 'Grande', value: AnimalTypes.Size.Big },
                 ]}
-                initial={formikHelpers.values.size || -1}
+                initial={formikHelpers.values.size as number || -1}
                 onPress={(value) => formikHelpers.setFieldValue('size', value)}
                 {...styles.radioForm}
               />
@@ -338,7 +338,7 @@ export default function AnimalRegistration() : JSX.Element {
                   { label: 'Adulto', value: AnimalTypes.Age.Adult },
                   { label: 'Idoso', value: AnimalTypes.Age.Elder },
                 ]}
-                initial={formikHelpers.values.age || -1}
+                initial={formikHelpers.values.age as number || -1}
                 onPress={(value) => formikHelpers.setFieldValue('age', value)}
                 {...styles.radioForm}
               />
@@ -356,7 +356,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.temperament.playful}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, playful: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Brincalhão</CheckBoxText>
                 </LabeledCheckBox>
@@ -366,7 +366,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.temperament.shy}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, shy: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Tímido</CheckBoxText>
                 </LabeledCheckBox>
@@ -376,7 +376,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.temperament.calm}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, calm: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Calmo</CheckBoxText>
                 </LabeledCheckBox>
@@ -388,7 +388,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.temperament.vigilant}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, vigilant: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Guarda</CheckBoxText>
                 </LabeledCheckBox>
@@ -398,7 +398,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.temperament.loving}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, loving: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Amoroso</CheckBoxText>
                 </LabeledCheckBox>
@@ -408,7 +408,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.temperament.lazy}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, lazy: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Preguiçoso</CheckBoxText>
                 </LabeledCheckBox>
@@ -421,7 +421,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.healthCondition.vaccinated}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, vaccinated: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Vacinado</CheckBoxText>
                 </LabeledCheckBox>
@@ -431,7 +431,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.healthCondition.dewormed}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, dewormed: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Vermifugado</CheckBoxText>
                 </LabeledCheckBox>
@@ -443,7 +443,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.healthCondition.castrated}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, castrated: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Castrado</CheckBoxText>
                 </LabeledCheckBox>
@@ -453,7 +453,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.healthCondition.sick}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, sick: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Doente</CheckBoxText>
                 </LabeledCheckBox>
@@ -474,7 +474,7 @@ export default function AnimalRegistration() : JSX.Element {
                   value={formikHelpers.values.adoptionRequirements.signedTerm}
                   onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, signedTerm: newValue })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Termo de adoção</CheckBoxText>
               </SingleCheckBoxRow>
@@ -484,7 +484,7 @@ export default function AnimalRegistration() : JSX.Element {
                   value={formikHelpers.values.adoptionRequirements.housePhotos}
                   onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, housePhotos: newValue })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Fotos da casa</CheckBoxText>
               </SingleCheckBoxRow>
@@ -494,7 +494,7 @@ export default function AnimalRegistration() : JSX.Element {
                   value={formikHelpers.values.adoptionRequirements.previousAnimalVisit}
                   onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, previousAnimalVisit: newValue })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Visita prévia ao animal</CheckBoxText>
               </SingleCheckBoxRow>
@@ -504,7 +504,7 @@ export default function AnimalRegistration() : JSX.Element {
                   value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoring}
                   onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoring: newValue, postAdoptionMonitoringPeriod: null })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Acompanhamento pós adoção</CheckBoxText>
               </SingleCheckBoxRow>
@@ -515,7 +515,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoringPeriod === 1}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 1 : null })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   {
                     formikHelpers.values.adoptionRequirements.postAdoptionMonitoring
@@ -529,7 +529,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoringPeriod === 3}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 3 : null })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   {
                     formikHelpers.values.adoptionRequirements.postAdoptionMonitoring
@@ -543,7 +543,7 @@ export default function AnimalRegistration() : JSX.Element {
                     value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoringPeriod === 6}
                     onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 6 : null })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   {
                     formikHelpers.values.adoptionRequirements.postAdoptionMonitoring
