@@ -3,23 +3,23 @@ export enum Age {
   Newborn,
   Adult,
   Elder,
-};
+}
 
 export enum Sex {
   Male,
   Female,
-};
+}
 
 export enum Size {
   Small,
   Medium,
   Big,
-};
+}
 
 export enum Species {
   Cat,
   Dog,
-};
+}
 
 // Type declarations.
 export type AdoptionRequirements = {

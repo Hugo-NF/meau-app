@@ -9,6 +9,13 @@ import { FirebaseStorageTypes } from '@react-native-firebase/storage';
 // User module imports.
 import { Values } from '../../constants';
 
+// Type declarations.
+type QueryParams = {
+  orderBy? : string | undefined,
+  startAfter? : FirebaseFirestoreTypes.DocumentFieldType | undefined,
+  limit? : number | undefined
+}
+
 // Service implementation.
 const api = {
 
@@ -24,6 +31,22 @@ const api = {
 
   animalPictureDir() : FirebaseStorageTypes.Reference {
     return storage().ref(Values.IMAGE_DIRECTORY);
+  },
+
+  createQuery(
+    queryParams : QueryParams = {
+      orderBy: 'username',
+    },
+  ) : FirebaseFirestoreTypes.Query {
+    let query : FirebaseFirestoreTypes.Query = this.animalCollection();
+
+    if (queryParams.orderBy !== undefined) query = query.orderBy(queryParams.orderBy);
+
+    if (queryParams.startAfter !== undefined) query = query.startAfter(queryParams.startAfter);
+
+    if (queryParams.limit !== undefined) query = query.limit(queryParams.limit);
+
+    return query;
   },
 
   getAll(
