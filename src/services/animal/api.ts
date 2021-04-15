@@ -65,13 +65,13 @@ const api = {
   },
 
   getNotOwnedByUser(
-    userUID : string,
+    userRef : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
     orderBy = 'name',
   ) : Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> {
     return this.animalCollection()
       .orderBy('owner')
       .orderBy(orderBy)
-      .where('owner', '!=', userUID)
+      .where('owner', '!=', userRef)
       .get();
   },
 

@@ -33,7 +33,7 @@ export default function NotificationsList() : JSX.Element {
   // Function declaration.
   const fetchNotifications = (): void => {
     notificationAPI.getNotifications().then((result) => {
-      setFetchedNotifications(result.docs.map((doc) => ({ id: doc.id, ...(doc.data()) })));
+      setFetchedNotifications(result.map((doc) => ({ id: doc.id, ...(doc.data()) })));
     });
   };
 
@@ -81,7 +81,7 @@ export default function NotificationsList() : JSX.Element {
             <View
               key={uuidv4()}
               style={{
-                width: 300, height: 50, flexDirection: 'row', alignItems: 'center',
+                width: 300, height: 50, flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', marginTop: 20, padding: 10,
               }}
             >
               <View style={{ flex: 1 }}>{notificationRenderer(notification)}</View>

@@ -2,12 +2,13 @@
 // Package imports.
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 // Component imports.
 
 // Service imports.
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import userAPI from '../../services/user/api';
 import animalAPI from '../../services/animal/api';
 import { INotificationDoc, INotificationAdoptionInterestData } from '../../services/notifications/api';
@@ -22,7 +23,7 @@ interface IAdoptionInterestNotificationProps {
 // Component.
 export default function AdoptionInterestNotification({ notification }: IAdoptionInterestNotificationProps) : JSX.Element {
   // Variables.
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
   const [requester, setRequester] = useState<FirebaseFirestoreTypes.DocumentData>();
   const [animal, setAnimal] = useState<FirebaseFirestoreTypes.DocumentData>();
 
@@ -34,7 +35,7 @@ export default function AdoptionInterestNotification({ notification }: IAdoption
     if (!data) return;
 
     userAPI.getUser(notification.from).then((result) => setRequester(result.data()));
-    animalAPI.getAnimal(data.animalId).then((result) => setAnimal(result.data()));
+    animalAPI.getAnimal(data.animalId).then((result) => setAnimal({ id: result.id, data: result.data() }));
   };
 
   // Page effects.
@@ -45,8 +46,12 @@ export default function AdoptionInterestNotification({ notification }: IAdoption
 
   // JSX returned.
   return (
-    <View>
-      <Text>{requester?.full_name} está interessado no seu pet {animal?.name}</Text>
-    </View>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate('AnimalDetails', { animalUID: animal?.id });
+      }}
+    >
+      <Text>{requester?.full_name} está interessado no seu pet {animal?.data.name}</Text>
+    </TouchableOpacity>
   );
 }

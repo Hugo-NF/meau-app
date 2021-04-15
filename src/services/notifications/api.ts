@@ -40,17 +40,19 @@ const setSeen = (notificationUID: string): void => {
   firestore().collection('notifications').doc(notificationUID).set({ seen: true });
 };
 
-const getNotifications = (): Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> => {
+const getNotifications = (): Promise<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>[]> => {
   const currentUser = userAPI.currentUser();
-  if (!currentUser) throw Error('This method requires session');
+  if (!currentUser) return Promise.resolve([]);
 
   return firestore().collection('notifications')
     .where('to', '==', currentUser.uid)
     .where('seen', '==', false)
-    .get();
+    .get()
+    .then((result) => result.docs)
+    .catch(() => []);
 };
 
-const countNotifications = (): Promise<number> => getNotifications().then((result) => result.docs.length);
+const countNotifications = (): Promise<number> => getNotifications().then((result) => result.length);
 
 export default {
   sendToUser,
