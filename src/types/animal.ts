@@ -73,6 +73,7 @@ export type Temperament = {
 export const AdoptionRequirementsNames = {
   housePhotos: 'fotos da casa',
   postAdoptionMonitoring: 'acompanhamento pós adoção',
+  postAdoptionMonitoringPeriod: 'período de acompanhamento pós adoção',
   previousAnimalVisit: 'visita prévia',
   signedTerm: 'termo de adoção',
 };
