@@ -22,7 +22,6 @@ export const styledComponents = {
 
   AnimalImage: styled.Image<ImageProps>`
     height: 183px;
-    width: 360px;
   `,
 
   ButtonText: styled.Text<TextProps>`

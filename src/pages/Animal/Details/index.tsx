@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import Lodash from 'lodash';
 import {
-  ActivityIndicator, Alert, ImageSourcePropType, ViewProps,
+  ActivityIndicator, Alert, Dimensions, ImageSourcePropType, ViewProps,
 } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -66,6 +66,8 @@ export default function AnimalDetails() : JSX.Element {
   ] = useState<boolean>(true);
   const [loadingOwnerData, setLoadingOwnerData] = useState<boolean>(true);
   const [pageButtons, setPageButtons] = useState<JSX.Element>();
+
+  const { width: viewportWidth } = Dimensions.get('window');
 
   // Styled components.
   const {
@@ -389,10 +391,10 @@ export default function AnimalDetails() : JSX.Element {
             <CarouselWrapper>
               <Carousel
                 data={animalPhotoSources}
-                itemWidth={styles.carouselWidth}
+                itemWidth={viewportWidth}
                 renderItem={displayAnimalImage}
                 onSnapToItem={(index) => setImageCarouselActiveIndex(index)}
-                sliderWidth={styles.carouselWidth}
+                sliderWidth={viewportWidth}
               />
               <Pagination
                 dotsLength={imageCarouselLength}
