@@ -91,6 +91,15 @@ export default function Home() : JSX.Element {
           <ButtonText>Testar scroll infinito</ButtonText>
         </AsyncButton>
         <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('NotificationsTest');
+          }}
+        >
+          <ButtonText>Testar notificações</ButtonText>
+        </AsyncButton>
+        <AsyncButton
           styles={{
             backgroundColor: 'transparent',
             marginBottom: '68px',

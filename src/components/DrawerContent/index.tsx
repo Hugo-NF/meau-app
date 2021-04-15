@@ -7,15 +7,19 @@ import { useNavigation } from '@react-navigation/native';
 import { List, Avatar } from 'react-native-paper';
 import { ScrollView } from 'react-native';
 
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { styledComponents, styles } from './styles';
 
 import { Theme } from '../../constants';
 import { getNameInitials } from '../../utils/getNameInitials';
 
 import userAPI from '../../services/user/api';
+import notificationAPI from '../../services/notifications/api';
 import { useAuth } from '../../contexts/user/context';
 
 export interface IDrawerProps {
+  parentDrawerOpen: boolean,
   setParentDrawerOpen: (_: boolean) => void,
 }
 
@@ -47,10 +51,11 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
   return undefined;
 };
 
-const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
+const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
   const navigation = useNavigation();
   const { currentUser } = useAuth();
+  const [notificationsCount, setNotificationsCount] = useState(0);
 
   // User state
   const [userDetails, setUserDetails] = useState<{displayName: string, photo: string | undefined} | null>(null);
@@ -65,9 +70,16 @@ const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
     }).catch(() => null);
   }, [currentUser]);
 
+  useEffect(() => {
+    notificationAPI.countNotifications().then((count) => setNotificationsCount(count));
+  }, [parentDrawerOpen]);
+
   // Styles
   const {
     AvatarContainer,
+    AvatarLeftContainer,
+    AvatarRightContainer,
+    NotificationCounter,
     DrawerContainer,
     LogoutButton,
     LogoutText,
@@ -116,20 +128,31 @@ const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
     <ScrollView nestedScrollEnabled>
       <DrawerContainer>
         <AvatarContainer>
-          {userDetails?.photo === undefined
-            ? (
-              <Avatar.Text
-                size={64}
-                label={getNameInitials(userDetails.displayName)}
-                style={{ backgroundColor: Theme.default.background, ...styles.Avatar }}
-              />
-              ) : (
-                <Avatar.Image
+          <AvatarLeftContainer>
+            {userDetails?.photo === undefined
+              ? (
+                <Avatar.Text
                   size={64}
-                  source={{ uri: userDetails?.photo }}
-                  style={styles.Avatar}
+                  label={getNameInitials(userDetails.displayName)}
+                  style={{ backgroundColor: Theme.default.background, ...styles.Avatar }}
                 />
-            )}
+                ) : (
+                  <Avatar.Image
+                    size={64}
+                    source={{ uri: userDetails?.photo }}
+                    style={styles.Avatar}
+                  />
+              )}
+          </AvatarLeftContainer>
+          <AvatarRightContainer>
+            <TouchableOpacity onPress={() => navigateTo('NotificationsList')}>
+              <MaterialIcons
+                name="notifications"
+                size={24}
+              />
+              <NotificationCounter>{notificationsCount}</NotificationCounter>
+            </TouchableOpacity>
+          </AvatarRightContainer>
         </AvatarContainer>
         <List.Section style={styles.ListSection}>
           <List.Accordion

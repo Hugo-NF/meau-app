@@ -22,6 +22,12 @@ const api = {
     return this.animalCollection().doc(animalUID);
   },
 
+  getAnimal(
+    animalUID : string | undefined,
+  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return this.animalDocument(animalUID).get();
+  },
+
   animalPictureDir() : FirebaseStorageTypes.Reference {
     return storage().ref(Values.IMAGE_DIRECTORY);
   },
