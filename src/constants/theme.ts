@@ -34,7 +34,7 @@ const Theme = {
     inputSucess: '#7BDEB2',
     inputError: '#FCB3A4',
     placeholder: '#9FA5AA',
-    radioButtom: '#757575',
+    radioButton: '#757575',
     photoBackground: '#E6E7E7',
     photoIcon: '#757575',
     drawerBackground: '#F7F7F7',

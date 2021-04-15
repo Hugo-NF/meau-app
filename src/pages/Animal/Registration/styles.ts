@@ -124,7 +124,7 @@ export const styles = {
 
   radioForm: {
     animation: false,
-    buttonColor: Theme.elements.radioButtom,
+    buttonColor: Theme.elements.radioButton,
     buttonOuterSize: 21,
     buttonSize: 12,
     formHorizontal: true,
