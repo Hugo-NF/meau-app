@@ -12,6 +12,7 @@ import {
 } from './styles';
 
 // Service imports.
+import userAPI from '../../../services/user/api';
 import animalAPI from '../../../services/animal/api';
 
 const FeedPets = (): JSX.Element => {
@@ -24,11 +25,13 @@ const FeedPets = (): JSX.Element => {
   }, [navigation]);
 
   const fetchPets = (): void => {
-    animalAPI.getAll()
-      .then((result) => {
-        const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
-        setFetchedPets(data);
-      });
+    const user = userAPI.currentUser();
+    const query = user ? animalAPI.getNotOwnedByUser(user.uid) : animalAPI.getAll();
+
+    query.then((result) => {
+      const data = result.docs.map((doc) => ({ id: doc.id, ...(doc.data()) }));
+      setFetchedPets(data);
+    });
   };
 
   useEffect(() => fetchPets(), []);
@@ -83,6 +86,7 @@ const FeedPets = (): JSX.Element => {
               )}
               headerBackground={Theme.elements.headerSecondary}
               pet={{ id: pet.id }}
+              onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet.id })}
             />
           ))
         }

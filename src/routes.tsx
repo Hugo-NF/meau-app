@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import InfiniteScrollTest from './pages/InfiniteScrollTest';
 
 // Importing our pages.
+import AnimalDetails from './pages/Animal/Details';
 import AnimalFeed from './pages/Animal/Feed';
 import AnimalRegistration from './pages/Animal/Registration';
 import AnimalRegistrationSuccess from './pages/Animal/Success';
@@ -34,6 +35,10 @@ export default class Routes extends React.Component {
   AppStack = createStackNavigator();
 
   routes: IRouteRule[] = [
+    {
+      name: 'AnimalDetails',
+      component: AnimalDetails,
+    },
     {
       name: 'AnimalRegistration',
       component: AnimalRegistration,

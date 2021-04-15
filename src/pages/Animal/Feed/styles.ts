@@ -24,6 +24,7 @@ export const CardTextRow = styled.View<ViewProps>`
 `;
 
 export const Container = styled.View<ViewProps>`
+  padding-top: 16px;
   align-items: center;
   flex: 1;
   background-color: ${Theme.default.background}
