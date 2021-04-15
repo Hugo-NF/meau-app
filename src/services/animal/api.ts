@@ -32,10 +32,20 @@ const api = {
     return this.animalCollection().add(documentData);
   },
 
+  deleteAnimal(animalUID : string) : Promise<void> {
+    return this.animalDocument(animalUID).delete();
+  },
+
   getAll(
     orderBy = 'name',
   ) : Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> {
     return this.animalCollection().orderBy(orderBy).get();
+  },
+
+  getAnimal(
+    animalUID : string,
+  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return this.animalDocument(animalUID).get();
   },
 
   getOwnedByUser(

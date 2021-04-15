@@ -17,6 +17,7 @@ const Theme = {
     invalidText: '#BDBDBD',
     placeholderText: '#BDBDBD',
     fieldText: '#575756',
+    labelPrimary: '#589B9B',
     labelSecondary: '#F7A800',
     divider: '#E0E0E0',
     statusBarPrimary: '#88C9BF',
@@ -43,6 +44,10 @@ const Theme = {
     icon: '#757575',
     iconBackground: '#E6E7E7',
     cardText: '#434343',
+    titleText: '#434343',
+    sectionBreak: '#E0E0E0',
+    adoptionButton: '#FDCF58',
+    floatingButton: '#FAFAFA',
   },
   named: {
     blue: '#007BFF',
