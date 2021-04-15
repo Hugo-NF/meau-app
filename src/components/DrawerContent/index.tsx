@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { List, Avatar } from 'react-native-paper';
 import { ScrollView } from 'react-native';
+import useIsMounted from 'ismounted';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -53,6 +54,7 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
 
 const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
+  const isMounted = useIsMounted();
   const navigation = useNavigation();
   const { currentUser } = useAuth();
   const [notificationsCount, setNotificationsCount] = useState(0);
@@ -61,7 +63,7 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
   const [userDetails, setUserDetails] = useState<{displayName: string, photo: string | undefined} | null>(null);
   useEffect(() => {
     fetchProfile(currentUser).then((data) => {
-      if (data !== undefined) {
+      if (data !== undefined && isMounted.current) {
         setUserDetails({
           displayName: data.displayName,
           photo: data?.photo,
@@ -71,7 +73,7 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
   }, [currentUser]);
 
   useEffect(() => {
-    notificationAPI.countNotifications().then((count) => setNotificationsCount(count));
+    notificationAPI.countNotifications().then((count) => isMounted.current && setNotificationsCount(count));
   }, [parentDrawerOpen]);
 
   // Styles
@@ -92,7 +94,7 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
 
   const logout = async (): Promise<void> => {
     await userAPI.signOut();
-    setUserDetails(null);
+    if (isMounted.current) setUserDetails(null);
     navigation.reset({
       index: 0,
       routes: [{ name: 'Home' }],
