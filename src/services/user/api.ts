@@ -63,6 +63,12 @@ const api = {
     return this.getPicture(pictureUID).getDownloadURL();
   },
 
+  getReference(
+    userRef : FirebaseFirestoreTypes.DocumentReference,
+  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return userRef.get();
+  },
+
   getUser(
     userUID : string | undefined,
   ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {

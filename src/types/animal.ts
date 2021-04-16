@@ -1,3 +1,5 @@
+import { I18nManager } from 'react-native';
+
 // Enum declarations.
 export enum Age {
   Newborn,
@@ -20,6 +22,29 @@ export enum Species {
   Cat,
   Dog,
 }
+
+// Companion objects for enums.
+export const AgeNames = {
+  [Age.Newborn]: 'Filhote',
+  [Age.Adult]: 'Adulto',
+  [Age.Elder]: 'Idoso',
+};
+
+export const SexNames = {
+  [Sex.Male]: 'Macho',
+  [Sex.Female]: 'Fêmea',
+};
+
+export const SizeNames = {
+  [Size.Small]: 'Pequeno',
+  [Size.Medium]: 'Médio',
+  [Size.Big]: 'Grande',
+};
+
+export const SpeciesNames = {
+  [Species.Cat]: 'Gato',
+  [Species.Dog]: 'Cachorro',
+};
 
 // Type declarations.
 export type AdoptionRequirements = {
@@ -44,4 +69,29 @@ export type Temperament = {
   playful: boolean,
   shy: boolean,
   vigilant: boolean,
+};
+
+// Companion objects for types.
+export const AdoptionRequirementsNames = {
+  housePhotos: 'fotos da casa',
+  postAdoptionMonitoring: 'acompanhamento pós adoção',
+  postAdoptionMonitoringPeriod: 'período de acompanhamento pós adoção',
+  previousAnimalVisit: 'visita prévia',
+  signedTerm: 'termo de adoção',
+};
+
+export const HealthConditionNames = {
+  castrated: 'castrado',
+  dewormed: 'vermifugado',
+  sick: 'doente',
+  vaccinated: 'vacinado',
+};
+
+export const TemperamentNames = {
+  calm: 'calmo',
+  lazy: 'preguiçoso',
+  loving: 'amoroso',
+  playful: 'brincalhão',
+  shy: 'tímido',
+  vigilant: 'guarda',
 };
