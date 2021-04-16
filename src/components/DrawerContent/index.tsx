@@ -33,18 +33,18 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
       try {
         const imageRef = await userAPI.getPictureDownloadURL(userData?.profile_picture);
         return {
-          displayName: userData?.username,
+          displayName: userData?.full_name,
           photo: imageRef,
         };
       } catch (exc) {
         return {
-          displayName: userData?.username,
+          displayName: userData?.full_name,
           photo: undefined,
         };
       }
     } else {
       return {
-        displayName: userData?.username,
+        displayName: userData?.full_name,
         photo: undefined,
       };
     }
@@ -242,6 +242,34 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
             <List.Item
               title="Privacidade"
               titleStyle={styles.ListItemTextDisabled}
+            />
+          </List.Accordion>
+        </List.Section>
+        <List.Section style={styles.ListSection}>
+          <List.Accordion
+            left={(props) => <List.Icon {...props} icon="android-debug-bridge" color={Theme.elements.icon} />}
+            title="Desenvolvimento"
+            style={{ backgroundColor: Theme.elements.settingsDrawerBackground, ...styles.ListAccordion }}
+            titleStyle={styles.SectionTitle}
+          >
+            <List.Item
+              title="Testar scroll infinito"
+              onPress={() => navigateTo('InfiniteScrollTest')}
+              titleStyle={styles.ListItemText}
+            />
+            <List.Item
+              title="Testar notificações"
+              onPress={() => navigateTo('NotificationsTest')}
+              titleStyle={styles.ListItemText}
+            />
+            <List.Item
+              title="Testar detalhes de animal"
+              onPress={() => navigation.navigate('AnimalDetails', {
+                animalUID: 'kfGJBTaVgrZWSW8tYPH0',
+                // animalUID: 'LOfARuFuxsomAdMjPi7z',
+                // animalUID: 'rKP3F3TCxW36ieshzfMi',
+              })}
+              titleStyle={styles.ListItemText}
             />
           </List.Accordion>
         </List.Section>
