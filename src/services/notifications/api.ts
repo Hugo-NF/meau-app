@@ -37,7 +37,7 @@ const sendToUser = (toUserUID: string, message: string, type: NotificationType =
 };
 
 const setSeen = (notificationUID: string): void => {
-  firestore().collection('notifications').doc(notificationUID).set({ seen: true });
+  firestore().collection('notifications').doc(notificationUID).update({ seen: true });
 };
 
 const getNotifications = (): Promise<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>[]> => {
