@@ -236,7 +236,7 @@ export default function AnimalDetails() : JSX.Element {
                         styles={styles.ownerOptionButton}
                         asyncAction={false}
                         callback={async () => {
-                          console.log(await (await adoptionAPI.getInterestedIn(animal.ref)).map((interested) => interested.id));
+                          console.log((await adoptionAPI.getInterestedIn(animal.ref)).map((interested) => interested));
                         }}
                       >
                         <ButtonText>Ver interessados</ButtonText>

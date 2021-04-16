@@ -9,53 +9,53 @@
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import notificationAPI, { NotificationType } from '../notifications/api';
 
-const getInterestedIn = async (
-  animalRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
-): Promise<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>[]> => firestore().collection('animalInterests')
-  .where('animal', '==', animalRef)
-  .get()
-  .then((result) => result.docs.map((data) => data.data().user))
-  .catch(() => []);
+type DocumentData = FirebaseFirestoreTypes.DocumentData;
+type DocumentRefData = FirebaseFirestoreTypes.DocumentReference<DocumentData>;
 
-const checkIfInterestedIn = async (
-  animalRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
-  userRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
-): Promise<boolean> => firestore().collection('animalInterests')
-  .where('animal', '==', animalRef)
-  .where('user', '==', userRef)
-  .get()
-  .then((result) => result.size > 0)
-  .catch(() => false);
+const getInterestedIn = async (animal: DocumentRefData): Promise<DocumentData> => {
+  const result = await firestore().collection('animalInterests')
+    .where('animal', '==', animal)
+    .get();
 
-const toggleInterestToAnimal = async (
-  animalRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
-  userRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
-): Promise<boolean> => {
-  if (await checkIfInterestedIn(animalRef, userRef)) {
-    return firestore().collection('animalInterests')
-      .where('animal', '==', animalRef)
-      .where('user', '==', userRef)
-      .get()
-      .then((result) => {
-        const batch = firestore().batch();
-        result.docs.forEach((doc) => batch.delete(doc.ref));
-        batch.commit();
-        return true;
-      })
-      .catch(() => false);
+  return Promise.all(result.docs.map(async (doc) => doc.data().user.get()));
+};
+
+const checkIfInterestedIn = async (animal: DocumentRefData, user: DocumentRefData): Promise<boolean> => {
+  const result = await firestore().collection('animalInterests')
+    .where('animal', '==', animal)
+    .where('user', '==', user)
+    .get();
+
+  return result.size > 0;
+};
+
+const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
+  await firestore().collection('animalInterests').add({ animal, user });
+
+  const animalData = await (await animal.get()).data();
+  const animalOwnerId = animalData?.owner.id;
+
+  notificationAPI.sendToUser(animalOwnerId, '', NotificationType.adoptionInterest, { animalId: animal.id });
+};
+
+const removeInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
+  const result = await firestore().collection('animalInterests')
+    .where('animal', '==', animal)
+    .where('user', '==', user)
+    .get();
+
+  const batch = firestore().batch();
+  result.docs.forEach((doc) => batch.delete(doc.ref));
+  batch.commit();
+};
+
+const toggleInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
+  if (await checkIfInterestedIn(animal, user)) {
+    await removeInterestToAnimal(animal, user);
   }
-
-  return firestore().collection('animalInterests').add({
-    animal: animalRef,
-    user: userRef,
-  })
-    .then(async () => {
-      const result = await animalRef.get();
-      const toUser = result.data()?.owner.id;
-      notificationAPI.sendToUser(toUser, '', NotificationType.adoptionInterest, { animalId: animalRef.id });
-      return true;
-    })
-    .catch(() => false);
+  else {
+    await addInterestToAnimal(animal, user);
+  }
 };
 
 export default {
