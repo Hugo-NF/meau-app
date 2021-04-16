@@ -72,13 +72,7 @@ export default function NotificationsTest() : JSX.Element {
                 width: 300, height: 50, flexDirection: 'row', alignItems: 'center',
               }}
             >
-              <Text style={{ flex: 1 }}>{user.username}</Text>
-              <TouchableOpacity onPress={() => notificationAPI.sendToUser(user.id, 'Teste de notificação', NotificationType.adoptionInterest)}>
-                <MaterialCommunityIcons
-                  name="heart"
-                  size={24}
-                />
-              </TouchableOpacity>
+              <Text style={{ flex: 1 }}>{user.full_name}</Text>
               <TouchableOpacity onPress={() => notificationAPI.sendToUser(user.id, 'Teste de notificação')}>
                 <MaterialIcons
                   name="notifications"

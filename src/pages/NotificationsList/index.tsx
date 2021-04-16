@@ -26,7 +26,6 @@ export default function NotificationsList() : JSX.Element {
   const navigation = useNavigation();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [fetchedNotifications, setFetchedNotifications] = useState<any[]>([]);
-  const [updateState, setUpdateState] = useState(0);
 
   // Styled components.
 
@@ -37,7 +36,7 @@ export default function NotificationsList() : JSX.Element {
     });
   };
 
-  useEffect(() => fetchNotifications(), [updateState]);
+  useEffect(() => fetchNotifications(), []);
 
   // Page effects.
   useLayoutEffect(() => {
@@ -55,6 +54,12 @@ export default function NotificationsList() : JSX.Element {
       default:
         return (<Text>{notification.message}</Text>);
     }
+  };
+
+  const removeNotification = (index): void => {
+    const fetchedCopy = fetchedNotifications.slice();
+    fetchedCopy.splice(index, 1);
+    setFetchedNotifications(fetchedCopy);
   };
 
   // JSX returned.
@@ -77,7 +82,7 @@ export default function NotificationsList() : JSX.Element {
     >
       <Container>
         {
-          fetchedNotifications.map((notification) => (
+          fetchedNotifications.map((notification, index) => (
             <View
               key={uuidv4()}
               style={{
@@ -85,7 +90,7 @@ export default function NotificationsList() : JSX.Element {
               }}
             >
               <View style={{ flex: 1 }}>{notificationRenderer(notification)}</View>
-              <TouchableOpacity onPress={() => { notificationAPI.setSeen(notification.id); setUpdateState(updateState + 1); }}>
+              <TouchableOpacity onPress={() => { notificationAPI.setSeen(notification.id); removeNotification(index); }}>
                 <MaterialIcons
                   name="cancel"
                   size={24}
