@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 // Package imports.
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 // Component imports.
@@ -42,7 +42,7 @@ export default function AdoptionInterestNotification({ notification }: IAdoption
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   // JSX returned.
   return (

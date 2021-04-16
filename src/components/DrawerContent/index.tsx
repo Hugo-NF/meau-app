@@ -70,10 +70,12 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
         });
       }
     }).catch(() => null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   useEffect(() => {
     notificationAPI.countNotifications().then((count) => isMounted.current && setNotificationsCount(count));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parentDrawerOpen]);
 
   // Styles
