@@ -124,11 +124,6 @@ const FeedPets = (): JSX.Element => {
           dataFetchQuery={fetchPets}
           formatContent={formatAnimal}
         />
-        {/* {
-          fetchedPets.map((pet) => (
-
-          ))
-        } */}
       </Container>
     </HeaderLayout>
   );
