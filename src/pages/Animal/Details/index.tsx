@@ -234,7 +234,7 @@ export default function AnimalDetails() : JSX.Element {
                         styles={styles.ownerOptionButton}
                         asyncAction={false}
                         callback={async () => {
-                          console.log((await adoptionAPI.getInterestedIn(animal.ref)));
+                          // console.log((await adoptionAPI.getInterestedIn(animal.ref)));
                         }}
                       >
                         <ButtonText>Ver interessados</ButtonText>
