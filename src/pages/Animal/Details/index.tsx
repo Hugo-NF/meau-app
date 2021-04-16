@@ -209,8 +209,6 @@ export default function AnimalDetails() : JSX.Element {
         );
 
         // Set page theme and animal location via owner document.
-        console.log('curerntUser', userAPI.currentUser().uid);
-        console.log('owner', animalData?.owner.id);
         if (animalData?.owner !== undefined) {
           userAPI.getReference(animalData?.owner)
             .then(
@@ -236,7 +234,7 @@ export default function AnimalDetails() : JSX.Element {
                         styles={styles.ownerOptionButton}
                         asyncAction={false}
                         callback={async () => {
-                          console.log((await adoptionAPI.getInterestedIn(animal.ref)).map((interested) => interested));
+                          console.log((await adoptionAPI.getInterestedIn(animal.ref)));
                         }}
                       >
                         <ButtonText>Ver interessados</ButtonText>
@@ -292,7 +290,22 @@ export default function AnimalDetails() : JSX.Element {
                         styles={styles.adoptionButton}
                         asyncAction={false}
                         callback={() => {
-                          adoptionAPI.toggleInterestToAnimal(animal.ref, userAPI.currentUserDocument());
+                          Alert.alert(
+                            'Aviso',
+                            'Deseja continuar?',
+                            [
+                              {
+                                text: 'Sim',
+                                onPress: () => {
+                                  adoptionAPI.toggleInterestToAnimal(animal.ref, userAPI.currentUserDocument());
+                                  Alert.alert('Concluído', 'Operação realizada com sucesso!');
+                                  navigation.navigate('AnimalFeed');
+                                },
+                                style: 'cancel',
+                              },
+                              { text: 'Não' },
+                            ],
+                          );
                         }}
                       >
                         <ButtonTextStrong>{ resultInterestedIn ? 'Desistir da adoção' : 'Pretendo adotar' }</ButtonTextStrong>
