@@ -18,60 +18,52 @@ import {
   CardText, CardTextContainer, CardTextRow, Container,
 } from './styles';
 
-// Typings imports
-import { Age, Sex, Size } from '../../../types/animal';
-
 // Service imports.
 import animalAPI from '../../../services/animal/api';
 
-type AnimalCardData = {
-  id: string;
-  name: string;
-  pictures: Array<string>;
-  age: Age;
-  sex: Sex;
-  size: Size;
+const formatAnimal = (pet: FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>): JSX.Element => {
+  const petData = pet.data();
+  return (
+    <AnimalCard
+      key={uuidv4()}
+      imageUrlPromise={
+        animalAPI.getPictureDownloadURL(`${petData?.pictures.length > 0 ? `${petData?.pictures[0]}` : 'pet.jpg'}`)
+      }
+      body={(
+        <CardTextContainer>
+          <CardTextRow>
+            <CardText>{petData?.sex}</CardText>
+            <CardText>{petData?.size}</CardText>
+            <CardText>{petData?.age}</CardText>
+          </CardTextRow>
+          {/* <CardTextRow>
+            <CardText>
+              SAMAMBAIA SUL - DISTRITO FEDERAL
+            </CardText>
+          </CardTextRow> */}
+        </CardTextContainer>
+      )}
+      title={petData?.name}
+      headerOptions={(
+        <MaterialCommunityIcons
+          name="heart-outline"
+          size={24}
+          color={Theme.elements.headerText}
+        />
+      )}
+      headerBackground={Theme.elements.headerSecondary}
+      pet={{ id: petData?.id }}
+    />
+  );
 };
-
-const formatAnimal = (pet: AnimalCardData): JSX.Element => (
-  <AnimalCard
-    key={uuidv4()}
-    imageUrlPromise={
-      animalAPI.getPictureDownloadURL(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`)
-    }
-    body={(
-      <CardTextContainer>
-        <CardTextRow>
-          <CardText>{pet.sex}</CardText>
-          <CardText>{pet.size}</CardText>
-          <CardText>{pet.age}</CardText>
-        </CardTextRow>
-        {/* <CardTextRow>
-          <CardText>
-            SAMAMBAIA SUL - DISTRITO FEDERAL
-          </CardText>
-        </CardTextRow> */}
-      </CardTextContainer>
-    )}
-    title={pet.name}
-    headerOptions={(
-      <MaterialCommunityIcons
-        name="heart-outline"
-        size={24}
-        color={Theme.elements.headerText}
-      />
-    )}
-    headerBackground={Theme.elements.headerSecondary}
-    pet={{ id: pet.id }}
-  />
-);
 
 // Fetch pets function declaration
 const fetchPets = (
-  lastElement: FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData> | undefined, pageNumber: number, pageSize: number,
+  lastElement: FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData> | null, pageNumber: number, pageSize: number,
 ): Promise<Array<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>>> => {
   let query;
   const orderBy = 'name';
+  const lastElementData = lastElement?.data();
 
   if (pageNumber === 1 || lastElement == null) {
     query = animalAPI.createQuery({
@@ -82,7 +74,7 @@ const fetchPets = (
     query = animalAPI.createQuery({
       limit: (pageNumber - 1) * pageSize,
       orderBy,
-      startAfter: lastElement.name,
+      startAfter: lastElementData?.name,
     });
   }
 
