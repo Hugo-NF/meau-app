@@ -13,9 +13,7 @@ import { Container } from './styles';
 // Component imports.
 
 // Service imports.
-import notificationAPI, { INotificationDoc, NotificationType } from '../../services/notifications/api';
-import AdoptionInterestNotification from '../../components/AdoptionInterestNotification';
-
+import notificationAPI, { NotificationType, NotificationModels } from '../../services/notifications/api';
 // Style imports.
 
 // Type declaration.
@@ -32,7 +30,7 @@ export default function NotificationsList() : JSX.Element {
   // Function declaration.
   const fetchNotifications = (): void => {
     notificationAPI.getNotifications().then((result) => {
-      setFetchedNotifications(result.map((doc) => ({ id: doc.id, ...(doc.data()) })));
+      setFetchedNotifications(result);
     });
   };
 
@@ -43,12 +41,18 @@ export default function NotificationsList() : JSX.Element {
     setStatusBarBackgroundColor('transparent', true);
   }, [navigation]);
 
-  const notificationRenderer = (notification: INotificationDoc): JSX.Element => {
+  const notificationRenderer = (notification: (NotificationModels)): JSX.Element => {
     switch (notification.type) {
       case NotificationType.adoptionInterest:
       {
         return (
-          <AdoptionInterestNotification notification={notification} />
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
+            }}
+          >
+            <Text>{notification.from.data().full_name} está interessado no seu pet {notification.animal.data().name}</Text>
+          </TouchableOpacity>
         );
       }
       default:
@@ -56,7 +60,7 @@ export default function NotificationsList() : JSX.Element {
     }
   };
 
-  const removeNotification = (index): void => {
+  const removeNotification = (index: number): void => {
     const fetchedCopy = fetchedNotifications.slice();
     fetchedCopy.splice(index, 1);
     setFetchedNotifications(fetchedCopy);
@@ -89,8 +93,8 @@ export default function NotificationsList() : JSX.Element {
                 width: 300, height: 50, flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', marginTop: 20, padding: 10,
               }}
             >
-              <View style={{ flex: 1 }}>{notificationRenderer(notification)}</View>
-              <TouchableOpacity onPress={() => { notificationAPI.setSeen(notification.id); removeNotification(index); }}>
+              <View style={{ flex: 1, paddingRight: 10 }}>{notificationRenderer(notification)}</View>
+              <TouchableOpacity onPress={() => { notificationAPI.setSeenById(notification.id); removeNotification(index); }}>
                 <MaterialIcons
                   name="cancel"
                   size={24}

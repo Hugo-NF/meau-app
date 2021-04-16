@@ -6,11 +6,9 @@
 // User can choose one interested user so that and transfer is complete and other interested are removed
 // User can reject some interested users still keeping the others
 
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import notificationAPI, { NotificationType } from '../notifications/api';
-
-type DocumentData = FirebaseFirestoreTypes.DocumentData;
-type DocumentRefData = FirebaseFirestoreTypes.DocumentReference<DocumentData>;
+import { DocumentData, DocumentRefData } from '../../types/firebase';
 
 const getInterestedIn = async (animal: DocumentRefData): Promise<DocumentData> => {
   const result = await firestore().collection('animalInterests')
@@ -35,7 +33,7 @@ const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefDat
   const animalData = await (await animal.get()).data();
   const animalOwnerId = animalData?.owner.id;
 
-  notificationAPI.sendToUser(animalOwnerId, '', NotificationType.adoptionInterest, { animalId: animal.id });
+  notificationAPI.sendToUser(animalOwnerId, '', NotificationType.adoptionInterest, { animal });
 };
 
 const removeInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
@@ -52,8 +50,7 @@ const removeInterestToAnimal = async (animal: DocumentRefData, user: DocumentRef
 const toggleInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
   if (await checkIfInterestedIn(animal, user)) {
     await removeInterestToAnimal(animal, user);
-  }
-  else {
+  } else {
     await addInterestToAnimal(animal, user);
   }
 };

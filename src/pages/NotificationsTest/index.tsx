@@ -6,7 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Theme } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
 import { Container } from './styles';
@@ -15,7 +14,7 @@ import { Container } from './styles';
 
 // Service imports.
 import userAPI from '../../services/user/api';
-import notificationAPI, { NotificationType } from '../../services/notifications/api';
+import notificationAPI from '../../services/notifications/api';
 
 // Style imports.
 

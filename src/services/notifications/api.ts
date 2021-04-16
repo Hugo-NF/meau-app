@@ -1,4 +1,5 @@
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+import { DocumentData, DocumentRefData } from '../../types/firebase';
 
 import userAPI from '../user/api';
 
@@ -7,56 +8,94 @@ export enum NotificationType {
   adoptionInterest = 'AIN',
 }
 
-export interface INotificationDoc {
-  from: string,
-  to: string,
-  message: string,
-  seen: boolean,
-  type: NotificationType,
-  data: Record<string, unknown>,
-}
-
 export interface INotificationAdoptionInterestData {
-  animalId: string,
+  animal: DocumentRefData,
 }
 
-const sendToUser = (toUserUID: string, message: string, type: NotificationType = NotificationType.standard, data: Record<string, unknown> = {}): void => {
-  const currentUser = userAPI.currentUser();
+export interface NotificationModel {
+  id: string,
+  from: DocumentData,
+  to: DocumentRefData,
+  message: string,
+  seen: false,
+}
+
+export interface NotificationStandardModel extends NotificationModel {
+  type: NotificationType.standard,
+}
+
+export interface NotificationAdoptionModel extends NotificationModel {
+  type: NotificationType.adoptionInterest,
+  animal: DocumentData,
+}
+
+export type NotificationModels = NotificationStandardModel | NotificationAdoptionModel;
+
+const sendToUser = (
+  user: DocumentRefData,
+  message: string,
+  type: NotificationType = NotificationType.standard,
+  data: (INotificationAdoptionInterestData | null) = null,
+): void => {
+  const currentUser = userAPI.currentUserDocument();
   if (!currentUser) return;
 
   firestore().collection('notifications').add({
-    from: currentUser.uid,
-    to: toUserUID,
+    from: currentUser,
+    to: user,
     message,
     seen: false,
     type,
     data,
-  })
-    .then(() => null)
-    .catch(() => null);
+  });
 };
 
-const setSeen = (notificationUID: string): void => {
-  firestore().collection('notifications').doc(notificationUID).update({ seen: true });
+const setSeenById = (notificationId: string): void => {
+  firestore().collection('notifications').doc(notificationId).update({ seen: true });
 };
 
-const getNotifications = (): Promise<FirebaseFirestoreTypes.QueryDocumentSnapshot<FirebaseFirestoreTypes.DocumentData>[]> => {
+const toModel = async (notification: DocumentData): Promise<NotificationModels> => {
+  const notificationData = notification.data();
+  switch (notificationData.type) {
+    case NotificationType.adoptionInterest:
+      return {
+        id: notification.id,
+        from: await notificationData.from.get(),
+        to: notificationData.to,
+        message: notificationData.message,
+        seen: notificationData.seen,
+        animal: await notificationData.data.animal.get(),
+        type: notificationData.type,
+      };
+    default:
+      return {
+        id: notification.id,
+        from: notificationData.from.get(),
+        to: notificationData.to,
+        message: notificationData.message,
+        seen: notificationData.seen,
+        type: notificationData.type,
+      };
+  }
+};
+
+const getNotifications = async (): Promise<(NotificationModel | NotificationAdoptionModel)[]> => {
   const currentUser = userAPI.currentUser();
   if (!currentUser) return Promise.resolve([]);
 
-  return firestore().collection('notifications')
+  const query = await firestore().collection('notifications')
     .where('to', '==', currentUser.uid)
     .where('seen', '==', false)
-    .get()
-    .then((result) => result.docs)
-    .catch(() => []);
+    .get();
+
+  return Promise.all(query.docs.map(toModel));
 };
 
-const countNotifications = (): Promise<number> => getNotifications().then((result) => result.length);
+const countNotifications = async (): Promise<number> => (await getNotifications()).length;
 
 export default {
   sendToUser,
-  setSeen,
+  setSeenById,
   getNotifications,
   countNotifications,
 };
