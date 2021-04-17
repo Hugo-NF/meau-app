@@ -1,11 +1,3 @@
-// User can add animal to adoption interest
-// User can remove animal from adoption interest
-// User can see animals interested in
-// User can see other ones interested on it`s animals
-// User can see new ones interested on it`s animals
-// User can choose one interested user so that and transfer is complete and other interested are removed
-// User can reject some interested users still keeping the others
-
 import firestore from '@react-native-firebase/firestore';
 import notificationAPI, { NotificationType } from '../notifications/api';
 import { DocumentData, DocumentRefData } from '../../types/firebase';
