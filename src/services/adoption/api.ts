@@ -22,7 +22,7 @@ const checkIfInterestedIn = async (animal: DocumentRefData, user: DocumentRefDat
 const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
   await firestore().collection('animalInterests').add({ animal, user });
 
-  const animalData = await (await animal.get()).data();
+  const animalData = (await animal.get()).data();
   const animalOwnerId = animalData?.owner.id;
 
   notificationAPI.sendToUser(animalOwnerId, '', NotificationType.adoptionInterest, { animal });

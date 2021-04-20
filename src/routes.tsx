@@ -17,6 +17,7 @@ import Unauthorized from './pages/Unauthorized';
 import Context from './contexts/user/context';
 import NotificationsTest from './pages/NotificationsTest';
 import NotificationsList from './pages/NotificationsList';
+import Interested from './pages/Animal/Interested';
 
 interface IRouteRule {
   name: string,
@@ -91,6 +92,11 @@ export default class Routes extends React.Component {
     {
       name: 'NotificationsList',
       component: NotificationsList,
+      requireSession: true,
+    },
+    {
+      name: 'Interested',
+      component: Interested,
       requireSession: true,
     },
   ];

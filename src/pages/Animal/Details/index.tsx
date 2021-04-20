@@ -234,6 +234,7 @@ export default function AnimalDetails() : JSX.Element {
                         styles={styles.ownerOptionButton}
                         asyncAction={false}
                         callback={async () => {
+                          navigation.navigate('Interested', { animalUID });
                           // console.log((await adoptionAPI.getInterestedIn(animal.ref)));
                         }}
                       >
