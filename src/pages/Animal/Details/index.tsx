@@ -30,6 +30,9 @@ import * as AnimalTypes from '../../../types/animal';
 import * as CarouselTypes from '../../../types/carousel';
 import * as RouteTypes from '../../../types/routes';
 
+// Utils imports.
+import { formatLocation } from '../../../utils/formatLocation';
+
 // Component export.
 export default function AnimalDetails() : JSX.Element {
   // Variable declaration.
@@ -215,10 +218,7 @@ export default function AnimalDetails() : JSX.Element {
                 const ownerData = owner.data();
 
                 // Set animal address data.
-                if (ownerData?.address === '' && ownerData?.city === '') setAnimalLocation('Não informada');
-                else if (ownerData?.address === '') setAnimalLocation(ownerData?.city);
-                else if (ownerData?.city === '') setAnimalLocation(ownerData?.address);
-                else setAnimalLocation(`${ownerData?.address} - ${ownerData?.city}`);
+                setAnimalLocation(formatLocation(ownerData));
 
                 // Configure page based on ownership of animal.
                 if (ownerID === userAPI.currentUser()?.uid) {
