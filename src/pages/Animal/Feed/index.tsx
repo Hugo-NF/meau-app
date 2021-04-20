@@ -1,8 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-
 import React, { useLayoutEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { v4 as uuidv4 } from 'uuid';
@@ -11,6 +9,16 @@ import HeaderLayout from '../../../layouts/HeaderLayout';
 
 import AnimalCard from '../../../components/AnimalCard';
 import InfiniteScroll from '../../../components/InfiniteScroll';
+
+import {
+  Age,
+  AgeNames,
+  Animal,
+  Sex,
+  SexNames,
+  Size,
+  SizeNames,
+} from '../../../types/animal';
 
 import { Theme } from '../../../constants';
 
@@ -21,49 +29,45 @@ import {
 // Service imports.
 import animalAPI from '../../../services/animal/api';
 
-const formatAnimal = (pet: FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>): JSX.Element => {
-  const petData = pet.data();
-  return (
-    <AnimalCard
-      key={uuidv4()}
-      imageUrlPromise={
-        animalAPI.getPictureDownloadURL(`${petData?.pictures.length > 0 ? `${petData?.pictures[0]}` : 'pet.jpg'}`)
-      }
-      body={(
-        <CardTextContainer>
-          <CardTextRow>
-            <CardText>{petData?.sex}</CardText>
-            <CardText>{petData?.size}</CardText>
-            <CardText>{petData?.age}</CardText>
-          </CardTextRow>
-          {/* <CardTextRow>
+const formatAnimal = (pet: Animal): JSX.Element => (
+  <AnimalCard
+    key={uuidv4()}
+    imageUrlPromise={
+        animalAPI.getPictureDownloadURL(`${pet?.pictures.length > 0 ? `${pet?.pictures[0]}` : 'pet.jpg'}`)
+    }
+    body={(
+      <CardTextContainer>
+        <CardTextRow>
+          <CardText>{SexNames[pet?.sex as Sex]}</CardText>
+          <CardText>{SizeNames[pet?.size as Size]}</CardText>
+          <CardText>{AgeNames[pet?.age as Age]}</CardText>
+        </CardTextRow>
+        {/* <CardTextRow>
             <CardText>
               SAMAMBAIA SUL - DISTRITO FEDERAL
             </CardText>
           </CardTextRow> */}
-        </CardTextContainer>
+      </CardTextContainer>
       )}
-      title={petData?.name}
-      headerOptions={(
-        <MaterialCommunityIcons
-          name="heart-outline"
-          size={24}
-          color={Theme.elements.headerText}
-        />
+    title={pet?.name}
+    headerOptions={(
+      <MaterialCommunityIcons
+        name="heart-outline"
+        size={24}
+        color={Theme.elements.headerText}
+      />
       )}
-      headerBackground={Theme.elements.headerSecondary}
-      pet={{ id: petData?.id }}
-    />
-  );
-};
+    headerBackground={Theme.elements.headerSecondary}
+    pet={{ id: pet?.id }}
+  />
+);
 
 // Fetch pets function declaration
 const fetchPets = (
-  lastElement: FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData> | null, pageNumber: number, pageSize: number,
-): Promise<Array<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>>> => {
+  lastElement: Animal | null, pageNumber: number, pageSize: number,
+): Promise<Array<Animal>> => {
   let query;
   const orderBy = 'name';
-  const lastElementData = lastElement?.data();
 
   if (pageNumber === 1 || lastElement == null) {
     query = animalAPI.createQuery({
@@ -74,18 +78,18 @@ const fetchPets = (
     query = animalAPI.createQuery({
       limit: (pageNumber - 1) * pageSize,
       orderBy,
-      startAfter: lastElementData?.name,
+      startAfter: lastElement.name,
     });
   }
 
   return query.get()
     .then((response) => {
-      const animalArray: Array<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> = [];
+      const animalArray: Array<Animal> = [];
 
       response.forEach((childSnapshot) => {
         const item = childSnapshot.data();
         item.id = childSnapshot.id;
-        animalArray.push(item as FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>);
+        animalArray.push(item as Animal);
       });
 
       return animalArray;

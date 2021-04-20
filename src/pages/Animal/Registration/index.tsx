@@ -37,19 +37,6 @@ import FileOperations from '../../../utils/FileOperations';
 import * as AnimalTypes from '../../../types/animal';
 
 // Interface declarations.
-interface IRegisterAnimal {
-  name: string,
-  species: AnimalTypes.Species | null,
-  sex: AnimalTypes.Sex | null,
-  size: AnimalTypes.Size | null,
-  age: AnimalTypes.Age | null,
-  temperament: AnimalTypes.Temperament,
-  healthCondition: AnimalTypes.HealthCondition,
-  adoptionRequirements: AnimalTypes.AdoptionRequirements,
-  diseases: string,
-  about: string
-}
-
 interface IUploadedPicture {
   id: string,
   remoteName: string,
@@ -100,7 +87,7 @@ export default function AnimalRegistration() : JSX.Element {
     PicturesInputText,
   } = styledComponents;
 
-  const registerAnimal = async (data: IRegisterAnimal) : Promise<void> => {
+  const registerAnimal = async (data: AnimalTypes.IRegisterAnimal) : Promise<void> => {
     const userDocument = userAPI.currentUserDocument();
 
     animalAPI.createAnimal({
@@ -197,7 +184,7 @@ export default function AnimalRegistration() : JSX.Element {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-        <Formik<IRegisterAnimal>
+        <Formik<AnimalTypes.IRegisterAnimal>
           initialValues={{
             name: '',
             species: null,
