@@ -24,6 +24,7 @@ interface IInfiniteScroll<T> {
   dataFetchQuery: (lastEntry: T | null, pageNumber: number, pageSize: number) => Promise<Array<T>>,
   errorContainerStyles?: Record<string, unknown>,
   formatContent: (queryResponseData : T) => JSX.Element,
+  keyExtractorFunction: (item: T) => string,
   loadingContainerStyles?: Record<string, unknown>,
 }
 
@@ -38,6 +39,7 @@ const InfiniteScroll = <T, _>({
   dataFetchQuery,
   errorContainerStyles,
   formatContent,
+  keyExtractorFunction,
   loadingContainerStyles,
 }: IInfiniteScroll<T>): JSX.Element => {
   // Variable declaration.
@@ -172,6 +174,7 @@ const InfiniteScroll = <T, _>({
       contentContainerStyle={{ ...contentContainerStyles }}
       data={infiniteScrollState.data}
       initialNumToRender={contentBatchSize}
+      keyExtractor={(item) => keyExtractorFunction(item)}
       ListEmptyComponent={renderLoading}
       ListFooterComponent={renderLoadingMore}
       ListHeaderComponent={renderError}

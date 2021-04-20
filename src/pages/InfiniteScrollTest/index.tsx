@@ -15,6 +15,7 @@ import { styledComponents } from './styles';
 
 // Type declaration.
 type User = {
+  id: string,
   fullName: string,
   birthDate: Date | null,
   email: string,
@@ -82,6 +83,10 @@ export default function InfiniteScrollTest() : JSX.Element {
     );
   }
 
+  function extractUserKey(user: User) : string {
+    return user.id
+  }
+
   // Page effects.
   useLayoutEffect(() => {
     setStatusBarBackgroundColor('transparent', true);
@@ -94,6 +99,7 @@ export default function InfiniteScrollTest() : JSX.Element {
         contentBatchSize={10}
         dataFetchQuery={ReturnUsers}
         formatContent={formatUser}
+        keyExtractorFunction={extractUserKey}
       />
     </Container>
   );
