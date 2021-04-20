@@ -112,5 +112,6 @@ export interface IRegisterAnimal {
 export interface Animal extends IRegisterAnimal {
   id: string,
   owner: FirebaseFirestoreTypes.DocumentReference,
-  pictures: Array<string>
+  pictures: Array<string>,
+  ownerDocument: FirebaseFirestoreTypes.DocumentData,
 }

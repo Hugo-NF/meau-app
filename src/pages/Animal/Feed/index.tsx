@@ -1,14 +1,19 @@
-import { useNavigation } from '@react-navigation/native';
+import React, { useLayoutEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
-import React, { useLayoutEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { v4 as uuidv4 } from 'uuid';
+
+import { useNavigation } from '@react-navigation/native';
+
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
 import HeaderLayout from '../../../layouts/HeaderLayout';
 
 import AnimalCard from '../../../components/AnimalCard';
 import InfiniteScroll from '../../../components/InfiniteScroll';
+
+import { Theme } from '../../../constants';
 
 import {
   Age,
@@ -20,7 +25,7 @@ import {
   SizeNames,
 } from '../../../types/animal';
 
-import { Theme } from '../../../constants';
+import { formatLocation } from '../../../utils/formatLocation';
 
 import {
   CardText, CardTextContainer, CardTextRow, Container,
@@ -28,13 +33,12 @@ import {
 
 // Service imports.
 import animalAPI from '../../../services/animal/api';
+import userAPI from '../../../services/user/api';
 
 const formatAnimal = (pet: Animal): JSX.Element => (
   <AnimalCard
     key={uuidv4()}
-    imageUrlPromise={
-        animalAPI.getPictureDownloadURL(`${pet?.pictures.length > 0 ? `${pet?.pictures[0]}` : 'pet.jpg'}`)
-    }
+    imageUrlPromise={animalAPI.getPictureDownloadURL(`${pet?.pictures.length > 0 ? `${pet?.pictures[0]}` : 'pet.jpg'}`)}
     body={(
       <CardTextContainer>
         <CardTextRow>
@@ -42,11 +46,11 @@ const formatAnimal = (pet: Animal): JSX.Element => (
           <CardText>{SizeNames[pet?.size as Size]}</CardText>
           <CardText>{AgeNames[pet?.age as Age]}</CardText>
         </CardTextRow>
-        {/* <CardTextRow>
-            <CardText>
-              SAMAMBAIA SUL - DISTRITO FEDERAL
-            </CardText>
-          </CardTextRow> */}
+        <CardTextRow>
+          <CardText>
+            {formatLocation(pet?.ownerDocument)}
+          </CardText>
+        </CardTextRow>
       </CardTextContainer>
       )}
     title={pet?.name}
@@ -66,7 +70,7 @@ const formatAnimal = (pet: Animal): JSX.Element => (
 const fetchPets = (
   lastElement: Animal | null, pageNumber: number, pageSize: number,
 ): Promise<Array<Animal>> => {
-  let query;
+  let query : FirebaseFirestoreTypes.Query;
   const orderBy = 'name';
 
   if (pageNumber === 1 || lastElement == null) {
@@ -82,18 +86,30 @@ const fetchPets = (
     });
   }
 
-  return query.get()
-    .then((response) => {
-      const animalArray: Array<Animal> = [];
+  return new Promise((resolve, reject) => {
+    query.get()
+      .then((response) => {
+        const promisesArray : Array<Promise<Animal>> = [];
 
-      response.forEach((childSnapshot) => {
-        const item = childSnapshot.data();
-        item.id = childSnapshot.id;
-        animalArray.push(item as Animal);
-      });
+        response.forEach((childSnapshot) => promisesArray.push(new Promise((resolveItem, rejectItem) => {
+          const item = childSnapshot.data();
+          item.id = childSnapshot.id;
+          if (item?.owner !== undefined) {
+            userAPI.getReference(item?.owner)
+              .then((userDocument) => {
+                item.ownerDocument = userDocument.data();
+                resolveItem(item as Animal);
+              })
+              .catch((error) => rejectItem(error));
+          } else {
+            resolveItem(item as Animal);
+          }
+        })));
 
-      return animalArray;
-    });
+        Promise.all(promisesArray).then((animalArray) => resolve(animalArray));
+      })
+      .catch((error) => reject(error));
+  });
 };
 
 const FeedPets = (): JSX.Element => {
