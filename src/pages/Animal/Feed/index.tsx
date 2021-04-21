@@ -35,6 +35,8 @@ import {
 import animalAPI from '../../../services/animal/api';
 import userAPI from '../../../services/user/api';
 
+const animalKey = (animalItem: Animal): string => animalItem.id;
+
 const formatAnimal = (pet: Animal): JSX.Element => (
   <AnimalCard
     key={uuidv4()}
@@ -140,6 +142,7 @@ const FeedPets = (): JSX.Element => {
     >
       <Container>
         <InfiniteScroll
+          keyExtractorFunction={animalKey}
           contentBatchSize={10}
           dataFetchQuery={fetchPets}
           formatContent={formatAnimal}
