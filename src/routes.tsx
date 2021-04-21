@@ -1,7 +1,6 @@
 // Package imports.
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import InfiniteScrollTest from './pages/InfiniteScrollTest';
 
 // Importing our pages.
 import AnimalDetails from './pages/Animal/Details';
@@ -74,11 +73,6 @@ export default class Routes extends React.Component {
     {
       name: 'MyPets',
       component: MyPets,
-      requireSession: true,
-    },
-    {
-      name: 'InfiniteScrollTest',
-      component: InfiniteScrollTest,
       requireSession: true,
     },
   ];

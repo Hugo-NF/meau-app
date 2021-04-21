@@ -82,28 +82,6 @@ export default function Home() : JSX.Element {
           <ButtonText>Eba</ButtonText>
         </AsyncButton>
         <AsyncButton
-          styles={styles.asyncButton}
-          asyncAction={false}
-          callback={() => {
-            navigation.navigate('InfiniteScrollTest');
-          }}
-        >
-          <ButtonText>Testar scroll infinito</ButtonText>
-        </AsyncButton>
-        <AsyncButton
-          styles={styles.asyncButton}
-          asyncAction={false}
-          callback={() => {
-            navigation.navigate('AnimalDetails', {
-              animalUID: 'kfGJBTaVgrZWSW8tYPH0',
-              // animalUID: 'LOfARuFuxsomAdMjPi7z',
-              // animalUID: 'rKP3F3TCxW36ieshzfMi',
-            });
-          }}
-        >
-          <ButtonText>Testar detalhes de animal</ButtonText>
-        </AsyncButton>
-        <AsyncButton
           styles={{
             backgroundColor: 'transparent',
             marginBottom: '68px',
