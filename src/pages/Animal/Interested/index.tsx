@@ -4,7 +4,7 @@ import {
   Text, FlatList, Image, TouchableOpacity, Alert,
 } from 'react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import moment from 'moment';
+import { fromUnixTime, differenceInYears } from 'date-fns';
 import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import {
@@ -31,11 +31,7 @@ interface UserCircleProps {
   callback: (user: InterestedUser) => void;
 }
 
-const getAge = (birthDateTimestamp: number): number => {
-  const birthDate = moment.unix(birthDateTimestamp);
-  const now = moment();
-  return Math.floor(moment.duration(now.diff(birthDate)).asYears());
-};
+const getAge = (birthDateTimestamp: number): number => differenceInYears(new Date(), fromUnixTime(birthDateTimestamp));
 
 const UserCircle = ({
   user, callback,
