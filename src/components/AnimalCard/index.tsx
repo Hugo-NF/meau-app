@@ -1,34 +1,67 @@
 import React, { ReactNode, useState } from 'react';
+import { ActivityIndicator } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import {
-  CardBody, CardBox, CardHeader, CardImage, CardOptions, CardTitle,
-} from './styles';
 
-interface IAnimalCardPet {
-  id: string
-}
+import animalAPI from '../../services/animal/api';
+
+import { Images, Theme } from '../../constants';
+
+import {
+  CardBody, CardBox, CardHeader, CardImage, CardImageLoading, CardOptions, CardTitle,
+} from './styles';
 
 interface IAnimalCardProps {
     title: string;
-    imageUrlPromise: Promise<string>;
+    imageUrl: string;
     headerOptions?: ReactNode;
     body?: ReactNode;
     headerBackground: string;
-    pet: IAnimalCardPet;
-    onPress?: (pet: IAnimalCardPet) => void;
+    onPress?: () => void;
 }
 
 const AnimalCard = ({
-  title, body, headerOptions, imageUrlPromise, headerBackground, pet, onPress,
+  title, body, headerOptions, imageUrl, headerBackground, onPress,
 } : IAnimalCardProps) : JSX.Element => {
-  const [petImage, setPetImage] = useState('');
+  const [petImage, setPetImage] = useState<string | null>(imageUrl);
+  const [fetchingImage, setFetchingImage] = useState<boolean>(true);
 
-  imageUrlPromise.then((image) => {
-    setPetImage(image);
-  }).catch((() => null));
+  if (imageUrl !== null) {
+    animalAPI.getPictureDownloadURL(imageUrl)
+      .then((image) => {
+        setPetImage(image);
+        setFetchingImage(false);
+      });
+  } else {
+    setFetchingImage(false);
+  }
+
+  const renderImageCard = (uri: string | null): JSX.Element => {
+    if (uri == null) {
+      return <CardImage source={Images.AnimalPicturePlaceholder} />;
+    }
+    return <CardImage source={{ uri }} />;
+  };
+
+  if (fetchingImage) {
+    return (
+      <TouchableWithoutFeedback>
+        <CardBox>
+          <CardHeader backgroundColor={headerBackground}>
+            <CardTitle>
+              {title}
+            </CardTitle>
+          </CardHeader>
+          <CardImageLoading>
+            <ActivityIndicator color={Theme.elements.headerSecondaryDark} animating />
+          </CardImageLoading>
+          <CardBody>{body}</CardBody>
+        </CardBox>
+      </TouchableWithoutFeedback>
+    );
+  }
 
   return (
-    <TouchableWithoutFeedback onPress={() => (onPress ? onPress(pet) : () => null)}>
+    <TouchableWithoutFeedback onPress={() => (onPress ? onPress() : () => null)}>
       <CardBox>
         <CardHeader backgroundColor={headerBackground}>
           <CardTitle>
@@ -38,7 +71,7 @@ const AnimalCard = ({
             {headerOptions}
           </CardOptions>
         </CardHeader>
-        <CardImage source={petImage !== '' ? { uri: petImage } : {}} />
+        {renderImageCard(petImage)}
         <CardBody>{body}</CardBody>
       </CardBox>
     </TouchableWithoutFeedback>
