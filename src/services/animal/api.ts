@@ -55,6 +55,25 @@ const api = {
     return query;
   },
 
+  createQueryByUserUid(
+    userUID : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
+    operator: FirebaseFirestoreTypes.WhereFilterOp,
+    queryParams : QueryParams = {
+      orderBy: 'name',
+    },
+  ): FirebaseFirestoreTypes.Query {
+    let query : FirebaseFirestoreTypes.Query = this.animalCollection();
+    if (userUID !== undefined) query = query.where('owner', operator, userUID);
+
+    if (queryParams.orderBy !== undefined) query = query.orderBy(queryParams.orderBy);
+
+    if (queryParams.startAfter !== undefined) query = query.startAfter(queryParams.startAfter);
+
+    if (queryParams.limit !== undefined) query = query.limit(queryParams.limit);
+
+    return query;
+  },
+
   deleteAnimal(animalUID : string) : Promise<void> {
     return this.animalDocument(animalUID).delete();
   },

@@ -1,42 +1,112 @@
-import { useNavigation } from '@react-navigation/native';
+import React, { useLayoutEffect } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { Text } from 'react-native';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useNavigation } from '@react-navigation/native';
+
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
-import AnimalCard from '../../../components/AnimalCard';
-import { Theme } from '../../../constants';
+
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import { Container } from './styles';
+
+import AnimalCard from '../../../components/AnimalCard';
+import InfiniteScroll from '../../../components/InfiniteScroll';
+
+import { Theme } from '../../../constants';
+
+import { Animal } from '../../../types/animal';
+
+import {
+  CardText, CardTextContainer, CardTextRow, Container,
+} from './styles';
 
 // Service imports.
 import animalAPI from '../../../services/animal/api';
 import userAPI from '../../../services/user/api';
 
 const MyPets = (): JSX.Element => {
+  const user = userAPI.currentUserDocument();
   const navigation = useNavigation();
-
-  const [fetchedPets, setFetchedPets] = useState<FirebaseFirestoreTypes.DocumentData[]>([]);
 
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
   }, [navigation]);
 
-  const fetchPets = (): void => {
-    const user = userAPI.currentUserDocument();
+  const animalKey = (animalItem: Animal): string => animalItem.id;
 
-    animalAPI.getOwnedByUser(user)
-      .then((result) => {
-        const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
-        setFetchedPets(data);
+  const formatAnimal = (pet: Animal): JSX.Element => (
+    <AnimalCard
+      key={pet?.id}
+      imageUrl={`${pet?.pictures.length > 0 ? `${pet?.pictures[0]}` : null}`}
+      body={(
+        <CardTextContainer>
+          <CardTextRow>
+            <CardText>0 novos interessados</CardText>
+          </CardTextRow>
+        </CardTextContainer>
+      )}
+      title={pet?.name}
+      headerOptions={(
+        <MaterialCommunityIcons
+          name="heart-outline"
+          size={24}
+          color={Theme.elements.headerText}
+        />
+      )}
+      headerBackground={Theme.elements.headerSecondary}
+      onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet?.id })}
+    />
+  );
+
+  // Fetch pets function declaration
+  const fetchPets = (
+    lastElement: Animal | null, pageNumber: number, pageSize: number,
+  ): Promise<Array<Animal>> => {
+    let query : FirebaseFirestoreTypes.Query;
+    const orderBy = 'name';
+
+    if (pageNumber === 1 || lastElement == null) {
+      query = animalAPI.createQueryByUserUid(user, '==', {
+        limit: pageSize,
+        orderBy,
       });
-  };
+    } else {
+      query = animalAPI.createQueryByUserUid(user, '==', {
+        limit: (pageNumber - 1) * pageSize,
+        orderBy,
+        startAfter: lastElement.name,
+      });
+    }
 
-  useEffect(() => fetchPets(), []);
+    return new Promise((resolve, reject) => {
+      query.get()
+        .then((response) => {
+          const promisesArray : Array<Promise<Animal>> = [];
+
+          response.forEach((childSnapshot) => promisesArray.push(new Promise((resolveItem, rejectItem) => {
+            const item = childSnapshot.data();
+            item.id = childSnapshot.id;
+            if (item?.owner !== undefined) {
+              userAPI.getReference(item?.owner)
+                .then((userDocument) => {
+                  item.ownerDocument = userDocument.data();
+                  resolveItem(item as Animal);
+                })
+                .catch((error) => rejectItem(error));
+            } else {
+              resolveItem(item as Animal);
+            }
+          })));
+
+          Promise.all(promisesArray).then((animalArray) => resolve(animalArray));
+        })
+        .catch((error) => reject(error));
+    });
+  };
 
   return (
     <HeaderLayout
+      disableScrollView
       headerShown
       title="Meus Pets"
       headerStyles={{
@@ -53,29 +123,12 @@ const MyPets = (): JSX.Element => {
       }}
     >
       <Container>
-        {
-          fetchedPets.map((pet) => (
-            <AnimalCard
-              key={uuidv4()}
-              imageUrlPromise={
-                animalAPI.getPictureDownloadURL(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`)
-              }
-              body={
-                <Text style={{ textAlign: 'center', lineHeight: 20 }}>0 NOVOS INTERESSADOS{'\n'}ADOÇÃO</Text>
-              }
-              title={pet.name}
-              headerOptions={(
-                <MaterialCommunityIcons
-                  name="alert-circle"
-                  size={24}
-                  color={Theme.elements.headerText}
-                />
-              )}
-              headerBackground={Theme.elements.headerPrimary}
-              pet={{ id: pet.id }}
-            />
-          ))
-        }
+        <InfiniteScroll
+          keyExtractorFunction={animalKey}
+          contentBatchSize={10}
+          dataFetchQuery={fetchPets}
+          formatContent={formatAnimal}
+        />
       </Container>
     </HeaderLayout>
   );
