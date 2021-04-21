@@ -15,6 +15,7 @@ import { Container } from './styles';
 // Service imports.
 import userAPI from '../../services/user/api';
 import notificationAPI from '../../services/notifications/api';
+import { DocumentData, DocumentRefData } from '../../types/firebase';
 
 // Style imports.
 
@@ -25,7 +26,7 @@ export default function NotificationsTest() : JSX.Element {
   // Variables.
   const navigation = useNavigation();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [fetchedUsers, setFetchedUsers] = useState<any[]>([]);
+  const [fetchedUsers, setFetchedUsers] = useState<DocumentData[]>([]);
 
   // Styled components.
 
@@ -33,7 +34,7 @@ export default function NotificationsTest() : JSX.Element {
   const fetchUsers = (): void => {
     userAPI.userCollection().get()
       .then((result) => {
-        setFetchedUsers(result.docs.map((doc) => ({ id: doc.id, ...(doc.data()) })));
+        setFetchedUsers(result.docs);
       });
   };
 
@@ -66,13 +67,13 @@ export default function NotificationsTest() : JSX.Element {
         {
           fetchedUsers.map((user) => (
             <View
-              key={uuidv4()}
+              key={user.id}
               style={{
                 width: 300, height: 50, flexDirection: 'row', alignItems: 'center',
               }}
             >
-              <Text style={{ flex: 1 }}>{user.full_name}</Text>
-              <TouchableOpacity onPress={() => notificationAPI.sendToUser(user.id, 'Teste de notificação')}>
+              <Text style={{ flex: 1 }}>{user.data().full_name}</Text>
+              <TouchableOpacity onPress={() => notificationAPI.sendToUser(user.ref, 'Teste de notificação')}>
                 <MaterialIcons
                   name="notifications"
                   size={24}

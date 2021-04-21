@@ -100,7 +100,7 @@ export default function NotificationsList() : JSX.Element {
         {
           fetchedNotifications.map((notification, index) => (
             <View
-              key={uuidv4()}
+              key={notification.id}
               style={{
                 width: 300, height: 50, flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', marginTop: 20, padding: 10,
               }}
