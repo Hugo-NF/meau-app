@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { fromUnixTime, differenceInYears } from 'date-fns';
+import InfiniteScroll from '../../../components/InfiniteScroll';
 import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import {
@@ -64,12 +65,14 @@ const Interested = (): JSX.Element => {
 
   const fetchAnimal = async (): Promise<DocumentRefData> => (await animalAPI.getAnimal(animalUID)).ref;
 
-  const fetchInterested = async (): Promise<InterestedUser[]> => {
+  const fetchInterested = async (lastElement : InterestedUser | null, pageNumber : number, pageSize : number): Promise<InterestedUser[]> => {
     if (!animal) {
       return [];
     }
 
-    const fetchedInterested = await adoptionAPI.getInterestedIn(animal);
+    const fetchedInterested = await adoptionAPI.getInterestedIn(animal, {
+      lastElementMarker: lastElement?.ref, pageNumber, pageSize, marker: 'user',
+    });
 
     const userWithImage = await Promise.all<InterestedUser>(fetchedInterested.map(async (user: DocumentData): Promise<InterestedUser> => {
       const image = await userAPI.getPictureDownloadURL(user.data().profile_picture);
@@ -89,10 +92,6 @@ const Interested = (): JSX.Element => {
     fetchAnimal()
       .then(setAnimal);
   }, []);
-
-  useEffect(() => {
-    fetchInterested().then(setInterested);
-  }, [animal]);
 
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
@@ -117,14 +116,15 @@ const Interested = (): JSX.Element => {
       }}
     >
       <Container>
-        <FlatList
+        <InfiniteScroll
           numColumns={2}
-          data={interested}
-          renderItem={(e) => (
+          contentBatchSize={10}
+          dataFetchQuery={fetchInterested}
+          formatContent={(user) => (
             <UserCircle
-              user={e.item}
-              callback={(user: InterestedUser): void => {
-                Alert.alert(user.userName, 'Selecione a ação', [
+              user={user}
+              callback={(u: InterestedUser): void => {
+                Alert.alert(u.userName, 'Selecione a ação', [
                   {
                     text: 'Cancelar',
                     onPress: () => null,
@@ -133,8 +133,8 @@ const Interested = (): JSX.Element => {
                     text: 'Remover',
                     onPress: () => {
                       if (animal) {
-                        adoptionAPI.removeInterestToAnimal(animal, user.ref, true);
-                        removeFromList(user.id);
+                        adoptionAPI.removeInterestToAnimal(animal, u.ref, true);
+                        removeFromList(u.id);
                       }
                     },
                   },
@@ -142,7 +142,7 @@ const Interested = (): JSX.Element => {
                     text: 'Realizar transferência',
                     onPress: () => {
                       if (animal) {
-                        adoptionAPI.transferAnimalTo(animal, user.ref);
+                        adoptionAPI.transferAnimalTo(animal, u.ref);
                         navigation.reset({
                           index: 0,
                           routes: [{ name: 'Home' }],
@@ -155,7 +155,6 @@ const Interested = (): JSX.Element => {
               }}
             />
           )}
-          keyExtractor={(item) => item.id}
         />
       </Container>
     </HeaderLayout>

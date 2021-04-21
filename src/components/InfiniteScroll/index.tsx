@@ -25,6 +25,7 @@ interface IInfiniteScroll<T> {
   errorContainerStyles?: Record<string, unknown>,
   formatContent: (queryResponseData : T) => JSX.Element,
   loadingContainerStyles?: Record<string, unknown>,
+  numColumns: number,
 }
 
 // Styled components.
@@ -39,6 +40,7 @@ const InfiniteScroll = <T, _>({
   errorContainerStyles,
   formatContent,
   loadingContainerStyles,
+  numColumns,
 }: IInfiniteScroll<T>): JSX.Element => {
   // Variable declaration.
   const [infiniteScrollState, setInfiniteScrollState] = useState<InfiniteScrollState<T>>({
@@ -169,6 +171,7 @@ const InfiniteScroll = <T, _>({
   // JSX returned.
   return (
     <FlatList
+      numColumns={numColumns}
       contentContainerStyle={{ ...contentContainerStyles }}
       data={infiniteScrollState.data}
       initialNumToRender={contentBatchSize}
@@ -184,7 +187,7 @@ const InfiniteScroll = <T, _>({
 };
 
 // Default props.
-InfiniteScroll.defaultProps = defaultProps;
+InfiniteScroll.defaultProps = { ...defaultProps, numColumns: 1 };
 
 // Export default.
 export default InfiniteScroll;
