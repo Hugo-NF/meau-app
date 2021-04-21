@@ -74,7 +74,7 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
   }, [currentUser]);
 
   useEffect(() => {
-    notificationAPI.countNotifications().then((count) => isMounted.current && setNotificationsCount(count));
+    notificationAPI.countNotifications().then((count) => isMounted.current && setNotificationsCount(count)).catch();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parentDrawerOpen]);
 

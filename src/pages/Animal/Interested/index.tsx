@@ -1,17 +1,14 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import {
-  View, Text, FlatList, Image, TouchableOpacity, Alert,
+  Text, FlatList, Image, TouchableOpacity, Alert,
 } from 'react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
-import { AnimalCard } from '../../../components/AnimalCard';
+import moment from 'moment';
 import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import {
-  CardText, CardTextContainer, CardTextRow, Container,
+  Container,
 } from './styles';
 import { DocumentData, DocumentRefData } from '../../../types/firebase';
 import * as RouteTypes from '../../../types/routes';
@@ -23,9 +20,10 @@ import adoptionAPI from '../../../services/adoption/api';
 
 interface InterestedUser {
   id: string;
+  ref: DocumentRefData;
   imageURI: string;
   userName: string;
-  birthDate: string;
+  birthDate: number;
 }
 
 interface UserCircleProps {
@@ -34,9 +32,9 @@ interface UserCircleProps {
 }
 
 const getAge = (birthDateTimestamp: number): number => {
-  const birthDate = new Date(birthDateTimestamp * 1000);
-  const now = new Date();
-  return Math.floor((now - birthDate) / (1000 * 60 * 60 * 24 * 365));
+  const birthDate = moment.unix(birthDateTimestamp);
+  const now = moment();
+  return Math.floor(moment.duration(now.diff(birthDate)).asYears());
 };
 
 const UserCircle = ({
@@ -66,24 +64,39 @@ const Interested = (): JSX.Element => {
   const navigation = useNavigation();
   const [interested, setInterested] = useState<InterestedUser[]>([]);
   const animalUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Interested'>>().params?.animalUID;
+  const [animal, setAnimal] = useState<DocumentRefData>();
 
-  const fetchInterested = async (): Promise<void> => {
-    const animal = (await animalAPI.getAnimal(animalUID)).ref;
+  const fetchAnimal = async (): Promise<DocumentRefData> => (await animalAPI.getAnimal(animalUID)).ref;
+
+  const fetchInterested = async (): Promise<InterestedUser[]> => {
+    if (!animal) {
+      return [];
+    }
+
     const fetchedInterested = await adoptionAPI.getInterestedIn(animal);
 
     const userWithImage = await Promise.all<InterestedUser>(fetchedInterested.map(async (user: DocumentData): Promise<InterestedUser> => {
       const image = await userAPI.getPictureDownloadURL(user.data().profile_picture);
       return {
-        id: user.id, imageURI: image, userName: user.data().full_name, birthDate: user.data().birth_date?.seconds,
+        id: user.id, ref: user.ref, imageURI: image, userName: user.data().full_name, birthDate: user.data().birth_date?.seconds,
       };
     }));
 
-    setInterested(userWithImage);
+    return userWithImage;
+  };
+
+  const removeFromList = (id: string): void => {
+    setInterested(interested.filter((user) => user.id !== id));
   };
 
   useEffect(() => {
-    fetchInterested();
+    fetchAnimal()
+      .then(setAnimal);
   }, []);
+
+  useEffect(() => {
+    fetchInterested().then(setInterested);
+  }, [animal]);
 
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
@@ -117,12 +130,30 @@ const Interested = (): JSX.Element => {
               callback={(user: InterestedUser): void => {
                 Alert.alert(user.userName, 'Selecione a ação', [
                   {
-                    text: 'Realizar transferência',
-                    onPress: () => console.log('transferência'),
+                    text: 'Cancelar',
+                    onPress: () => null,
                   },
                   {
                     text: 'Remover',
-                    onPress: () => console.log('remover'),
+                    onPress: () => {
+                      if (animal) {
+                        adoptionAPI.removeInterestToAnimal(animal, user.ref, true);
+                        removeFromList(user.id);
+                      }
+                    },
+                  },
+                  {
+                    text: 'Realizar transferência',
+                    onPress: () => {
+                      if (animal) {
+                        adoptionAPI.transferAnimalTo(animal, user.ref);
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'Home' }],
+                        });
+                        Alert.alert('Transferência realizada com sucesso!');
+                      }
+                    },
                   },
                 ]);
               }}

@@ -55,6 +55,18 @@ export default function NotificationsList() : JSX.Element {
           </TouchableOpacity>
         );
       }
+      case NotificationType.adoptionRefused:
+      {
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
+            }}
+          >
+            <Text>{notification.from.data().full_name} recusou sua solicitação ao pet {notification.animal.data().name}</Text>
+          </TouchableOpacity>
+        );
+      }
       default:
         return (<Text>{notification.message}</Text>);
     }

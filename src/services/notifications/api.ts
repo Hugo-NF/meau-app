@@ -6,6 +6,7 @@ import userAPI from '../user/api';
 export enum NotificationType {
   standard = 'STD',
   adoptionInterest = 'AIN',
+  adoptionRefused = 'ARE',
 }
 
 export interface INotificationAdoptionInterestData {
@@ -29,7 +30,12 @@ export interface NotificationAdoptionModel extends NotificationModel {
   animal: DocumentData,
 }
 
-export type NotificationModels = NotificationStandardModel | NotificationAdoptionModel;
+export interface NotificationAdoptionRefusedModel extends NotificationModel {
+  type: NotificationType.adoptionRefused,
+  animal: DocumentData,
+}
+
+export type NotificationModels = NotificationStandardModel | NotificationAdoptionModel | NotificationAdoptionRefusedModel;
 
 const sendToUser = (
   user: DocumentRefData,
@@ -56,24 +62,31 @@ const setSeenById = (notificationId: string): void => {
 
 const toModel = async (notification: DocumentData): Promise<NotificationModels> => {
   const notificationData = notification.data();
+
+  const base = {
+    id: notification.id,
+    from: await notificationData.from.get(),
+    to: notificationData.to,
+    message: notificationData.message,
+    seen: notificationData.seen,
+  };
+
   switch (notificationData.type) {
     case NotificationType.adoptionInterest:
       return {
-        id: notification.id,
-        from: await notificationData.from.get(),
-        to: notificationData.to,
-        message: notificationData.message,
-        seen: notificationData.seen,
+        ...base,
+        animal: await notificationData.data.animal.get(),
+        type: notificationData.type,
+      };
+    case NotificationType.adoptionRefused:
+      return {
+        ...base,
         animal: await notificationData.data.animal.get(),
         type: notificationData.type,
       };
     default:
       return {
-        id: notification.id,
-        from: notificationData.from.get(),
-        to: notificationData.to,
-        message: notificationData.message,
-        seen: notificationData.seen,
+        ...base,
         type: notificationData.type,
       };
   }
@@ -82,9 +95,10 @@ const toModel = async (notification: DocumentData): Promise<NotificationModels> 
 const getNotifications = async (): Promise<(NotificationModel | NotificationAdoptionModel)[]> => {
   const currentUser = userAPI.currentUser();
   if (!currentUser) return Promise.resolve([]);
+  const currentUserDocument = userAPI.currentUserDocument();
 
   const query = await firestore().collection('notifications')
-    .where('to', '==', currentUser.uid)
+    .where('to', '==', currentUserDocument)
     .where('seen', '==', false)
     .get();
 

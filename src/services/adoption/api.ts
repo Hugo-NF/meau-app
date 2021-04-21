@@ -23,12 +23,12 @@ const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefDat
   await firestore().collection('animalInterests').add({ animal, user });
 
   const animalData = (await animal.get()).data();
-  const animalOwnerId = animalData?.owner.id;
+  const animalOwner = animalData?.owner;
 
-  notificationAPI.sendToUser(animalOwnerId, '', NotificationType.adoptionInterest, { animal });
+  notificationAPI.sendToUser(animalOwner, '', NotificationType.adoptionInterest, { animal });
 };
 
-const removeInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
+const removeInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData, notify = false): Promise<void> => {
   const result = await firestore().collection('animalInterests')
     .where('animal', '==', animal)
     .where('user', '==', user)
@@ -37,6 +37,10 @@ const removeInterestToAnimal = async (animal: DocumentRefData, user: DocumentRef
   const batch = firestore().batch();
   result.docs.forEach((doc) => batch.delete(doc.ref));
   batch.commit();
+
+  if (notify) {
+    notificationAPI.sendToUser(user, '', NotificationType.adoptionRefused, { animal });
+  }
 };
 
 const toggleInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
@@ -47,8 +51,33 @@ const toggleInterestToAnimal = async (animal: DocumentRefData, user: DocumentRef
   }
 };
 
+const transferAnimalTo = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
+  const query = await firestore().collection('animalInterests')
+    .where('animal', '==', animal)
+    .get();
+
+  // Delete all interested
+  const batch = firestore().batch();
+  query.docs.forEach((doc) => batch.delete(doc.ref));
+  batch.commit();
+
+  // Update owner
+  await animal.update({ owner: user });
+
+  // Get animal info
+  const animalName = (await animal.get()).data()?.name;
+
+  // Notify new owner
+  notificationAPI.sendToUser(user, `O pet ${animalName} agora é seu!`, NotificationType.standard);
+
+  // Notify other interested
+  query.docs.filter((doc) => doc.data().user !== user).forEach((doc) => notificationAPI.sendToUser(doc.data().user, `O pet ${animalName} já foi adotado!`, NotificationType.standard));
+};
+
 export default {
   checkIfInterestedIn,
   toggleInterestToAnimal,
+  removeInterestToAnimal,
+  transferAnimalTo,
   getInterestedIn,
 };
