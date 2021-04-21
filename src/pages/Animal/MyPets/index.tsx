@@ -98,7 +98,7 @@ const MyPets = (): JSX.Element => {
             }
           })));
 
-          Promise.all(promisesArray).then((animalArray) => resolve(animalArray));
+          Promise.all(promisesArray).then((animalArray) => resolve(animalArray)).catch((error) => reject(error));
         })
         .catch((error) => reject(error));
     });
