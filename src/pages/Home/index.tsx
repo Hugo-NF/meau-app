@@ -49,15 +49,6 @@ export default function Home() : JSX.Element {
           styles={styles.asyncButton}
           asyncAction={false}
           callback={() => {
-            navigation.navigate('Unauthorized');
-          }}
-        >
-          <ButtonText>Ops</ButtonText>
-        </AsyncButton>
-        <AsyncButton
-          styles={styles.asyncButton}
-          asyncAction={false}
-          callback={() => {
             navigation.navigate('Registration');
           }}
         >
@@ -71,15 +62,6 @@ export default function Home() : JSX.Element {
           }}
         >
           <ButtonText>Cadastrar animal</ButtonText>
-        </AsyncButton>
-        <AsyncButton
-          styles={styles.asyncButton}
-          asyncAction={false}
-          callback={() => {
-            navigation.navigate('AnimalRegistrationSuccess');
-          }}
-        >
-          <ButtonText>Eba</ButtonText>
         </AsyncButton>
         <AsyncButton
           styles={{
