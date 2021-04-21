@@ -46,7 +46,7 @@ const FeedPets = (): JSX.Element => {
   const formatAnimal = (pet: Animal): JSX.Element => (
     <AnimalCard
       key={pet?.id}
-      imageUrl={`${pet?.pictures.length > 0 ? `${pet?.pictures[0]}` : null}`}
+      imageUrl={pet?.pictures.length > 0 ? pet?.pictures[0] : null}
       body={(
         <CardTextContainer>
           <CardTextRow>

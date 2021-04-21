@@ -12,7 +12,7 @@ import {
 
 interface IAnimalCardProps {
     title: string;
-    imageUrl: string;
+    imageUrl: string | null;
     headerOptions?: ReactNode;
     body?: ReactNode;
     headerBackground: string;
@@ -22,7 +22,7 @@ interface IAnimalCardProps {
 const AnimalCard = ({
   title, body, headerOptions, imageUrl, headerBackground, onPress,
 } : IAnimalCardProps) : JSX.Element => {
-  const [petImage, setPetImage] = useState<string | null>(imageUrl);
+  const [petImage, setPetImage] = useState<string | null>(null);
   const [fetchingImage, setFetchingImage] = useState<boolean>(true);
 
   if (imageUrl !== null) {
