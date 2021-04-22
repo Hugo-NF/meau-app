@@ -2,7 +2,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Text, View } from 'react-native';
-import { v4 as uuidv4 } from 'uuid';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

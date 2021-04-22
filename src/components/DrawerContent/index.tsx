@@ -253,22 +253,8 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
             titleStyle={styles.SectionTitle}
           >
             <List.Item
-              title="Testar scroll infinito"
-              onPress={() => navigateTo('InfiniteScrollTest')}
-              titleStyle={styles.ListItemText}
-            />
-            <List.Item
-              title="Testar notificações"
-              onPress={() => navigateTo('NotificationsTest')}
-              titleStyle={styles.ListItemText}
-            />
-            <List.Item
-              title="Testar detalhes de animal"
-              onPress={() => navigation.navigate('AnimalDetails', {
-                animalUID: 'kfGJBTaVgrZWSW8tYPH0',
-                // animalUID: 'LOfARuFuxsomAdMjPi7z',
-                // animalUID: 'rKP3F3TCxW36ieshzfMi',
-              })}
+              title=""
+              // onPress={() => navigateTo('InfiniteScrollTest')}
               titleStyle={styles.ListItemText}
             />
           </List.Accordion>
