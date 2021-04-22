@@ -32,7 +32,7 @@ import * as CarouselTypes from '../../../types/carousel';
 import * as RouteTypes from '../../../types/routes';
 
 // Utils imports.
-import { formatLocation } from '../../../utils/formatLocation';
+import { formatLocation } from '../../../utils/formatTexts';
 
 // Component export.
 export default function AnimalDetails() : JSX.Element {

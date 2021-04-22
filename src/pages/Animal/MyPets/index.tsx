@@ -14,6 +14,8 @@ import InfiniteScroll from '../../../components/InfiniteScroll';
 
 import { Theme } from '../../../constants';
 
+import { formatInterested } from '../../../utils/formatTexts';
+
 import { Animal } from '../../../types/animal';
 
 import {
@@ -42,7 +44,7 @@ const MyPets = (): JSX.Element => {
       body={(
         <CardTextContainer>
           <CardTextRow>
-            <CardText>{pet?.newInterests} novos interessados</CardText>
+            <CardText>{formatInterested(pet?.newInterests)}</CardText>
           </CardTextRow>
         </CardTextContainer>
       )}

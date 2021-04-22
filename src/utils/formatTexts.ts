@@ -6,3 +6,9 @@ export const formatLocation = (ownerData: FirebaseFirestoreTypes.DocumentData | 
   if (ownerData?.state === '') return (ownerData?.city);
   return (`${ownerData?.city} - ${ownerData?.state}`);
 };
+
+export const formatInterested = (interestsCount: number) : string => {
+  if (interestsCount === 0) return 'Sem novos interessados';
+  if (interestsCount === 1) return `${interestsCount} novo interessado`;
+  return `${interestsCount} novos interessados`;
+};

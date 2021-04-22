@@ -24,7 +24,7 @@ import {
   SizeNames,
 } from '../../../types/animal';
 
-import { formatLocation } from '../../../utils/formatLocation';
+import { formatLocation } from '../../../utils/formatTexts';
 
 import {
   CardText, CardTextContainer, CardTextRow, Container,
