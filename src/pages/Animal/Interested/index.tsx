@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import {
-  Text, FlatList, Image, TouchableOpacity, Alert,
+  Text, Image, TouchableOpacity, Alert,
 } from 'react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { fromUnixTime, differenceInYears } from 'date-fns';
@@ -84,6 +84,8 @@ const Interested = (): JSX.Element => {
     return userWithImage;
   };
 
+  const userKeyExtractor = (user : InterestedUser) : string => user.id;
+
   const removeFromList = (id: string): void => {
     setInterested(interested.filter((user) => user.id !== id));
   };
@@ -118,6 +120,7 @@ const Interested = (): JSX.Element => {
       <Container>
         <InfiniteScroll
           numColumns={2}
+          keyExtractorFunction={userKeyExtractor}
           contentBatchSize={10}
           dataFetchQuery={fetchInterested}
           formatContent={(user) => (
