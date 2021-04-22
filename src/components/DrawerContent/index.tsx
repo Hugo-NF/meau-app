@@ -154,7 +154,7 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
                 name="notifications"
                 size={24}
               />
-              <NotificationCounter>{notificationsCount}</NotificationCounter>
+              {(notificationsCount > 0) && (<NotificationCounter>{notificationsCount}</NotificationCounter>)}
             </TouchableOpacity>
           </AvatarRightContainer>
         </AvatarContainer>
