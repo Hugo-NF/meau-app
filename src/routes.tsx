@@ -15,6 +15,8 @@ import Login from './pages/Login';
 import Registration from './pages/Registration';
 import Unauthorized from './pages/Unauthorized';
 import Context from './contexts/user/context';
+import NotificationsList from './pages/NotificationsList';
+import Interested from './pages/Animal/Interested';
 
 interface IRouteRule {
   name: string,
@@ -79,6 +81,16 @@ export default class Routes extends React.Component {
     {
       name: 'InfiniteScrollTest',
       component: InfiniteScrollTest,
+      requireSession: true,
+    },
+    {
+      name: 'NotificationsList',
+      component: NotificationsList,
+      requireSession: true,
+    },
+    {
+      name: 'Interested',
+      component: Interested,
       requireSession: true,
     },
   ];

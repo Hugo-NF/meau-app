@@ -13,6 +13,7 @@ import { Container } from './styles';
 // Service imports.
 import animalAPI from '../../../services/animal/api';
 import userAPI from '../../../services/user/api';
+import adoptionAPI from '../../../services/adoption/api';
 
 const MyPets = (): JSX.Element => {
   const navigation = useNavigation();
@@ -28,7 +29,10 @@ const MyPets = (): JSX.Element => {
 
     animalAPI.getOwnedByUser(user)
       .then((result) => {
-        const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
+        const data = result.docs.map((doc) => ({ id: doc.id, ...(doc.data()) }));
+        result.docs.forEach((doc) => {
+          adoptionAPI.countNewInterestedIn(doc.ref).then((r) => console.log(doc.data().name, r));
+        });
         setFetchedPets(data);
       });
   };
@@ -73,6 +77,7 @@ const MyPets = (): JSX.Element => {
               )}
               headerBackground={Theme.elements.headerPrimary}
               pet={{ id: pet.id }}
+              onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet.id })}
             />
           ))
         }
