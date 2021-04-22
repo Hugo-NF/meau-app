@@ -1,15 +1,17 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import {
-  Text, Image, TouchableOpacity, Alert,
+  ActivityIndicator, Text, Image, TouchableOpacity, Alert,
 } from 'react-native';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useLayoutEffect, useState,
+} from 'react';
 import { fromUnixTime, differenceInYears } from 'date-fns';
 import InfiniteScroll from '../../../components/InfiniteScroll';
 import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import {
-  Container,
+  Container, LoadingContainer, LoadingText,
 } from './styles';
 import { DocumentData, DocumentRefData } from '../../../types/firebase';
 import * as RouteTypes from '../../../types/routes';
@@ -62,8 +64,12 @@ const Interested = (): JSX.Element => {
   const [interested, setInterested] = useState<InterestedUser[]>([]);
   const animalUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Interested'>>().params?.animalUID;
   const [animal, setAnimal] = useState<DocumentRefData>();
+  const [loading, setLoading] = useState(true);
 
-  const fetchAnimal = async (): Promise<DocumentRefData> => (await animalAPI.getAnimal(animalUID)).ref;
+  const fetchAnimal = useCallback(
+    async (): Promise<DocumentRefData> => (await animalAPI.getAnimal(animalUID)).ref,
+    [animalUID],
+  );
 
   const fetchInterested = async (lastElement : InterestedUser | null, pageNumber : number, pageSize : number): Promise<InterestedUser[]> => {
     if (!animal) {
@@ -95,76 +101,89 @@ const Interested = (): JSX.Element => {
       .then((animalRef) => {
         setAnimal(animalRef);
         adoptionAPI.setAllInterestedSeen(animalRef);
+        setLoading(false);
       });
-  }, []);
+  }, [fetchAnimal]);
 
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
   }, [navigation]);
 
   return (
-    <HeaderLayout
-      disableScrollView
-      headerShown
-      title="Interessados"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimaryDark,
-        maxHeight: '56px',
-        height: '56px',
-      }}
-      leftAction={{
-        hidden: false,
-        actionType: 'drawer',
-      }}
-      rightAction={{
-        hidden: false,
-        actionType: 'search',
-      }}
-    >
-      <Container>
-        <InfiniteScroll
-          numColumns={2}
-          keyExtractorFunction={userKeyExtractor}
-          contentBatchSize={10}
-          dataFetchQuery={fetchInterested}
-          formatContent={(user) => (
-            <UserCircle
-              user={user}
-              callback={(u: InterestedUser): void => {
-                Alert.alert(u.userName, 'Selecione a ação', [
-                  {
-                    text: 'Cancelar',
-                    onPress: () => null,
-                  },
-                  {
-                    text: 'Remover',
-                    onPress: () => {
-                      if (animal) {
-                        adoptionAPI.removeInterestToAnimal(animal, u.ref, true);
-                        removeFromList(u.id);
-                      }
-                    },
-                  },
-                  {
-                    text: 'Realizar transferência',
-                    onPress: () => {
-                      if (animal) {
-                        adoptionAPI.transferAnimalTo(animal, u.ref);
-                        navigation.reset({
-                          index: 0,
-                          routes: [{ name: 'Home' }],
-                        });
-                        Alert.alert('Transferência realizada com sucesso!');
-                      }
-                    },
-                  },
-                ]);
-              }}
+    loading
+      ? (
+        <LoadingContainer>
+          <LoadingText>Carregando...</LoadingText>
+          <ActivityIndicator
+            size="large"
+            color={Theme.default.primary}
+          />
+        </LoadingContainer>
+      )
+      : (
+        <HeaderLayout
+          disableScrollView
+          headerShown
+          title="Interessados"
+          headerStyles={{
+            backgroundColor: Theme.elements.headerPrimaryDark,
+            maxHeight: '56px',
+            height: '56px',
+          }}
+          leftAction={{
+            hidden: false,
+            actionType: 'drawer',
+          }}
+          rightAction={{
+            hidden: false,
+            actionType: 'search',
+          }}
+        >
+          <Container>
+            <InfiniteScroll
+              numColumns={2}
+              keyExtractorFunction={userKeyExtractor}
+              contentBatchSize={10}
+              dataFetchQuery={fetchInterested}
+              formatContent={(user) => (
+                <UserCircle
+                  user={user}
+                  callback={(u: InterestedUser): void => {
+                    Alert.alert(u.userName, 'Selecione a ação', [
+                      {
+                        text: 'Cancelar',
+                        onPress: () => null,
+                      },
+                      {
+                        text: 'Remover',
+                        onPress: () => {
+                          if (animal) {
+                            adoptionAPI.removeInterestToAnimal(animal, u.ref, true);
+                            removeFromList(u.id);
+                          }
+                        },
+                      },
+                      {
+                        text: 'Realizar transferência',
+                        onPress: () => {
+                          if (animal) {
+                            adoptionAPI.transferAnimalTo(animal, u.ref);
+                            navigation.reset({
+                              index: 0,
+                              routes: [{ name: 'Home' }],
+                            });
+                            Alert.alert('Transferência realizada com sucesso!');
+                          }
+                        },
+                      },
+                    ]);
+                  }}
+                />
+              )}
             />
-          )}
-        />
-      </Container>
-    </HeaderLayout>
+          </Container>
+        </HeaderLayout>
+      )
   );
 };
 

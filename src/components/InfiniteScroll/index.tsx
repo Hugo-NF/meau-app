@@ -30,7 +30,12 @@ interface IInfiniteScroll<T> {
 }
 
 // Styled components.
-const { ErrorContainer, ErrorMessage, LoadingContainer } = styledComponents;
+const {
+  ErrorMessage,
+  LoadingContainer,
+  NoDataFoundMessage,
+  TextContainer,
+} = styledComponents;
 
 // Component implementation.
 const InfiniteScroll = <T, _>({
@@ -63,7 +68,7 @@ const InfiniteScroll = <T, _>({
           setInfiniteScrollState({
             allDataFetched: true,
             data: [],
-            error: 'No data found',
+            error: null,
             loadingMore: false,
             page: 1,
           });
@@ -79,7 +84,7 @@ const InfiniteScroll = <T, _>({
       })
       .catch((err) => {
         setInfiniteScrollState({
-          allDataFetched: false,
+          allDataFetched: true,
           data: [],
           error: err,
           loadingMore: false,
@@ -133,7 +138,9 @@ const InfiniteScroll = <T, _>({
         .catch((err) => {
           setInfiniteScrollState({
             ...infiniteScrollState,
+            allDataFetched: true,
             error: err,
+            loadingMore: false,
           });
         });
     }
@@ -142,11 +149,11 @@ const InfiniteScroll = <T, _>({
   function renderError() : JSX.Element | null {
     if (infiniteScrollState.error != null) {
       return (
-        <ErrorContainer style={{ ...errorContainerStyles }}>
+        <TextContainer style={{ ...errorContainerStyles }}>
           <ErrorMessage>
             Erro ao buscar dados: {infiniteScrollState.error}
           </ErrorMessage>
-        </ErrorContainer>
+        </TextContainer>
       );
     }
 
@@ -154,6 +161,14 @@ const InfiniteScroll = <T, _>({
   }
 
   function renderLoading() : JSX.Element {
+    if (infiniteScrollState.allDataFetched) {
+      return (
+        <TextContainer>
+          <NoDataFoundMessage>Não há dados para exibir!</NoDataFoundMessage>
+        </TextContainer>
+      );
+    }
+
     return (
       <LoadingContainer style={{ ...loadingContainerStyles }}>
         <ActivityIndicator size="large" color={activityIndicatorColor} />
