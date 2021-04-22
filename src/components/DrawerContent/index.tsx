@@ -6,16 +6,21 @@ import { useNavigation } from '@react-navigation/native';
 
 import { List, Avatar } from 'react-native-paper';
 import { ScrollView } from 'react-native';
+import useIsMounted from 'ismounted';
 
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { styledComponents, styles } from './styles';
 
 import { Theme } from '../../constants';
 import { getNameInitials } from '../../utils/getNameInitials';
 
 import userAPI from '../../services/user/api';
+import notificationAPI from '../../services/notifications/api';
 import { useAuth } from '../../contexts/user/context';
 
 export interface IDrawerProps {
+  parentDrawerOpen: boolean,
   setParentDrawerOpen: (_: boolean) => void,
 }
 
@@ -28,18 +33,18 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
       try {
         const imageRef = await userAPI.getPictureDownloadURL(userData?.profile_picture);
         return {
-          displayName: userData?.username,
+          displayName: userData?.full_name,
           photo: imageRef,
         };
       } catch (exc) {
         return {
-          displayName: userData?.username,
+          displayName: userData?.full_name,
           photo: undefined,
         };
       }
     } else {
       return {
-        displayName: userData?.username,
+        displayName: userData?.full_name,
         photo: undefined,
       };
     }
@@ -47,27 +52,38 @@ const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promis
   return undefined;
 };
 
-const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
+const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps): JSX.Element => {
   // Hooks
+  const isMounted = useIsMounted();
   const navigation = useNavigation();
   const { currentUser } = useAuth();
+  const [notificationsCount, setNotificationsCount] = useState(0);
 
   // User state
   const [userDetails, setUserDetails] = useState<{displayName: string, photo: string | undefined} | null>(null);
   useEffect(() => {
     fetchProfile(currentUser).then((data) => {
-      if (data !== undefined) {
+      if (data !== undefined && isMounted.current) {
         setUserDetails({
           displayName: data.displayName,
           photo: data?.photo,
         });
       }
     }).catch(() => null);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
+
+  useEffect(() => {
+    notificationAPI.countNotifications().then((count) => isMounted.current && setNotificationsCount(count)).catch();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentDrawerOpen]);
 
   // Styles
   const {
     AvatarContainer,
+    AvatarLeftContainer,
+    AvatarRightContainer,
+    NotificationCounter,
     DrawerContainer,
     LogoutButton,
     LogoutText,
@@ -80,7 +96,7 @@ const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
 
   const logout = async (): Promise<void> => {
     await userAPI.signOut();
-    setUserDetails(null);
+    if (isMounted.current) setUserDetails(null);
     navigation.reset({
       index: 0,
       routes: [{ name: 'Home' }],
@@ -116,20 +132,31 @@ const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
     <ScrollView nestedScrollEnabled>
       <DrawerContainer>
         <AvatarContainer>
-          {userDetails?.photo === undefined
-            ? (
-              <Avatar.Text
-                size={64}
-                label={getNameInitials(userDetails.displayName)}
-                style={{ backgroundColor: Theme.default.background, ...styles.Avatar }}
-              />
-              ) : (
-                <Avatar.Image
+          <AvatarLeftContainer>
+            {userDetails?.photo === undefined
+              ? (
+                <Avatar.Text
                   size={64}
-                  source={{ uri: userDetails?.photo }}
-                  style={styles.Avatar}
+                  label={getNameInitials(userDetails.displayName)}
+                  style={{ backgroundColor: Theme.default.background, ...styles.Avatar }}
                 />
-            )}
+                ) : (
+                  <Avatar.Image
+                    size={64}
+                    source={{ uri: userDetails?.photo }}
+                    style={styles.Avatar}
+                  />
+              )}
+          </AvatarLeftContainer>
+          <AvatarRightContainer>
+            <TouchableOpacity onPress={() => navigateTo('NotificationsList')}>
+              <MaterialIcons
+                name="notifications"
+                size={24}
+              />
+              {(notificationsCount > 0) && (<NotificationCounter>{notificationsCount}</NotificationCounter>)}
+            </TouchableOpacity>
+          </AvatarRightContainer>
         </AvatarContainer>
         <List.Section style={styles.ListSection}>
           <List.Accordion
@@ -215,6 +242,20 @@ const DrawerContent = ({ setParentDrawerOpen } : IDrawerProps): JSX.Element => {
             <List.Item
               title="Privacidade"
               titleStyle={styles.ListItemTextDisabled}
+            />
+          </List.Accordion>
+        </List.Section>
+        <List.Section style={styles.ListSection}>
+          <List.Accordion
+            left={(props) => <List.Icon {...props} icon="android-debug-bridge" color={Theme.elements.icon} />}
+            title="Desenvolvimento"
+            style={{ backgroundColor: Theme.elements.settingsDrawerBackground, ...styles.ListAccordion }}
+            titleStyle={styles.SectionTitle}
+          >
+            <List.Item
+              title=""
+              // onPress={() => navigateTo('InfiniteScrollTest')}
+              titleStyle={styles.ListItemText}
             />
           </List.Accordion>
         </List.Section>
