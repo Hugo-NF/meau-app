@@ -9,6 +9,13 @@ import { FirebaseStorageTypes } from '@react-native-firebase/storage';
 // User module imports.
 import { Values } from '../../constants';
 
+// Type declarations.
+type QueryParams = {
+  orderBy? : string | undefined,
+  startAfter? : FirebaseFirestoreTypes.DocumentFieldType | undefined,
+  limit? : number | undefined
+}
+
 // Service implementation.
 const api = {
 
@@ -38,6 +45,41 @@ const api = {
     return this.animalCollection().add(documentData);
   },
 
+  createQuery(
+    queryParams : QueryParams = {
+      orderBy: 'name',
+    },
+  ) : FirebaseFirestoreTypes.Query {
+    let query : FirebaseFirestoreTypes.Query = this.animalCollection();
+
+    if (queryParams.orderBy !== undefined) query = query.orderBy(queryParams.orderBy);
+
+    if (queryParams.startAfter !== undefined) query = query.startAfter(queryParams.startAfter);
+
+    if (queryParams.limit !== undefined) query = query.limit(queryParams.limit);
+
+    return query;
+  },
+
+  createQueryByUserUid(
+    userUID : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
+    operator: FirebaseFirestoreTypes.WhereFilterOp,
+    queryParams : QueryParams = {
+      orderBy: 'name',
+    },
+  ): FirebaseFirestoreTypes.Query {
+    let query : FirebaseFirestoreTypes.Query = this.animalCollection();
+    if (userUID !== undefined) query = query.where('owner', operator, userUID);
+
+    if (queryParams.orderBy !== undefined) query = query.orderBy(queryParams.orderBy);
+
+    if (queryParams.startAfter !== undefined) query = query.startAfter(queryParams.startAfter);
+
+    if (queryParams.limit !== undefined) query = query.limit(queryParams.limit);
+
+    return query;
+  },
+
   deleteAnimal(animalUID : string) : Promise<void> {
     return this.animalDocument(animalUID).delete();
   },
@@ -46,12 +88,6 @@ const api = {
     orderBy = 'name',
   ) : Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> {
     return this.animalCollection().orderBy(orderBy).get();
-  },
-
-  getAnimal(
-    animalUID : string,
-  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
-    return this.animalDocument(animalUID).get();
   },
 
   getOwnedByUser(

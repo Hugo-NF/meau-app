@@ -24,12 +24,18 @@ interface IInfiniteScroll<T> {
   dataFetchQuery: (lastEntry: T | null, pageNumber: number, pageSize: number) => Promise<Array<T>>,
   errorContainerStyles?: Record<string, unknown>,
   formatContent: (queryResponseData : T) => JSX.Element,
+  keyExtractorFunction: (item: T) => string,
   loadingContainerStyles?: Record<string, unknown>,
   numColumns: number,
 }
 
 // Styled components.
-const { ErrorContainer, ErrorMessage, LoadingContainer } = styledComponents;
+const {
+  ErrorMessage,
+  LoadingContainer,
+  NoDataFoundMessage,
+  TextContainer,
+} = styledComponents;
 
 // Component implementation.
 const InfiniteScroll = <T, _>({
@@ -39,6 +45,7 @@ const InfiniteScroll = <T, _>({
   dataFetchQuery,
   errorContainerStyles,
   formatContent,
+  keyExtractorFunction,
   loadingContainerStyles,
   numColumns,
 }: IInfiniteScroll<T>): JSX.Element => {
@@ -61,7 +68,7 @@ const InfiniteScroll = <T, _>({
           setInfiniteScrollState({
             allDataFetched: true,
             data: [],
-            error: 'No data found',
+            error: null,
             loadingMore: false,
             page: 1,
           });
@@ -77,7 +84,7 @@ const InfiniteScroll = <T, _>({
       })
       .catch((err) => {
         setInfiniteScrollState({
-          allDataFetched: false,
+          allDataFetched: true,
           data: [],
           error: err,
           loadingMore: false,
@@ -131,7 +138,9 @@ const InfiniteScroll = <T, _>({
         .catch((err) => {
           setInfiniteScrollState({
             ...infiniteScrollState,
+            allDataFetched: true,
             error: err,
+            loadingMore: false,
           });
         });
     }
@@ -140,11 +149,11 @@ const InfiniteScroll = <T, _>({
   function renderError() : JSX.Element | null {
     if (infiniteScrollState.error != null) {
       return (
-        <ErrorContainer style={{ ...errorContainerStyles }}>
+        <TextContainer style={{ ...errorContainerStyles }}>
           <ErrorMessage>
             Erro ao buscar dados: {infiniteScrollState.error}
           </ErrorMessage>
-        </ErrorContainer>
+        </TextContainer>
       );
     }
 
@@ -152,6 +161,14 @@ const InfiniteScroll = <T, _>({
   }
 
   function renderLoading() : JSX.Element {
+    if (infiniteScrollState.allDataFetched) {
+      return (
+        <TextContainer>
+          <NoDataFoundMessage>Não há dados para exibir!</NoDataFoundMessage>
+        </TextContainer>
+      );
+    }
+
     return (
       <LoadingContainer style={{ ...loadingContainerStyles }}>
         <ActivityIndicator size="large" color={activityIndicatorColor} />
@@ -175,6 +192,7 @@ const InfiniteScroll = <T, _>({
       contentContainerStyle={{ ...contentContainerStyles }}
       data={infiniteScrollState.data}
       initialNumToRender={contentBatchSize}
+      keyExtractor={(item) => keyExtractorFunction(item)}
       ListEmptyComponent={renderLoading}
       ListFooterComponent={renderLoadingMore}
       ListHeaderComponent={renderError}

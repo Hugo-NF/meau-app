@@ -26,12 +26,6 @@ export const defaultProps = {
 // Styled components.
 export const styledComponents = {
 
-  ErrorContainer: styled.View<ViewProps>`
-    position: relative;
-    margin-bottom: 10px;
-    margin-top: 10px;
-  `,
-
   ErrorMessage: styled.Text<TextProps>`
     color: ${Theme.default.danger};
   `,
@@ -40,6 +34,19 @@ export const styledComponents = {
     position: relative;
     margin-bottom: 20px;
     margin-top: 20px;
+  `,
+
+  NoDataFoundMessage: styled.Text<TextProps>`
+      font-family: 'Roboto_400Regular';
+      font-size: 16px;
+      text-align: center;
+      color: ${Theme.elements.text};
+  `,
+
+  TextContainer: styled.View<ViewProps>`
+    position: relative;
+    margin-bottom: 10px;
+    margin-top: 10px;
   `,
 
 };

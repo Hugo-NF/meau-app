@@ -22,7 +22,7 @@ export const queryPaginated = (collection: string, paginatedMetaData?: Paginated
       .orderBy(marker);
   } else {
     query = firestore().collection(collection)
-      .limit((pageNumber - 1) * pageSize)
+      .limit(pageSize)
       .orderBy(marker)
       .startAfter(lastElementMarker);
   }

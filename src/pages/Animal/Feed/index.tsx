@@ -1,12 +1,31 @@
-import { useNavigation } from '@react-navigation/native';
+import React, { useLayoutEffect } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useNavigation } from '@react-navigation/native';
+
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-import { v4 as uuidv4 } from 'uuid';
-import { AnimalCard } from '../../../components/AnimalCard';
-import { Theme } from '../../../constants';
+
 import HeaderLayout from '../../../layouts/HeaderLayout';
+
+import AnimalCard from '../../../components/AnimalCard';
+import InfiniteScroll from '../../../components/InfiniteScroll';
+
+import { Theme } from '../../../constants';
+
+import {
+  Age,
+  AgeNames,
+  Animal,
+  Sex,
+  SexNames,
+  Size,
+  SizeNames,
+} from '../../../types/animal';
+
+import { formatLocation } from '../../../utils/formatTexts';
+
 import {
   CardText, CardTextContainer, CardTextRow, Container,
 } from './styles';
@@ -18,26 +37,92 @@ import animalAPI from '../../../services/animal/api';
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
 
-  const [fetchedPets, setFetchedPets] = useState<FirebaseFirestoreTypes.DocumentData[]>([]);
-
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
   }, [navigation]);
 
-  const fetchPets = (): void => {
-    const user = userAPI.currentUserDocument();
-    const query = user ? animalAPI.getNotOwnedByUser(user) : animalAPI.getAll();
+  const animalKey = (animalItem: Animal): string => animalItem.id;
 
-    query.then((result) => {
-      const data = result.docs.map((doc) => ({ id: doc.id, data: doc.data() })).sort((a, b) => a.data.name.localeCompare(b.data.name));
-      setFetchedPets(data);
+  const formatAnimal = (pet: Animal): JSX.Element => (
+    <AnimalCard
+      key={pet?.id}
+      imageUrl={pet?.pictures.length > 0 ? pet?.pictures[0] : null}
+      body={(
+        <CardTextContainer>
+          <CardTextRow>
+            <CardText>{SexNames[pet?.sex as Sex]}</CardText>
+            <CardText>{SizeNames[pet?.size as Size]}</CardText>
+            <CardText>{AgeNames[pet?.age as Age]}</CardText>
+          </CardTextRow>
+          <CardTextRow>
+            <CardText>
+              {formatLocation(pet?.ownerDocument)}
+            </CardText>
+          </CardTextRow>
+        </CardTextContainer>
+      )}
+      title={pet?.name}
+      headerOptions={(
+        <MaterialCommunityIcons
+          name="heart-outline"
+          size={24}
+          color={Theme.elements.headerText}
+        />
+      )}
+      headerBackground={Theme.elements.headerSecondary}
+      onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet?.id })}
+    />
+  );
+
+  // Fetch pets function declaration
+  const fetchPets = (
+    lastElement: Animal | null, pageNumber: number, pageSize: number,
+  ): Promise<Array<Animal>> => {
+    let query : FirebaseFirestoreTypes.Query;
+    const orderBy = 'name';
+
+    if (pageNumber === 1 || lastElement == null) {
+      query = animalAPI.createQuery({
+        limit: pageSize,
+        orderBy,
+      });
+    } else {
+      query = animalAPI.createQuery({
+        limit: pageSize,
+        orderBy,
+        startAfter: lastElement.name,
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      query.get()
+        .then((response) => {
+          const promisesArray : Array<Promise<Animal>> = [];
+
+          response.forEach((childSnapshot) => promisesArray.push(new Promise((resolveItem, rejectItem) => {
+            const item = childSnapshot.data();
+            item.id = childSnapshot.id;
+            if (item?.owner !== undefined) {
+              userAPI.getReference(item?.owner)
+                .then((userDocument) => {
+                  item.ownerDocument = userDocument.data();
+                  resolveItem(item as Animal);
+                })
+                .catch((error) => rejectItem(error));
+            } else {
+              resolveItem(item as Animal);
+            }
+          })));
+
+          Promise.all(promisesArray).then((animalArray) => resolve(animalArray)).catch((error) => reject(error));
+        })
+        .catch((error) => reject(error));
     });
   };
 
-  useEffect(() => fetchPets(), []);
-
   return (
     <HeaderLayout
+      disableScrollView
       headerShown
       title="Adotar"
       headerStyles={{
@@ -55,41 +140,12 @@ const FeedPets = (): JSX.Element => {
       }}
     >
       <Container>
-        {
-          fetchedPets.map((pet) => (
-            <AnimalCard
-              key={uuidv4()}
-              imageUrlPromise={
-                animalAPI.getPictureDownloadURL(`${pet.data.pictures.length > 0 ? `${pet.data.pictures[0]}` : 'pet.jpg'}`)
-              }
-              body={(
-                <CardTextContainer>
-                  <CardTextRow>
-                    <CardText>MACHO</CardText>
-                    <CardText>ADULTO</CardText>
-                    <CardText>MÉDIO</CardText>
-                  </CardTextRow>
-                  <CardTextRow>
-                    <CardText>
-                      SAMAMBAIA SUL - DISTRITO FEDERAL
-                    </CardText>
-                  </CardTextRow>
-                </CardTextContainer>
-              )}
-              title={pet.data.name}
-              headerOptions={(
-                <MaterialCommunityIcons
-                  name="heart-outline"
-                  size={24}
-                  color={Theme.elements.headerText}
-                />
-              )}
-              headerBackground={Theme.elements.headerSecondary}
-              pet={{ id: pet.id }}
-              onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet.id })}
-            />
-          ))
-        }
+        <InfiniteScroll
+          keyExtractorFunction={animalKey}
+          contentBatchSize={10}
+          dataFetchQuery={fetchPets}
+          formatContent={formatAnimal}
+        />
       </Container>
     </HeaderLayout>
   );

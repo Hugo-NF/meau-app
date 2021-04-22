@@ -41,6 +41,14 @@ export const CardImage = styled.Image<ImageProps>`
     width: 344px;
 `;
 
+export const CardImageLoading = styled.View<ViewProps>`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  height: 183px;
+  width: 344px;
+`;
+
 export const CardBody = styled.View<ViewProps>`
     padding: 5px;
 `;

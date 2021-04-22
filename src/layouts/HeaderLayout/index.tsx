@@ -27,6 +27,7 @@ interface IRoutesDrawer {
 }
 
 interface IHeaderLayoutProps {
+  disableScrollView?: boolean,
   headerShown: boolean,
   headerStyles?: IHeaderProps,
   title: string,
@@ -39,6 +40,7 @@ interface IHeaderLayoutProps {
 }
 
 export default function HeaderLayout({
+  disableScrollView,
   headerShown,
   headerStyles,
   title,
@@ -101,6 +103,32 @@ export default function HeaderLayout({
     }
   };
 
+  const renderPageContent = (disableScroll: boolean | undefined): JSX.Element => {
+    const pageChild = (
+      <>
+        {headerShown && (
+          <HeaderContainer {...headerStyles}>
+            {!leftAction?.hidden && (renderActionButton(leftAction))}
+            <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
+            {!rightAction?.hidden && (renderActionButton(rightAction))}
+          </HeaderContainer>
+        )}
+        {children}
+      </>
+    );
+
+    return disableScroll ? pageChild : (
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: 'space-between',
+        }}
+      >
+        {pageChild}
+      </ScrollView>
+    );
+  };
+
   return (
     <LayoutContainer>
       <SideMenu
@@ -116,28 +144,14 @@ export default function HeaderLayout({
         menuPosition="left"
         openMenuOffset={304}
       >
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: 'space-between',
-          }}
-        >
-          {headerShown && (
-            <HeaderContainer {...headerStyles}>
-              {!leftAction?.hidden && (renderActionButton(leftAction))}
-              <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
-              {!rightAction?.hidden && (renderActionButton(rightAction))}
-            </HeaderContainer>
-          )}
-
-          {children}
-        </ScrollView>
+        {renderPageContent(disableScrollView)}
       </SideMenu>
     </LayoutContainer>
   );
 }
 
 HeaderLayout.defaultProps = {
+  disableScrollView: false,
   headerStyles: {
     maxHeight: '56px',
     height: '56px',

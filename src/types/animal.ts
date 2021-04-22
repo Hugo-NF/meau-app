@@ -1,3 +1,5 @@
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+
 // Enum declarations.
 export enum Age {
   Newborn,
@@ -93,3 +95,24 @@ export const TemperamentNames = {
   shy: 'tímido',
   vigilant: 'guarda',
 };
+
+export interface IRegisterAnimal {
+  name: string,
+  species: Species | null,
+  sex: Sex | null,
+  size: Size | null,
+  age: Age | null,
+  temperament: Temperament,
+  healthCondition: HealthCondition,
+  adoptionRequirements: AdoptionRequirements,
+  diseases: string,
+  about: string
+}
+
+export interface Animal extends IRegisterAnimal {
+  id: string,
+  owner: FirebaseFirestoreTypes.DocumentReference,
+  pictures: Array<string>,
+  ownerDocument: FirebaseFirestoreTypes.DocumentData,
+  newPeopleInterestedIn: number,
+}
