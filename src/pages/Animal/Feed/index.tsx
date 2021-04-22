@@ -31,8 +31,8 @@ import {
 } from './styles';
 
 // Service imports.
-import animalAPI from '../../../services/animal/api';
 import userAPI from '../../../services/user/api';
+import animalAPI from '../../../services/animal/api';
 
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();

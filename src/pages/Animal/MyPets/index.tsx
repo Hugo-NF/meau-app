@@ -23,6 +23,7 @@ import {
 // Service imports.
 import animalAPI from '../../../services/animal/api';
 import userAPI from '../../../services/user/api';
+import adoptionAPI from '../../../services/adoption/api';
 
 const MyPets = (): JSX.Element => {
   const user = userAPI.currentUserDocument();
