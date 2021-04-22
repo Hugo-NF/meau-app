@@ -12,7 +12,6 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 // Service imports.
 import animalAPI from '../../../services/animal/api';
 import userAPI from '../../../services/user/api';
-import adoptionAPI from '../../../services/adoption/api';
 
 // Component imports.
 import AsyncButton from '../../../components/AsyncButton';
@@ -169,10 +168,9 @@ export default function AnimalDetails() : JSX.Element {
     }
 
     animalAPI.getAnimal(animalUID)
-      .then(async (animal) => {
+      .then((animal) => {
         const animalData = animal.data();
         const animalNameReceived = animalData?.name;
-        const resultInterestedIn = await adoptionAPI.checkIfInterestedIn(animal.ref, userAPI.currentUserDocument());
 
         // Set basic animal data.
         setAnimalName(animalNameReceived);
@@ -210,8 +208,6 @@ export default function AnimalDetails() : JSX.Element {
 
         // Set page theme and animal location via owner document.
         if (animalData?.owner !== undefined) {
-          adoptionAPI.setAllInteresteSeen(animal.ref);
-
           userAPI.getReference(animalData?.owner)
             .then(
               (owner) => {
@@ -235,9 +231,8 @@ export default function AnimalDetails() : JSX.Element {
                       <AsyncButton
                         styles={styles.ownerOptionButton}
                         asyncAction={false}
-                        callback={async () => {
-                          navigation.navigate('Interested', { animalUID });
-                          // console.log((await adoptionAPI.getInterestedIn(animal.ref)));
+                        callback={() => {
+                          navigation.navigate('Home');
                         }}
                       >
                         <ButtonText>Ver interessados</ButtonText>
@@ -293,25 +288,10 @@ export default function AnimalDetails() : JSX.Element {
                         styles={styles.adoptionButton}
                         asyncAction={false}
                         callback={() => {
-                          Alert.alert(
-                            'Aviso',
-                            'Deseja continuar?',
-                            [
-                              {
-                                text: 'Sim',
-                                onPress: () => {
-                                  adoptionAPI.toggleInterestToAnimal(animal.ref, userAPI.currentUserDocument());
-                                  Alert.alert('Concluído', 'Operação realizada com sucesso!');
-                                  navigation.navigate('AnimalFeed');
-                                },
-                                style: 'cancel',
-                              },
-                              { text: 'Não' },
-                            ],
-                          );
+                          navigation.navigate('Home');
                         }}
                       >
-                        <ButtonTextStrong>{ resultInterestedIn ? 'Desistir da adoção' : 'Pretendo adotar' }</ButtonTextStrong>
+                        <ButtonTextStrong>Pretendo adotar</ButtonTextStrong>
                       </AsyncButton>
                     </AdoptionButtonWrapper>,
                   );

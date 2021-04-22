@@ -49,6 +49,15 @@ export default function Home() : JSX.Element {
           styles={styles.asyncButton}
           asyncAction={false}
           callback={() => {
+            navigation.navigate('Unauthorized');
+          }}
+        >
+          <ButtonText>Ops</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
             navigation.navigate('Registration');
           }}
         >
@@ -62,6 +71,37 @@ export default function Home() : JSX.Element {
           }}
         >
           <ButtonText>Cadastrar animal</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('AnimalRegistrationSuccess');
+          }}
+        >
+          <ButtonText>Eba</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('InfiniteScrollTest');
+          }}
+        >
+          <ButtonText>Testar scroll infinito</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('AnimalDetails', {
+              animalUID: 'kfGJBTaVgrZWSW8tYPH0',
+              // animalUID: 'LOfARuFuxsomAdMjPi7z',
+              // animalUID: 'rKP3F3TCxW36ieshzfMi',
+            });
+          }}
+        >
+          <ButtonText>Testar detalhes de animal</ButtonText>
         </AsyncButton>
         <AsyncButton
           styles={{
