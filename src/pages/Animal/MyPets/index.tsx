@@ -44,12 +44,12 @@ const MyPets = (): JSX.Element => {
       body={(
         <CardTextContainer>
           <CardTextRow>
-            <CardText>{formatInterested(pet?.newInterests)}</CardText>
+            <CardText>{formatInterested(pet?.newPeopleInterestedIn)}</CardText>
           </CardTextRow>
         </CardTextContainer>
       )}
       title={pet?.name}
-      headerOptions={pet?.newInterests > 0 && (
+      headerOptions={pet?.newPeopleInterestedIn > 0 && (
         <MaterialIcons
           name="error"
           size={24}
@@ -75,7 +75,7 @@ const MyPets = (): JSX.Element => {
       });
     } else {
       query = animalAPI.createQueryByUserUid(user, '==', {
-        limit: (pageNumber - 1) * pageSize,
+        limit: pageSize,
         orderBy,
         startAfter: lastElement.name,
       });
@@ -89,16 +89,12 @@ const MyPets = (): JSX.Element => {
           response.forEach((childSnapshot) => promisesArray.push(new Promise((resolveItem, rejectItem) => {
             const item = childSnapshot.data();
             item.id = childSnapshot.id;
-            if (item?.owner !== undefined) {
-              adoptionAPI.countNewInterestedIn(childSnapshot.ref)
-                .then((newInterests) => {
-                  item.newInterests = newInterests;
-                  resolveItem(item as Animal);
-                })
-                .catch((error) => rejectItem(error));
-            } else {
-              resolveItem(item as Animal);
-            }
+            adoptionAPI.countNewInterestedIn(childSnapshot.ref)
+              .then((newPeopleInterestedIn) => {
+                item.newPeopleInterestedIn = newPeopleInterestedIn;
+                resolveItem(item as Animal);
+              })
+              .catch((error) => rejectItem(error));
           })));
 
           Promise.all(promisesArray).then((animalArray) => resolve(animalArray)).catch((error) => reject(error));

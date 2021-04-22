@@ -88,7 +88,7 @@ const FeedPets = (): JSX.Element => {
       });
     } else {
       query = animalAPI.createQuery({
-        limit: (pageNumber - 1) * pageSize,
+        limit: pageSize,
         orderBy,
         startAfter: lastElement.name,
       });

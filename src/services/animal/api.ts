@@ -90,12 +90,6 @@ const api = {
     return this.animalCollection().orderBy(orderBy).get();
   },
 
-  getAnimal(
-    animalUID : string,
-  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
-    return this.animalDocument(animalUID).get();
-  },
-
   getOwnedByUser(
     userUID : FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
     orderBy = 'name',

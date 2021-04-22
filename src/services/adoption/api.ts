@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import notificationAPI, { NotificationType } from '../notifications/api';
-import { DocumentData, DocumentRefData, Query } from '../../types/firebase';
+import { DocumentData, DocumentRefData } from '../../types/firebase';
 import { queryPaginated, PaginatedMetaData } from '../paginated/api';
 
 const getInterestedIn = async (animal: DocumentRefData, paginatedMetaData?: PaginatedMetaData, onlyUnseen = false): Promise<DocumentData> => {
