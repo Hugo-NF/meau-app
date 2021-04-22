@@ -14,6 +14,23 @@ export const styledComponents = {
   AvatarContainer: styled.View<ViewProps>`
     height: 152px;
     background-color: ${Theme.default.primary};
+    flex-direction: row;
+  `,
+
+  AvatarLeftContainer: styled.View<ViewProps>`
+    flex: 1;
+  `,
+
+  AvatarRightContainer: styled.View<ViewProps>`
+    align-items: center;
+    flex-direction: row;
+    padding-right: 30px;
+  `,
+
+  NotificationCounter: styled.Text<TextProps>`
+    background-color: #d55;
+    text-align: center;
+    border-radius: 15px;
   `,
 
   LogoutButton: styled.TouchableOpacity<TouchableOpacityProps>`
