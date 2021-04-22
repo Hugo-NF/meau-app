@@ -92,7 +92,10 @@ const Interested = (): JSX.Element => {
 
   useEffect(() => {
     fetchAnimal()
-      .then(setAnimal);
+      .then((animalRef) => {
+        setAnimal(animalRef);
+        adoptionAPI.setAllInterestedSeen(animalRef);
+      });
   }, []);
 
   useLayoutEffect(() => {
@@ -101,6 +104,7 @@ const Interested = (): JSX.Element => {
 
   return (
     <HeaderLayout
+      disableScrollView
       headerShown
       title="Interessados"
       headerStyles={{

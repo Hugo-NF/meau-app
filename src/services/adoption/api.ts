@@ -82,7 +82,7 @@ const transferAnimalTo = async (animal: DocumentRefData, user: DocumentRefData):
 
 const countNewInterestedIn = (animal: DocumentRefData): Promise<number> => getInterestedIn(animal, undefined, true).then((result) => result.length);
 
-const setAllInteresteSeen = async (animal: DocumentRefData): Promise<void> => {
+const setAllInterestedSeen = async (animal: DocumentRefData): Promise<void> => {
   const result = await firestore().collection('animalInterested')
     .where('animal', '==', animal)
     .where('seen', '==', false)
@@ -100,5 +100,5 @@ export default {
   transferAnimalTo,
   getInterestedIn,
   countNewInterestedIn,
-  setAllInteresteSeen,
+  setAllInterestedSeen,
 };

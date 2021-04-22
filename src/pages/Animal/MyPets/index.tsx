@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -42,19 +42,19 @@ const MyPets = (): JSX.Element => {
       body={(
         <CardTextContainer>
           <CardTextRow>
-            <CardText>0 novos interessados</CardText>
+            <CardText>{pet?.newInterests} novos interessados</CardText>
           </CardTextRow>
         </CardTextContainer>
       )}
       title={pet?.name}
-      headerOptions={(
-        <MaterialCommunityIcons
-          name="heart-outline"
+      headerOptions={pet?.newInterests > 0 && (
+        <MaterialIcons
+          name="error"
           size={24}
-          color={Theme.elements.headerText}
+          color={Theme.elements.cardText}
         />
       )}
-      headerBackground={Theme.elements.headerSecondary}
+      headerBackground={Theme.elements.headerPrimary}
       onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet?.id })}
     />
   );
@@ -88,9 +88,9 @@ const MyPets = (): JSX.Element => {
             const item = childSnapshot.data();
             item.id = childSnapshot.id;
             if (item?.owner !== undefined) {
-              userAPI.getReference(item?.owner)
-                .then((userDocument) => {
-                  item.ownerDocument = userDocument.data();
+              adoptionAPI.countNewInterestedIn(childSnapshot.ref)
+                .then((newInterests) => {
+                  item.newInterests = newInterests;
                   resolveItem(item as Animal);
                 })
                 .catch((error) => rejectItem(error));
