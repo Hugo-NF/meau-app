@@ -210,6 +210,8 @@ export default function AnimalDetails() : JSX.Element {
 
         // Set page theme and animal location via owner document.
         if (animalData?.owner !== undefined) {
+          adoptionAPI.setAllInteresteSeen(animal.ref);
+
           userAPI.getReference(animalData?.owner)
             .then(
               (owner) => {
