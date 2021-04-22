@@ -12,7 +12,6 @@ import {
 } from './styles';
 
 // Service imports.
-import userAPI from '../../../services/user/api';
 import animalAPI from '../../../services/animal/api';
 
 const FeedPets = (): JSX.Element => {
@@ -25,13 +24,11 @@ const FeedPets = (): JSX.Element => {
   }, [navigation]);
 
   const fetchPets = (): void => {
-    const user = userAPI.currentUserDocument();
-    const query = user ? animalAPI.getNotOwnedByUser(user) : animalAPI.getAll();
-
-    query.then((result) => {
-      const data = result.docs.map((doc) => ({ id: doc.id, data: doc.data() })).sort((a, b) => a.data.name.localeCompare(b.data.name));
-      setFetchedPets(data);
-    });
+    animalAPI.getAll()
+      .then((result) => {
+        const data = result.docs.map((doc) => ({ id: uuidv4(), ...(doc.data()) }));
+        setFetchedPets(data);
+      });
   };
 
   useEffect(() => fetchPets(), []);
@@ -60,7 +57,7 @@ const FeedPets = (): JSX.Element => {
             <AnimalCard
               key={uuidv4()}
               imageUrlPromise={
-                animalAPI.getPictureDownloadURL(`${pet.data.pictures.length > 0 ? `${pet.data.pictures[0]}` : 'pet.jpg'}`)
+                animalAPI.getPictureDownloadURL(`${pet.pictures.length > 0 ? `${pet.pictures[0]}` : 'pet.jpg'}`)
               }
               body={(
                 <CardTextContainer>
@@ -76,7 +73,7 @@ const FeedPets = (): JSX.Element => {
                   </CardTextRow>
                 </CardTextContainer>
               )}
-              title={pet.data.name}
+              title={pet.name}
               headerOptions={(
                 <MaterialCommunityIcons
                   name="heart-outline"
@@ -86,7 +83,6 @@ const FeedPets = (): JSX.Element => {
               )}
               headerBackground={Theme.elements.headerSecondary}
               pet={{ id: pet.id }}
-              onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet.id })}
             />
           ))
         }

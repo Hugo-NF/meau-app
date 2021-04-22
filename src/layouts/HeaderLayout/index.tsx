@@ -109,7 +109,6 @@ export default function HeaderLayout({
         menu={(
           <DrawerContent
             key="drawer-component"
-            parentDrawerOpen={drawerOpen}
             setParentDrawerOpen={setDrawerOpen}
           />
         )}
