@@ -24,6 +24,7 @@ export default function NotificationsList() : JSX.Element {
   const navigation = useNavigation();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [fetchedNotifications, setFetchedNotifications] = useState<any[]>([]);
+  const [fetchedOnce, setFetchedOnce] = useState(false);
 
   // Styled components.
 
@@ -31,6 +32,7 @@ export default function NotificationsList() : JSX.Element {
   const fetchNotifications = (): void => {
     notificationAPI.getNotifications().then((result) => {
       setFetchedNotifications(result);
+      setFetchedOnce(true);
     });
   };
 
@@ -97,6 +99,7 @@ export default function NotificationsList() : JSX.Element {
       }}
     >
       <Container>
+        { fetchedOnce && fetchedNotifications.length === 0 && (<Text style={{ marginTop: 20 }}>Nenhuma notificação</Text>)}
         {
           fetchedNotifications.map((notification, index) => (
             <View
