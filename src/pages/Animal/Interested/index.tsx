@@ -80,14 +80,14 @@ const Interested = (): JSX.Element => {
       lastElementMarker: lastElement?.ref, pageNumber, pageSize, marker: 'user',
     });
 
-    const userWithImage = await Promise.all<InterestedUser>(fetchedInterested.map(async (user: DocumentData): Promise<InterestedUser> => {
+    const usersWithImage = await Promise.all<InterestedUser>(fetchedInterested.map(async (user: DocumentData): Promise<InterestedUser> => {
       const image = await userAPI.getPictureDownloadURL(user.data().profile_picture);
       return {
         id: user.id, ref: user.ref, imageURI: image, userName: user.data().full_name, birthDate: user.data().birth_date?.seconds,
       };
     }));
 
-    return userWithImage;
+    return usersWithImage;
   };
 
   const userKeyExtractor = (user : InterestedUser) : string => user.id;

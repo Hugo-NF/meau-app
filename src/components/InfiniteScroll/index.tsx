@@ -205,7 +205,7 @@ const InfiniteScroll = <T, _>({
 };
 
 // Default props.
-InfiniteScroll.defaultProps = { ...defaultProps, numColumns: 1 };
+InfiniteScroll.defaultProps = defaultProps;
 
 // Export default.
 export default InfiniteScroll;

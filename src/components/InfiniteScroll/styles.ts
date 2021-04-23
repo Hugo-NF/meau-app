@@ -21,6 +21,8 @@ export const defaultProps = {
   loadingContainerStyles: {
 
   },
+
+  numColumns: 1,
 };
 
 // Styled components.

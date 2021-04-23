@@ -207,6 +207,5 @@ export const styles = {
 
   activityIndicatorColor: Theme.default.primary,
   animalOwnerStatusBarColor: Theme.elements.statusBarPrimary,
-  carouselWidth: 360,
   regularUserStatusBarColor: Theme.elements.statusBarSecondaryDark,
 };
