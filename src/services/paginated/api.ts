@@ -1,4 +1,4 @@
-import { Query } from '../../types/firebase';
+import { Query, CollectionRef } from '../../types/firebase';
 
 export interface PaginatedMetaData {
   pageNumber: number;
@@ -7,8 +7,8 @@ export interface PaginatedMetaData {
   marker: string;
 }
 
-export const filterPaginated = (query: Query, paginatedMetaData?: PaginatedMetaData): Query => {
-  if (!paginatedMetaData) return query;
+export const filterPaginated = (source: Query | CollectionRef, paginatedMetaData?: PaginatedMetaData): Query => {
+  if (!paginatedMetaData) return source;
 
   const {
     pageNumber, pageSize, lastElementMarker, marker,
@@ -17,11 +17,11 @@ export const filterPaginated = (query: Query, paginatedMetaData?: PaginatedMetaD
   const markers = lastElementMarker.filter((m) => m !== null);
 
   if (pageNumber === 1 || markers.length === 0) {
-    return query
+    return source
       .orderBy(marker)
       .limit(pageSize);
   }
-  return query
+  return source
     .orderBy(marker)
     .limit(pageSize)
     .startAfter(...markers);
