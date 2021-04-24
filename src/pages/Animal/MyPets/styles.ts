@@ -21,6 +21,7 @@ export const CardTextContainer = styled.View<ViewProps>`
 export const CardTextRow = styled.View<ViewProps>`
   flex: 1;
   flex-direction: row;
+  align-items: center;
   justify-content: space-around;
 `;
 

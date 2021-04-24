@@ -50,5 +50,6 @@ export const CardImageLoading = styled.View<ViewProps>`
 `;
 
 export const CardBody = styled.View<ViewProps>`
-    padding: 5px;
+  height: 49px;
+  padding: 5px;
 `;
