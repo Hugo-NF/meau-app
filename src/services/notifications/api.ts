@@ -92,7 +92,7 @@ const toModel = async (notification: DocumentData): Promise<NotificationModels> 
   }
 };
 
-const getNotifications = async (): Promise<(NotificationModel | NotificationAdoptionModel)[]> => {
+const getNotifications = async (): Promise<NotificationModels[]> => {
   const currentUser = userAPI.currentUser();
   if (!currentUser) return Promise.resolve([]);
   const currentUserDocument = userAPI.currentUserDocument();

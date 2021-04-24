@@ -22,7 +22,7 @@ export default function NotificationsList() : JSX.Element {
   // Variables.
   const navigation = useNavigation();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [fetchedNotifications, setFetchedNotifications] = useState<any[]>([]);
+  const [fetchedNotifications, setFetchedNotifications] = useState<NotificationModels[]>([]);
   const [fetchedOnce, setFetchedOnce] = useState(false);
 
   // Styled components.
