@@ -75,7 +75,6 @@ export default function AnimalDetails() : JSX.Element {
 
   // Styled components.
   const {
-    AdoptionButtonWrapper,
     AnimalImage,
     ButtonText,
     ButtonTextStrong,
@@ -286,7 +285,7 @@ export default function AnimalDetails() : JSX.Element {
                   setLabelStyles(styles.secondaryLabel);
 
                   setPageButtons(
-                    <AdoptionButtonWrapper>
+                    <OptionButtonsWrapper>
                       <AsyncButton
                         styles={styles.adoptionButton}
                         asyncAction={false}
@@ -311,7 +310,19 @@ export default function AnimalDetails() : JSX.Element {
                       >
                         <ButtonTextStrong>{ resultInterestedIn ? 'Desistir da adoção' : 'Pretendo adotar' }</ButtonTextStrong>
                       </AsyncButton>
-                    </AdoptionButtonWrapper>,
+                      <AsyncButton
+                        styles={styles.adoptionButton}
+                        asyncAction={false}
+                        callback={() => navigation.navigate('Chat', {
+                          /* eslint-disable camelcase */
+                          title: owner.data()?.full_name,
+                          targetUser: animalData.owner,
+                          animal,
+                        })}
+                      >
+                        <ButtonTextStrong>Chat</ButtonTextStrong>
+                      </AsyncButton>
+                    </OptionButtonsWrapper>,
                   );
 
                   setFloatingButton(

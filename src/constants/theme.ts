@@ -49,6 +49,12 @@ const Theme = {
     adoptionButton: '#FDCF58',
     floatingButton: '#FAFAFA',
     notificationCounter: '#D55',
+    chatTextInput: '#FFFFFF',
+    chatBackground: '#F1F2F2',
+    chatSendIcon: '#FFFFFF',
+    chatSendBall: '#88C9BF',
+    chatText: '#434343',
+    chatBubleUser: '#CFE9E5',
   },
   named: {
     blue: '#007BFF',

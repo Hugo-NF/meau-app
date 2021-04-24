@@ -16,6 +16,7 @@ import Unauthorized from './pages/Unauthorized';
 import Context from './contexts/user/context';
 import NotificationsList from './pages/NotificationsList';
 import Interested from './pages/Animal/Interested';
+import Chat from './pages/Chat/Chat';
 
 interface IRouteRule {
   name: string,
@@ -85,6 +86,11 @@ export default class Routes extends React.Component {
     {
       name: 'Interested',
       component: Interested,
+      requireSession: true,
+    },
+    {
+      name: 'Chat',
+      component: Chat,
       requireSession: true,
     },
   ];

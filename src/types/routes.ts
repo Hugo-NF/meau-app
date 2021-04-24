@@ -1,3 +1,5 @@
+import { DocumentRefData } from './firebase';
+
 // Type declarations.
 export type RouteParams = {
   AnimalDetails: {
@@ -5,5 +7,10 @@ export type RouteParams = {
   },
   Interested: {
     animalUID: string
+  },
+  Chat: {
+    title: string,
+    targetUser: DocumentRefData,
+    animal: DocumentRefData,
   }
 };
