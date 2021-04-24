@@ -28,7 +28,7 @@ export const styledComponents = {
   `,
 
   NotificationCounter: styled.Text<TextProps>`
-    background-color: #d55;
+    background-color: ${Theme.elements.notificationCounter};
     text-align: center;
     border-radius: 15px;
   `,

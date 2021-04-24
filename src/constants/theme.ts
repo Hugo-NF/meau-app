@@ -48,6 +48,7 @@ const Theme = {
     sectionBreak: '#E0E0E0',
     adoptionButton: '#FDCF58',
     floatingButton: '#FAFAFA',
+    notificationCounter: '#D55',
   },
   named: {
     blue: '#007BFF',

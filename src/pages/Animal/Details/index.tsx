@@ -10,9 +10,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 // Service imports.
+import adoptionAPI from '../../../services/adoption/api';
 import animalAPI from '../../../services/animal/api';
 import userAPI from '../../../services/user/api';
-import adoptionAPI from '../../../services/adoption/api';
 
 // Component imports.
 import AsyncButton from '../../../components/AsyncButton';

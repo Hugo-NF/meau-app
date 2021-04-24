@@ -188,7 +188,6 @@ const InfiniteScroll = <T, _>({
   // JSX returned.
   return (
     <FlatList
-      numColumns={numColumns}
       contentContainerStyle={{ ...contentContainerStyles }}
       data={infiniteScrollState.data}
       initialNumToRender={contentBatchSize}
@@ -197,6 +196,7 @@ const InfiniteScroll = <T, _>({
       ListFooterComponent={renderLoadingMore}
       ListHeaderComponent={renderError}
       nestedScrollEnabled
+      numColumns={numColumns}
       onEndReached={fetchMoreData}
       onEndReachedThreshold={0.1}
       renderItem={({ item }) => formatContent(item)}
