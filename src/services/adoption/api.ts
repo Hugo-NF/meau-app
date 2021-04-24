@@ -1,11 +1,13 @@
 import firestore from '@react-native-firebase/firestore';
 import notificationAPI, { NotificationType } from '../notifications/api';
 import { DocumentData, DocumentRefData } from '../../types/firebase';
-import { queryPaginated, PaginatedMetaData } from '../paginated/api';
+import { PaginatedMetaData, filterPaginated } from '../paginated/api';
 
 const getInterestedIn = async (animal: DocumentRefData, paginatedMetaData?: PaginatedMetaData, onlyUnseen = false): Promise<DocumentData> => {
-  let query = queryPaginated('animalInterested', paginatedMetaData)
+  let query = firestore().collection('animalInterested')
     .where('animal', '==', animal);
+
+  query = filterPaginated(query, paginatedMetaData);
 
   if (onlyUnseen) {
     query = query.where('seen', '==', false);

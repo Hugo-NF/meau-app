@@ -77,7 +77,7 @@ const Interested = (): JSX.Element => {
     }
 
     const fetchedInterested = await adoptionAPI.getInterestedIn(animal, {
-      lastElementMarker: lastElement?.ref, pageNumber, pageSize, marker: 'user',
+      lastElementMarker: [lastElement?.ref], pageNumber, pageSize, marker: 'user',
     });
 
     const usersWithImage = await Promise.all<InterestedUser>(fetchedInterested.map(async (user: DocumentData): Promise<InterestedUser> => {

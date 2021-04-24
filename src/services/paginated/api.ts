@@ -1,30 +1,29 @@
-import firestore from '@react-native-firebase/firestore';
 import { Query } from '../../types/firebase';
 
 export interface PaginatedMetaData {
   pageNumber: number;
   pageSize: number;
-  lastElementMarker: unknown;
+  lastElementMarker: unknown[];
   marker: string;
 }
 
-export const queryPaginated = (collection: string, paginatedMetaData?: PaginatedMetaData): Query => {
-  if (!paginatedMetaData) return firestore().collection(collection);
+export const filterPaginated = (query: Query, paginatedMetaData?: PaginatedMetaData): Query => {
+  if (!paginatedMetaData) return query;
 
   const {
     pageNumber, pageSize, lastElementMarker, marker,
   } = paginatedMetaData;
-  let query;
 
-  if (pageNumber === 1 || lastElementMarker == null) {
-    query = firestore().collection(collection)
-      .limit(pageSize)
-      .orderBy(marker);
-  } else {
-    query = firestore().collection(collection)
-      .limit(pageSize)
+  let markers = lastElementMarker as unknown[];
+  markers = markers.filter((m) => m !== null);
+
+  if (pageNumber === 1 || markers.length === 0) {
+    return query
       .orderBy(marker)
-      .startAfter(lastElementMarker);
+      .limit(pageSize);
   }
-  return query;
+  return query
+    .orderBy(marker)
+    .limit(pageSize)
+    .startAfter(...markers);
 };

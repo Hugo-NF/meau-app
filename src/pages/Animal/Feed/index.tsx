@@ -5,8 +5,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import { useNavigation } from '@react-navigation/native';
 
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
-
 import HeaderLayout from '../../../layouts/HeaderLayout';
 
 import AnimalCard from '../../../components/AnimalCard';
@@ -33,6 +31,7 @@ import {
 // Service imports.
 import userAPI from '../../../services/user/api';
 import animalAPI from '../../../services/animal/api';
+import { filterPaginated } from '../../../services/paginated/api';
 
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
@@ -78,21 +77,12 @@ const FeedPets = (): JSX.Element => {
   const fetchPets = (
     lastElement: Animal | null, pageNumber: number, pageSize: number,
   ): Promise<Array<Animal>> => {
-    let query : FirebaseFirestoreTypes.Query;
-    const orderBy = 'name';
+    let query = animalAPI.animalCollection().orderBy('owner')
+      .where('owner', '!=', userAPI.currentUserDocument());
 
-    if (pageNumber === 1 || lastElement == null) {
-      query = animalAPI.createQuery({
-        limit: pageSize,
-        orderBy,
-      });
-    } else {
-      query = animalAPI.createQuery({
-        limit: pageSize,
-        orderBy,
-        startAfter: lastElement.name,
-      });
-    }
+    query = filterPaginated(query, {
+      pageNumber, pageSize, lastElementMarker: [lastElement?.owner, lastElement?.name], marker: 'name',
+    });
 
     return new Promise((resolve, reject) => {
       query.get()
