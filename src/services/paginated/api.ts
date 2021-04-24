@@ -14,8 +14,7 @@ export const filterPaginated = (query: Query, paginatedMetaData?: PaginatedMetaD
     pageNumber, pageSize, lastElementMarker, marker,
   } = paginatedMetaData;
 
-  let markers = lastElementMarker as unknown[];
-  markers = markers.filter((m) => m !== null);
+  const markers = lastElementMarker.filter((m) => m !== null);
 
   if (pageNumber === 1 || markers.length === 0) {
     return query
