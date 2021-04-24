@@ -56,7 +56,7 @@ export const styledComponents = {
   `,
 
   FormLabelText: styled.Text<TextProps>`
-    color: ${Theme.elements.label};
+    color: ${Theme.elements.labelSecondary};
     font-family: 'Roboto_400Regular';
     font-size: 12px;
     margin-top: 20px;
@@ -124,7 +124,7 @@ export const styles = {
 
   radioForm: {
     animation: false,
-    buttonColor: Theme.elements.radioButtom,
+    buttonColor: Theme.elements.radioButton,
     buttonOuterSize: 21,
     buttonSize: 12,
     formHorizontal: true,
@@ -165,17 +165,10 @@ export const styles = {
   },
 
   textInput: {
-    width: 288,
-  },
-
-  textInputContainer: {
+    backgroundColor: 'transparent',
     width: 312,
     marginBottom: 0,
     marginTop: 8,
-  },
-
-  textInputCheck: {
-    color: Theme.elements.checkSecondary,
   },
 
   picturesGrid: {

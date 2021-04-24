@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { Text } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
-import { Ionicons } from '@expo/vector-icons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { ScrollView } from 'react-native-gesture-handler';
+import SideMenu from 'react-native-side-menu-updated';
+
+import DrawerContent from '../../components/DrawerContent';
+
 import { Theme } from '../../constants';
 
 import { styledComponents, IHeaderProps, ITitleProps } from './styles';
 
-type HeaderActions = 'back' | 'drawer' | 'share';
+type HeaderActions = 'back' | 'drawer' | 'share' | 'search';
 
 interface IButtonAction {
   hidden?: boolean,
@@ -25,8 +27,8 @@ interface IRoutesDrawer {
 }
 
 interface IHeaderLayoutProps {
+  disableScrollView?: boolean,
   headerShown: boolean,
-  requireAuth?: boolean,
   headerStyles?: IHeaderProps,
   title: string,
   titleStyles?: ITitleProps,
@@ -38,8 +40,8 @@ interface IHeaderLayoutProps {
 }
 
 export default function HeaderLayout({
+  disableScrollView,
   headerShown,
-  requireAuth,
   headerStyles,
   title,
   titleStyles,
@@ -50,16 +52,6 @@ export default function HeaderLayout({
   // Hooks
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigation = useNavigation();
-
-  if (requireAuth && auth().currentUser == null) {
-    navigation.reset({
-      index: 0,
-      routes: [
-        { name: 'Home' },
-        { name: 'Unauthorized' },
-      ],
-    });
-  }
 
   const {
     ActionButton, HeaderContainer, HeaderTitle, LayoutContainer,
@@ -80,13 +72,12 @@ export default function HeaderLayout({
         );
       case 'drawer':
         return (
-          <ActionButton onPress={() => setDrawerOpen(true)}>
+          <ActionButton onPress={() => setDrawerOpen(!drawerOpen)}>
             <Ionicons
               name="menu-sharp"
               size={24}
               color={buttonType?.iconColor}
             />
-            <Text>{drawerOpen ? 'Aberto' : 'Fechado'}</Text>
           </ActionButton>
         );
       case 'share':
@@ -99,42 +90,68 @@ export default function HeaderLayout({
             />
           </ActionButton>
         );
+      case 'search':
+        return (
+          <ActionButton onPress={() => navigation.goBack()}>
+            <Ionicons
+              name="search"
+              size={24}
+              color={buttonType?.iconColor}
+            />
+          </ActionButton>
+        );
     }
   };
 
-  return (
-    <LayoutContainer>
+  const renderPageContent = (disableScroll: boolean | undefined): JSX.Element => {
+    const pageChild = (
+      <>
+        {headerShown && (
+          <HeaderContainer {...headerStyles}>
+            {!leftAction?.hidden && (renderActionButton(leftAction))}
+            <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
+            {!rightAction?.hidden && (renderActionButton(rightAction))}
+          </HeaderContainer>
+        )}
+        {children}
+      </>
+    );
+
+    return disableScroll ? pageChild : (
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
           justifyContent: 'space-between',
         }}
       >
-        {/* <MenuDrawer
-        open={drawerOpen}
-        drawerContent={DrawerContent({ drawerOpen, setDrawerOpen })}
-        drawerPercentage={75}
-        animationTime={250}
-        opacity={0.1}
-        position="left"
-      > */}
-        {headerShown && (
-        <HeaderContainer {...headerStyles}>
-          {!leftAction?.hidden && (renderActionButton(leftAction))}
-          <HeaderTitle {...titleStyles}>{title}</HeaderTitle>
-          {!rightAction?.hidden && (renderActionButton(rightAction))}
-        </HeaderContainer>
-        )}
-
-        {children}
+        {pageChild}
       </ScrollView>
-      {/* </MenuDrawer> */}
+    );
+  };
+
+  return (
+    <LayoutContainer>
+      <SideMenu
+        autoClosing
+        isOpen={drawerOpen}
+        menu={(
+          <DrawerContent
+            key="drawer-component"
+            parentDrawerOpen={drawerOpen}
+            setParentDrawerOpen={setDrawerOpen}
+          />
+        )}
+        menuPosition="left"
+        openMenuOffset={304}
+      >
+        {renderPageContent(disableScrollView)}
+      </SideMenu>
     </LayoutContainer>
   );
 }
 
 HeaderLayout.defaultProps = {
-  requireAuth: false,
+  disableScrollView: false,
   headerStyles: {
     maxHeight: '56px',
     height: '56px',

@@ -2,15 +2,17 @@
 import React, { useLayoutEffect, useState } from 'react';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+import { StackActions, useNavigation } from '@react-navigation/native';
 
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 import {
-  Button, Dialog, HelperText, Paragraph, Portal, TextInput,
+  Button, Dialog, Paragraph, Portal,
 } from 'react-native-paper';
+
+// Service imports.
+import userAPI from '../../services/user/api';
 
 // Style imports.
 import {
@@ -24,6 +26,7 @@ import {
 import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Project imports.
+import CustomTextInput from '../../components/CustomTextInput';
 import { Theme, Values } from '../../constants';
 
 interface LoginForm {
@@ -46,13 +49,6 @@ export default function Login() : JSX.Element {
     message: '',
   });
 
-  if (auth().currentUser) {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Authorized' }],
-    });
-  }
-
   // Layout effects.
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
@@ -60,13 +56,9 @@ export default function Login() : JSX.Element {
 
   const signIn = async ({ email, password }: LoginForm): Promise<void> => {
     try {
-      const response = await auth().signInWithEmailAndPassword(email, password);
+      const response = await userAPI.signIn(email, password);
       if (response && response.user) {
-        // Autenticou
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Authorized' }],
-        });
+        navigation.dispatch(StackActions.replace('AnimalFeed'));
       }
     } catch (e) {
       setDialog({
@@ -117,30 +109,20 @@ export default function Login() : JSX.Element {
           validationSchema={Yup.object().shape({
             email: Yup.string().required('E-mail é obrigatório').email('Deve ser um e-mail válido'),
             password: Yup.string().required('Senha é obrigatória')
-              .min(Values.passwordMinLength, `Deve ter pelo menos ${Values.passwordMinLength} caracteres`),
+              .min(Values.PASSWORD_MIN_LENGTH, `Deve ter pelo menos ${Values.PASSWORD_MIN_LENGTH} caracteres`),
           })}
           onSubmit={(data) => signIn(data)}
         >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            touched,
-            errors,
-            isSubmitting,
-          }) => (
+          {(formikHelpers) => (
             <LoginForm>
-              <TextInput
+              <CustomTextInput
+                fieldName="email"
+                formikHelpers={formikHelpers}
                 label="E-mail"
                 placeholder="E-mail"
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
                 mode="flat"
                 keyboardType="email-address"
                 autoFocus
-                error={Boolean(touched.email && errors.email)}
                 selectionColor={Theme.elements.statusBarPrimary}
                 underlineColor={Theme.elements.headerText}
                 style={{
@@ -149,20 +131,12 @@ export default function Login() : JSX.Element {
                   width: 312,
                 }}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.email && errors.email)}
-              >
-                {touched.email && errors.email}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="password"
+                formikHelpers={formikHelpers}
                 label="Senha"
                 placeholder="Senha"
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
                 mode="flat"
-                error={Boolean(touched.password && errors.password)}
                 secureTextEntry
                 selectionColor={Theme.elements.statusBarPrimary}
                 underlineColor={Theme.elements.headerText}
@@ -172,15 +146,9 @@ export default function Login() : JSX.Element {
                   width: 312,
                 }}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.password && errors.password)}
-              >
-                {touched.password && errors.password}
-              </HelperText>
               <SubmitButton
-                disabled={isSubmitting}
-                onPress={handleSubmit as (values: unknown) => void}
+                disabled={formikHelpers.isSubmitting}
+                onPress={formikHelpers.handleSubmit as (values: unknown) => void}
               >
                 <ButtonText>Entrar</ButtonText>
               </SubmitButton>

@@ -5,22 +5,25 @@ import { Formik } from 'formik';
 import { TouchableOpacity, View } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import {
-  Button, Dialog, HelperText, Paragraph, Portal, TextInput,
+  Button, Dialog, HelperText, Paragraph, Portal,
 } from 'react-native-paper';
+import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 
-// Firebase modules.
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
+// Service imports.
+import userAPI from '../../services/user/api';
 
 // User modules.
 import AsyncButton from '../../components/AsyncButton';
+import CustomTextInput from '../../components/CustomTextInput';
+
 import { Theme, Values } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
+import FileOperations from '../../utils/FileOperations';
 
 // Theme imports.
 import { styles, styledComponents } from './styles';
@@ -35,14 +38,14 @@ interface IDialogState {
   message: string,
 }
 
-interface signUpForm {
+interface ISignUpForm {
   fullName: string,
   birthDate: Date | null,
   email: string,
-  state: string | null,
-  city: string | null,
-  address: string | null,
-  phoneNumber: string | null,
+  state: string,
+  city: string,
+  address: string,
+  phoneNumber: string,
   username: string,
   password: string,
   passwordConfirmation: string,
@@ -78,14 +81,14 @@ export default function Registration() : JSX.Element {
   const [profilePicturePath, setProfilePicturePath] = useState<picturePath>(null);
   const [showDateTimePicker, setShowDateTimePicker] = useState<boolean>(false);
 
-  const initialFormValues : signUpForm = {
+  const initialFormValues : ISignUpForm = {
     fullName: '',
     birthDate: null,
     email: '',
-    state: null,
-    city: null,
-    address: null,
-    phoneNumber: null,
+    state: '',
+    city: '',
+    address: '',
+    phoneNumber: '',
     username: '',
     password: '',
     passwordConfirmation: '',
@@ -138,21 +141,28 @@ export default function Registration() : JSX.Element {
     phoneNumber,
     username,
     password,
-  } : signUpForm) : Promise<void> {
-    auth().createUserWithEmailAndPassword(email, password)
+  } : ISignUpForm) : Promise<void> {
+    userAPI.createAuth(email, password)
       .then(async (credential) => {
         const userUID = credential.user.uid;
-        let profilePictureRef = null;
+        let profilePicture = '';
 
         if (profilePicturePath != null) {
-          profilePictureRef = `users/${userUID}/profile_picture.jpg`;
+          const profilePictureFileExtension = FileOperations.fileExtension(profilePicturePath);
 
-          await storage().ref(profilePictureRef).putFile(profilePicturePath);
+          profilePictureFileExtension != null
+            ? profilePicture = `${uuidv4()}.${profilePictureFileExtension}`
+            : profilePicture = uuidv4();
+
+          await userAPI.uploadProfilePicture(
+            profilePicture,
+            profilePicturePath,
+          );
         }
 
         if (birthDate != null) setDateHoursToUTCMidday(birthDate);
 
-        firestore().collection('users').doc(userUID).set({
+        userAPI.setDocumentData(userUID, {
           address,
           birth_date: birthDate,
           city,
@@ -161,13 +171,10 @@ export default function Registration() : JSX.Element {
           phone_number: phoneNumber,
           state,
           username,
-          profile_picture_ref: profilePictureRef,
+          profile_picture: profilePicture,
         });
 
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Authorized' }],
-        });
+        navigation.dispatch(StackActions.replace('AnimalFeed'));
       })
       .catch((e) => {
         setDialog({
@@ -217,49 +224,32 @@ export default function Registration() : JSX.Element {
             fullName: Yup.string().required('Nome completo é obrigatório'),
             birthDate: Yup.date().nullable(),
             email: Yup.string().required('E-mail é obrigatório').email('Deve ser um e-mail válido'),
-            state: Yup.string().max(2, 'Deve conter apenas 2 caracteres').nullable(),
-            city: Yup.string().nullable(),
-            address: Yup.string().nullable(),
-            phoneNumber: Yup.string().nullable(),
+            state: Yup.string().max(2, 'Deve conter apenas 2 caracteres'),
+            city: Yup.string(),
+            address: Yup.string(),
+            phoneNumber: Yup.string(),
             username: Yup.string().required('Usuário é obrigatório'),
             password: Yup.string().required('Senha é obrigatória')
-              .min(Values.passwordMinLength, `Deve ter pelo menos ${Values.passwordMinLength} caracteres`),
+              .min(Values.PASSWORD_MIN_LENGTH, `Deve ter pelo menos ${Values.PASSWORD_MIN_LENGTH} caracteres`),
             passwordConfirmation: Yup.string()
               .required('Confirmação de senha é obrigatória')
               .equals([Yup.ref('password')], 'Deve ser igual à senha'),
           })}
           onSubmit={(data) => signUp(data)}
         >
-          {({
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            values,
-            touched,
-            errors,
-            isSubmitting,
-            setFieldValue,
-          }) => (
+          {(formikHelpers) => (
             <FormContainer>
               <InfoText>
                 As informações preenchidas serão divulgadas apenas para a pessoa com a qual você realizar o processo de adoção e/ou apadrinhamento, após a formalização do processo.
               </InfoText>
               <SectionText>Informações Pessoais</SectionText>
-              <TextInput
+              <CustomTextInput
+                fieldName="fullName"
+                formikHelpers={formikHelpers}
                 placeholder="Nome completo"
-                onChangeText={handleChange('fullName')}
-                onBlur={handleBlur('fullName')}
-                value={values.fullName}
                 mode="flat"
-                error={Boolean(touched.fullName && errors.fullName)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.fullName && errors.fullName)}
-              >
-                {touched.fullName && errors.fullName}
-              </HelperText>
               <BirthDateContainer>
                 <BirthDateRow>
                   <TouchableOpacity onPress={() => setShowDateTimePicker(true)}>
@@ -271,11 +261,11 @@ export default function Registration() : JSX.Element {
                       />
                     </BirthDateButton>
                   </TouchableOpacity>
-                  {values.birthDate != null
+                  {formikHelpers.values.birthDate != null
                     ? (
                       <BirthDateText>
                         Data de nascimento: {
-                      dateToBrazilianString(values.birthDate)
+                      dateToBrazilianString(formikHelpers.values.birthDate)
                     }
                       </BirthDateText>
                     )
@@ -291,9 +281,9 @@ export default function Registration() : JSX.Element {
                 <DateTimePicker
                   onChange={(_, selectedDate) => {
                     setShowDateTimePicker(false);
-                    setFieldValue('birthDate', selectedDate || values.birthDate);
+                    formikHelpers.setFieldValue('birthDate', selectedDate || formikHelpers.values.birthDate);
                   }}
-                  value={values.birthDate || new Date()}
+                  value={formikHelpers.values.birthDate || new Date()}
                   display="spinner"
                   minimumDate={new Date(1900, 0)}
                   maximumDate={new Date()}
@@ -302,133 +292,69 @@ export default function Registration() : JSX.Element {
                 )}
               <HelperText
                 type="error"
-                visible={Boolean(touched.birthDate && errors.birthDate)}
+                visible={Boolean(formikHelpers.touched.birthDate && formikHelpers.errors.birthDate)}
               >
-                {touched.birthDate && errors.birthDate}
+                {formikHelpers.touched.birthDate && formikHelpers.errors.birthDate}
               </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="email"
+                formikHelpers={formikHelpers}
                 placeholder="E-mail"
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                value={values.email}
                 mode="flat"
-                error={Boolean(touched.email && errors.email)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.email && errors.email)}
-              >
-                {touched.email && errors.email}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="state"
+                formikHelpers={formikHelpers}
                 placeholder="Estado"
-                onChangeText={handleChange('state')}
-                onBlur={handleBlur('state')}
-                value={values.state != null ? values.state : undefined}
                 mode="flat"
-                error={Boolean(touched.state && errors.state)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.state && errors.state)}
-              >
-                {touched.state && errors.state}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="city"
+                formikHelpers={formikHelpers}
                 placeholder="Cidade"
-                onChangeText={handleChange('city')}
-                onBlur={handleBlur('city')}
-                value={values.city != null ? values.city : undefined}
                 mode="flat"
-                error={Boolean(touched.city && errors.city)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.city && errors.city)}
-              >
-                {touched.city && errors.city}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="address"
+                formikHelpers={formikHelpers}
                 placeholder="Endereço"
-                onChangeText={handleChange('address')}
-                onBlur={handleBlur('address')}
-                value={values.address != null ? values.address : undefined}
                 mode="flat"
-                error={Boolean(touched.address && errors.address)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.address && errors.address)}
-              >
-                {touched.address && errors.address}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="phoneNumber"
+                formikHelpers={formikHelpers}
                 placeholder="Telefone"
-                onChangeText={handleChange('phoneNumber')}
-                onBlur={handleBlur('phoneNumber')}
-                value={values.phoneNumber != null ? values.phoneNumber : undefined}
                 mode="flat"
-                error={Boolean(touched.phoneNumber && errors.phoneNumber)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.phoneNumber && errors.phoneNumber)}
-              >
-                {touched.phoneNumber && errors.phoneNumber}
-              </HelperText>
               <SectionText>Informações de perfil</SectionText>
-              <TextInput
+              <CustomTextInput
+                fieldName="username"
+                formikHelpers={formikHelpers}
                 placeholder="Nome de usuário"
-                onChangeText={handleChange('username')}
-                onBlur={handleBlur('username')}
-                value={values.username}
                 mode="flat"
-                error={Boolean(touched.username && errors.username)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.username && errors.username)}
-              >
-                {touched.username && errors.username}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="password"
+                formikHelpers={formikHelpers}
                 placeholder="Senha"
-                onChangeText={handleChange('password')}
-                onBlur={handleBlur('password')}
-                value={values.password}
                 mode="flat"
                 secureTextEntry
-                error={Boolean(touched.password && errors.password)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.password && errors.password)}
-              >
-                {touched.password && errors.password}
-              </HelperText>
-              <TextInput
+              <CustomTextInput
+                fieldName="passwordConfirmation"
+                formikHelpers={formikHelpers}
                 placeholder="Confirmação de senha"
-                onChangeText={handleChange('passwordConfirmation')}
-                onBlur={handleBlur('passwordConfirmation')}
-                value={values.passwordConfirmation}
                 mode="flat"
                 secureTextEntry
-                error={Boolean(touched.passwordConfirmation && errors.passwordConfirmation)}
                 {...styles.textInput}
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.passwordConfirmation && errors.passwordConfirmation)}
-              >
-                {touched.passwordConfirmation && errors.passwordConfirmation}
-              </HelperText>
               <SectionText>Foto de perfil</SectionText>
               {profilePicturePath == null
                 ? (
@@ -454,8 +380,8 @@ export default function Registration() : JSX.Element {
                 <AsyncButton
                   styles={styles.asyncButton}
                   asyncAction
-                  disabled={isSubmitting}
-                  callback={handleSubmit as (values: unknown) => void}
+                  disabled={formikHelpers.isSubmitting}
+                  callback={formikHelpers.handleSubmit as (values: unknown) => void}
                 >
                   <ButtonText>Fazer cadastro</ButtonText>
                 </AsyncButton>

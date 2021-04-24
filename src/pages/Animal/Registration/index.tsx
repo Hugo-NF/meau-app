@@ -5,20 +5,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 import RadioForm from 'react-native-simple-radio-button';
 import CheckBox from '@react-native-community/checkbox';
-import { useNavigation } from '@react-navigation/native';
+import { StackActions, useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-
-// Firebase modules.
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
 
 // Style imports.
 import {
   Button, Dialog, HelperText, Paragraph, Portal,
 } from 'react-native-paper';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   FlatList, ActivityIndicator,
 } from 'react-native';
@@ -28,75 +23,24 @@ import { styles, styledComponents } from './styles';
 // Layout import
 import HeaderLayout from '../../../layouts/HeaderLayout';
 
+// Service imports.
+import animalAPI from '../../../services/animal/api';
+import userAPI from '../../../services/user/api';
+
 // Component imports.
 import AsyncButton from '../../../components/AsyncButton';
-import TextInputCheck from '../../../components/TextInputCheck';
-
+import CustomTextInput from '../../../components/CustomTextInput';
 import { Theme } from '../../../constants';
+import FileOperations from '../../../utils/FileOperations';
 
-// Enum declarations.
-enum Age {
-  Newborn,
-  Adult,
-  Elder,
-}
+// Type imports.
+import * as AnimalTypes from '../../../types/animal';
 
-enum Sex {
-  Male,
-  Female,
-}
-
-enum Size {
-  Small,
-  Medium,
-  Big,
-}
-
-enum Species {
-  Cat,
-  Dog,
-}
-
-// Type declarations.
-type AdoptionRequirements = {
-  housePhotos: boolean,
-  postAdoptionMonitoring: boolean,
-  postAdoptionMonitoringPeriod: number | null,
-  previousAnimalVisit: boolean,
-  signedTerm: boolean,
-}
-
-type HealthCondition = {
-  castrated: boolean,
-  dewormed: boolean,
-  sick: boolean,
-  vaccinated: boolean,
-}
-
-type Temperament = {
-  calm: boolean,
-  lazy: boolean,
-  loving: boolean,
-  playful: boolean,
-  shy: boolean,
-  vigilant: boolean,
-}
-interface ISignUp {
-  name: string,
-  specie: Species | null,
-  sex: Sex | null,
-  size: Size | null,
-  age: Age | null,
-  temperament: Temperament,
-  healthCondition: HealthCondition,
-  adoptionRequirements: AdoptionRequirements,
-  diseases: string,
-  about: string
-}
-
+// Interface declarations.
 interface IUploadedPicture {
   id: string,
-  item: {localUri: string, remoteName: string}
+  remoteName: string,
+  localUri: string,
 }
 
 interface IDialogState {
@@ -119,11 +63,8 @@ export default function AnimalRegistration() : JSX.Element {
 
   // Layout effects.
   useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
+    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, true);
   }, [navigation]);
-
-  // Functions.
-  const notEmpty = (text: string) : boolean => text !== '';
 
   // Styled components.
   const {
@@ -146,30 +87,15 @@ export default function AnimalRegistration() : JSX.Element {
     PicturesInputText,
   } = styledComponents;
 
-  const fileExtension = (fileName: string): (string | null) => {
-    const splitted = fileName.split('.');
-    if (splitted.length < 2) return null;
-    return splitted[splitted.length - 1];
-  };
+  const registerAnimal = async (data: AnimalTypes.IRegisterAnimal) : Promise<void> => {
+    const userDocument = userAPI.currentUserDocument();
 
-  const signUp = async (data: ISignUp) : Promise<void> => {
-    if (!auth().currentUser) {
-      setDialog({
-        open: true,
-        title: 'É preciso estar logado',
-        message: 'Usuário precisa estar logado para realizar o cadastro',
-      });
-      return;
-    }
-
-    const userUID = auth().currentUser?.uid;
-
-    firestore().collection('animals').add({
-      owner: firestore().collection('users').doc(userUID),
-      pictures: animalPictures.map((p) => p.item.remoteName),
+    animalAPI.createAnimal({
+      owner: userDocument,
+      pictures: animalPictures.map((p) => p.remoteName),
       ...data,
     }).then(() => {
-      navigation.navigate('AnimalRegistrationSuccess');
+      navigation.dispatch(StackActions.replace('AnimalRegistrationSuccess'));
     })
       .catch(() => {
         setDialog({
@@ -189,7 +115,7 @@ export default function AnimalRegistration() : JSX.Element {
     }, (response) => {
       if (!response.didCancel && !response.errorCode && response.uri) {
         const { uri: localUri } = response;
-        const extension = fileExtension(localUri);
+        const extension = FileOperations.fileExtension(localUri);
         if (!extension) {
           setDialog({
             open: true,
@@ -199,15 +125,17 @@ export default function AnimalRegistration() : JSX.Element {
           return;
         }
 
-        const remoteName = `${uuidv4()}.${extension}`;
-        const remoteUri = `animals/${remoteName}`;
+        const pictureID = uuidv4();
+        const remoteUri = `${pictureID}.${extension}`;
 
         setUploadLock(true);
-        storage().ref(remoteUri).putFile(localUri).then(() => {
-          animalPictures.push({ id: uuidv4(), item: { localUri, remoteName } });
-          setAnimalPictures(animalPictures.slice());
-          setUploadLock(false);
-        })
+        animalAPI.uploadAnimalPicture(remoteUri, localUri)
+          .then((remoteName) => {
+            setAnimalPictures(
+              [...animalPictures, { id: pictureID, remoteName, localUri }],
+            );
+            setUploadLock(false);
+          })
           .catch(() => {
             setDialog({
               open: true,
@@ -228,7 +156,6 @@ export default function AnimalRegistration() : JSX.Element {
   return (
     <HeaderLayout
       headerShown
-      requireAuth
       title="Cadastro do Animal"
       headerStyles={{
         backgroundColor: Theme.elements.headerSecondaryDark,
@@ -258,10 +185,10 @@ export default function AnimalRegistration() : JSX.Element {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-        <Formik<ISignUp>
+        <Formik<AnimalTypes.IRegisterAnimal>
           initialValues={{
             name: '',
-            specie: null,
+            species: null,
             sex: null,
             size: null,
             age: null,
@@ -291,39 +218,37 @@ export default function AnimalRegistration() : JSX.Element {
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('O nome do animal é obrigatório'),
-            specie: Yup.mixed<Species | null>().notOneOf([null], 'Selecione a espécie'),
-            sex: Yup.mixed<Sex | null>().notOneOf([null], 'Selecione a espécie'),
-            size: Yup.mixed<Size | null>().notOneOf([null], 'Selecione o porte'),
-            age: Yup.mixed<Age | null>().notOneOf([null], 'Selecione a idade'),
+            species: Yup.mixed<AnimalTypes.Species | null>().notOneOf([null], 'Selecione a espécie'),
+            sex: Yup.mixed<AnimalTypes.Sex | null>().notOneOf([null], 'Selecione a espécie'),
+            size: Yup.mixed<AnimalTypes.Size | null>().notOneOf([null], 'Selecione o porte'),
+            age: Yup.mixed<AnimalTypes.Age | null>().notOneOf([null], 'Selecione a idade'),
+            adoptionRequirements: Yup.object().shape({
+              postAdoptionMonitoringPeriod: Yup.mixed<number | null>().when('postAdoptionMonitoring', {
+                is: true,
+                then: Yup.mixed<number | null>().required('Selecione o período de acompanhamento'),
+              }),
+            }),
+            diseases: Yup.string().when('healthCondition.sick', {
+              is: true,
+              then: Yup.string().required('Escreva as doenças do animal'),
+              otherwise: Yup.string().length(0, 'Marque que o animal está doente para preencher'),
+            }),
           })}
-          onSubmit={(data) => signUp(data)}
+          onSubmit={(data) => registerAnimal(data)}
         >
-          {({
-            setFieldValue,
-            handleChange,
-            handleSubmit,
-            values,
-            touched,
-            errors,
-          }) => (
+          {(formikHelpers) => (
             <Form>
               <FormHeaderText>Adoção</FormHeaderText>
               <FormLabelText>NOME DO ANIMAL</FormLabelText>
-              <TextInputCheck
-                checkStyle={styles.textInputCheck}
-                containerStyle={styles.textInputContainer}
-                textInputStyle={styles.textInput}
-                validation={notEmpty}
+              <CustomTextInput
+                fieldName="name"
+                formikHelpers={formikHelpers}
                 placeholder="Nome do animal"
-                onChangeText={handleChange('name')}
-                value={values.name}
+                theme={{ colors: { primary: Theme.default.secondary } }}
+                underlineColor={Theme.elements.headerText}
+                style={styles.textInput}
+                mode="flat"
               />
-              <HelperText
-                type="error"
-                visible={Boolean(touched.name && errors.name)}
-              >
-                {touched.name && errors.name}
-              </HelperText>
               <FormLabelText>FOTOS DO ANIMAL</FormLabelText>
               {(animalPictures.length > 0)
                 && (
@@ -331,7 +256,7 @@ export default function AnimalRegistration() : JSX.Element {
                     horizontal
                     style={styles.picturesGrid}
                     data={animalPictures}
-                    renderItem={(picture) => <PictureThumbnail source={{ uri: picture.item.item.localUri }} />}
+                    renderItem={(picture) => <PictureThumbnail source={{ uri: picture.item.localUri }} />}
                   />
                 )}
               <PicturesInput onPress={() => uploadPhoto()}>
@@ -348,98 +273,98 @@ export default function AnimalRegistration() : JSX.Element {
               <FormLabelText>ESPÉCIE</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Cachorro', value: Species.Dog },
-                  { label: 'Gato', value: Species.Cat },
+                  { label: 'Cachorro', value: AnimalTypes.Species.Dog },
+                  { label: 'Gato', value: AnimalTypes.Species.Cat },
                 ]}
-                initial={values.specie || -1}
-                onPress={(value) => setFieldValue('specie', value)}
+                initial={formikHelpers.values.species as number || -1}
+                onPress={(value) => formikHelpers.setFieldValue('species', value)}
                 {...styles.radioForm}
               />
               <HelperText
                 type="error"
-                visible={Boolean(touched.specie && errors.specie)}
+                visible={Boolean(formikHelpers.touched.species && formikHelpers.errors.species)}
               >
-                {touched.specie && errors.specie}
+                {formikHelpers.touched.species && formikHelpers.errors.species}
               </HelperText>
               <FormLabelText>SEXO</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Macho', value: Sex.Male },
-                  { label: 'Fêmea', value: Sex.Female },
+                  { label: 'Macho', value: AnimalTypes.Sex.Male },
+                  { label: 'Fêmea', value: AnimalTypes.Sex.Female },
                 ]}
-                initial={values.sex || -1}
-                onPress={(value) => setFieldValue('sex', value)}
+                initial={formikHelpers.values.sex as number || -1}
+                onPress={(value) => formikHelpers.setFieldValue('sex', value)}
                 {...styles.radioForm}
               />
               <HelperText
                 type="error"
-                visible={Boolean(touched.sex && errors.sex)}
+                visible={Boolean(formikHelpers.touched.sex && formikHelpers.errors.sex)}
               >
-                {touched.sex && errors.sex}
+                {formikHelpers.touched.sex && formikHelpers.errors.sex}
               </HelperText>
               <FormLabelText>PORTE</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Pequeno', value: Size.Small },
-                  { label: 'Médio', value: Size.Medium },
-                  { label: 'Grande', value: Size.Big },
+                  { label: 'Pequeno', value: AnimalTypes.Size.Small },
+                  { label: 'Médio', value: AnimalTypes.Size.Medium },
+                  { label: 'Grande', value: AnimalTypes.Size.Big },
                 ]}
-                initial={values.size || -1}
-                onPress={(value) => setFieldValue('size', value)}
+                initial={formikHelpers.values.size as number || -1}
+                onPress={(value) => formikHelpers.setFieldValue('size', value)}
                 {...styles.radioForm}
               />
               <HelperText
                 type="error"
-                visible={Boolean(touched.size && errors.size)}
+                visible={Boolean(formikHelpers.touched.size && formikHelpers.errors.size)}
               >
-                {touched.size && errors.size}
+                {formikHelpers.touched.size && formikHelpers.errors.size}
               </HelperText>
               <FormLabelText>IDADE</FormLabelText>
               <RadioForm
                 radio_props={[
-                  { label: 'Filhote', value: Age.Newborn },
-                  { label: 'Adulto', value: Age.Adult },
-                  { label: 'Idoso', value: Age.Elder },
+                  { label: 'Filhote', value: AnimalTypes.Age.Newborn },
+                  { label: 'Adulto', value: AnimalTypes.Age.Adult },
+                  { label: 'Idoso', value: AnimalTypes.Age.Elder },
                 ]}
-                initial={values.age || -1}
-                onPress={(value) => setFieldValue('age', value)}
+                initial={formikHelpers.values.age as number || -1}
+                onPress={(value) => formikHelpers.setFieldValue('age', value)}
                 {...styles.radioForm}
               />
               <HelperText
                 type="error"
-                visible={Boolean(touched.age && errors.age)}
+                visible={Boolean(formikHelpers.touched.age && formikHelpers.errors.age)}
               >
-                {touched.age && errors.age}
+                {formikHelpers.touched.age && formikHelpers.errors.age}
               </HelperText>
               <FormLabelText>TEMPERAMENTO</FormLabelText>
               <CheckBoxRowTop>
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.temperament.playful}
-                    onValueChange={(newValue) => setFieldValue('temperament', { ...values.temperament, playful: newValue })}
+                    value={formikHelpers.values.temperament.playful}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, playful: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Brincalhão</CheckBoxText>
                 </LabeledCheckBox>
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.temperament.shy}
-                    onValueChange={(newValue) => setFieldValue('temperament', { ...values.temperament, shy: newValue })}
+                    value={formikHelpers.values.temperament.shy}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, shy: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Tímido</CheckBoxText>
                 </LabeledCheckBox>
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.temperament.calm}
-                    onValueChange={(newValue) => setFieldValue('temperament', { ...values.temperament, calm: newValue })}
+                    value={formikHelpers.values.temperament.calm}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, calm: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Calmo</CheckBoxText>
                 </LabeledCheckBox>
@@ -448,30 +373,30 @@ export default function AnimalRegistration() : JSX.Element {
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.temperament.vigilant}
-                    onValueChange={(newValue) => setFieldValue('temperament', { ...values.temperament, vigilant: newValue })}
+                    value={formikHelpers.values.temperament.vigilant}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, vigilant: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Guarda</CheckBoxText>
                 </LabeledCheckBox>
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.temperament.loving}
-                    onValueChange={(newValue) => setFieldValue('temperament', { ...values.temperament, loving: newValue })}
+                    value={formikHelpers.values.temperament.loving}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, loving: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Amoroso</CheckBoxText>
                 </LabeledCheckBox>
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.temperament.lazy}
-                    onValueChange={(newValue) => setFieldValue('temperament', { ...values.temperament, lazy: newValue })}
+                    value={formikHelpers.values.temperament.lazy}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('temperament', { ...formikHelpers.values.temperament, lazy: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Preguiçoso</CheckBoxText>
                 </LabeledCheckBox>
@@ -481,20 +406,20 @@ export default function AnimalRegistration() : JSX.Element {
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.healthCondition.vaccinated}
-                    onValueChange={(newValue) => setFieldValue('healthCondition', { ...values.healthCondition, vaccinated: newValue })}
+                    value={formikHelpers.values.healthCondition.vaccinated}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, vaccinated: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Vacinado</CheckBoxText>
                 </LabeledCheckBox>
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.healthCondition.dewormed}
-                    onValueChange={(newValue) => setFieldValue('healthCondition', { ...values.healthCondition, dewormed: newValue })}
+                    value={formikHelpers.values.healthCondition.dewormed}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, dewormed: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Vermifugado</CheckBoxText>
                 </LabeledCheckBox>
@@ -503,134 +428,141 @@ export default function AnimalRegistration() : JSX.Element {
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.healthCondition.castrated}
-                    onValueChange={(newValue) => setFieldValue('healthCondition', { ...values.healthCondition, castrated: newValue })}
+                    value={formikHelpers.values.healthCondition.castrated}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, castrated: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Castrado</CheckBoxText>
                 </LabeledCheckBox>
                 <LabeledCheckBox>
                   <CheckBox
                     disabled={false}
-                    value={values.healthCondition.sick}
-                    onValueChange={(newValue) => setFieldValue('healthCondition', { ...values.healthCondition, sick: newValue })}
+                    value={formikHelpers.values.healthCondition.sick}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('healthCondition', { ...formikHelpers.values.healthCondition, sick: newValue })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   <CheckBoxText>Doente</CheckBoxText>
                 </LabeledCheckBox>
               </CheckBoxRowBottom>
-              <TextInputCheck
-                checkStyle={styles.textInputCheck}
-                containerStyle={styles.textInputContainer}
-                textInputStyle={styles.textInput}
-                validation={notEmpty}
+              <CustomTextInput
+                fieldName="diseases"
+                formikHelpers={formikHelpers}
+                theme={{ colors: { primary: Theme.default.secondary } }}
+                underlineColor={Theme.elements.headerText}
                 placeholder="Doenças do animal"
-                onChangeText={handleChange('diseases')}
-                value={values.diseases}
+                style={styles.textInput}
+                mode="flat"
               />
               <FormLabelText>EXIGÊNCIAS PARA ADOÇÃO</FormLabelText>
               <SingleCheckBoxRow>
                 <CheckBox
                   disabled={false}
-                  value={values.adoptionRequirements.signedTerm}
-                  onValueChange={(newValue) => setFieldValue('adoptionRequirements', { ...values.adoptionRequirements, signedTerm: newValue })}
+                  value={formikHelpers.values.adoptionRequirements.signedTerm}
+                  onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, signedTerm: newValue })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Termo de adoção</CheckBoxText>
               </SingleCheckBoxRow>
               <SingleCheckBoxRow>
                 <CheckBox
                   disabled={false}
-                  value={values.adoptionRequirements.housePhotos}
-                  onValueChange={(newValue) => setFieldValue('adoptionRequirements', { ...values.adoptionRequirements, housePhotos: newValue })}
+                  value={formikHelpers.values.adoptionRequirements.housePhotos}
+                  onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, housePhotos: newValue })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Fotos da casa</CheckBoxText>
               </SingleCheckBoxRow>
               <SingleCheckBoxRow>
                 <CheckBox
                   disabled={false}
-                  value={values.adoptionRequirements.previousAnimalVisit}
-                  onValueChange={(newValue) => setFieldValue('adoptionRequirements', { ...values.adoptionRequirements, previousAnimalVisit: newValue })}
+                  value={formikHelpers.values.adoptionRequirements.previousAnimalVisit}
+                  onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, previousAnimalVisit: newValue })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Visita prévia ao animal</CheckBoxText>
               </SingleCheckBoxRow>
               <SingleCheckBoxRow>
                 <CheckBox
                   disabled={false}
-                  value={values.adoptionRequirements.postAdoptionMonitoring}
-                  onValueChange={(newValue) => setFieldValue('adoptionRequirements', { ...values.adoptionRequirements, postAdoptionMonitoring: newValue, postAdoptionMonitoringPeriod: null })}
+                  value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoring}
+                  onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoring: newValue, postAdoptionMonitoringPeriod: null })}
                   style={styles.checkbox}
-                  tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                  tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                 />
                 <CheckBoxText>Acompanhamento pós adoção</CheckBoxText>
               </SingleCheckBoxRow>
               <IndentedSubsection>
                 <SingleCheckBoxRow>
                   <CheckBox
-                    disabled={!values.adoptionRequirements.postAdoptionMonitoring}
-                    value={values.adoptionRequirements.postAdoptionMonitoringPeriod === 1}
-                    onValueChange={(newValue) => setFieldValue('adoptionRequirements', { ...values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 1 : null })}
+                    disabled={!formikHelpers.values.adoptionRequirements.postAdoptionMonitoring}
+                    value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoringPeriod === 1}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 1 : null })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   {
-                      values.adoptionRequirements.postAdoptionMonitoring
-                        ? <CheckBoxText>1 mês</CheckBoxText>
-                        : <InvalidCheckBoxText>1 mês</InvalidCheckBoxText>
-                    }
+                    formikHelpers.values.adoptionRequirements.postAdoptionMonitoring
+                      ? <CheckBoxText>1 mês</CheckBoxText>
+                      : <InvalidCheckBoxText>1 mês</InvalidCheckBoxText>
+                  }
                 </SingleCheckBoxRow>
                 <SingleCheckBoxRow>
                   <CheckBox
-                    disabled={!values.adoptionRequirements.postAdoptionMonitoring}
-                    value={values.adoptionRequirements.postAdoptionMonitoringPeriod === 3}
-                    onValueChange={(newValue) => setFieldValue('adoptionRequirements', { ...values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 3 : null })}
+                    disabled={!formikHelpers.values.adoptionRequirements.postAdoptionMonitoring}
+                    value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoringPeriod === 3}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 3 : null })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   {
-                      values.adoptionRequirements.postAdoptionMonitoring
-                        ? <CheckBoxText>3 meses</CheckBoxText>
-                        : <InvalidCheckBoxText>3 meses</InvalidCheckBoxText>
-                    }
+                    formikHelpers.values.adoptionRequirements.postAdoptionMonitoring
+                      ? <CheckBoxText>3 meses</CheckBoxText>
+                      : <InvalidCheckBoxText>3 meses</InvalidCheckBoxText>
+                  }
                 </SingleCheckBoxRow>
                 <SingleCheckBoxRow>
                   <CheckBox
-                    disabled={!values.adoptionRequirements.postAdoptionMonitoring}
-                    value={values.adoptionRequirements.postAdoptionMonitoringPeriod === 6}
-                    onValueChange={(newValue) => setFieldValue('adoptionRequirements', { ...values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 6 : null })}
+                    disabled={!formikHelpers.values.adoptionRequirements.postAdoptionMonitoring}
+                    value={formikHelpers.values.adoptionRequirements.postAdoptionMonitoringPeriod === 6}
+                    onValueChange={(newValue) => formikHelpers.setFieldValue('adoptionRequirements', { ...formikHelpers.values.adoptionRequirements, postAdoptionMonitoringPeriod: newValue ? 6 : null })}
                     style={styles.checkbox}
-                    tintColors={{ true: Theme.elements.label, false: Theme.elements.text }}
+                    tintColors={{ true: Theme.elements.labelSecondary, false: Theme.elements.text }}
                   />
                   {
-                      values.adoptionRequirements.postAdoptionMonitoring
-                        ? <CheckBoxText>6 meses</CheckBoxText>
-                        : <InvalidCheckBoxText>6 meses</InvalidCheckBoxText>
-                    }
+                    formikHelpers.values.adoptionRequirements.postAdoptionMonitoring
+                      ? <CheckBoxText>6 meses</CheckBoxText>
+                      : <InvalidCheckBoxText>6 meses</InvalidCheckBoxText>
+                  }
                 </SingleCheckBoxRow>
+                <HelperText
+                  type="error"
+                  visible={Boolean(formikHelpers.touched.adoptionRequirements?.postAdoptionMonitoringPeriod && formikHelpers.errors.adoptionRequirements?.postAdoptionMonitoringPeriod)}
+                >
+                  {formikHelpers.touched.adoptionRequirements?.postAdoptionMonitoringPeriod && formikHelpers.errors.adoptionRequirements?.postAdoptionMonitoringPeriod}
+                </HelperText>
               </IndentedSubsection>
               <FormLabelText>SOBRE O ANIMAL</FormLabelText>
-              <TextInputCheck
-                checkStyle={styles.textInputCheck}
-                containerStyle={styles.textInputContainer}
-                textInputStyle={styles.textInput}
-                validation={notEmpty}
+              <CustomTextInput
+                fieldName="about"
+                formikHelpers={formikHelpers}
+                dense
                 placeholder="Compartilhe a história do animal"
-                onChangeText={handleChange('about')}
-                value={values.about}
+                theme={{ colors: { primary: Theme.default.secondary } }}
+                underlineColor={Theme.elements.headerText}
+                style={styles.textInput}
+                mode="flat"
               />
               <ButtonContainer>
                 <AsyncButton
                   disabled={uploadLock}
                   styles={styles.submitButton}
                   asyncAction
-                  callback={handleSubmit as (values: unknown) => void}
+                  callback={formikHelpers.handleSubmit as (values: unknown) => void}
                 >
                   <ButtonText>COLOCAR PARA ADOÇÃO</ButtonText>
                 </AsyncButton>
