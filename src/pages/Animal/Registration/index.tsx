@@ -131,8 +131,9 @@ export default function AnimalRegistration() : JSX.Element {
         setUploadLock(true);
         animalAPI.uploadAnimalPicture(remoteUri, localUri)
           .then((remoteName) => {
-            animalPictures.push({ id: uuidv4(), remoteName, localUri });
-            setAnimalPictures(animalPictures.slice());
+            setAnimalPictures(
+              [...animalPictures, { id: pictureID, remoteName, localUri }],
+            );
             setUploadLock(false);
           })
           .catch(() => {

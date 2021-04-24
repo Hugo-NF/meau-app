@@ -4,7 +4,7 @@ import { Query } from '../../types/firebase';
 export interface PaginatedMetaData {
   pageNumber: number;
   pageSize: number;
-  lastElementMarker: any;
+  lastElementMarker: unknown;
   marker: string;
 }
 
