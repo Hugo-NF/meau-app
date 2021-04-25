@@ -31,7 +31,7 @@ export const ButtonContainer = styled.View<ViewProps>`
 `;
 
 export const ButtonText = styled.Text<TextProps>`
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_400Regular';
     font-size: 12px;
 `;
@@ -40,7 +40,7 @@ export const styles = {
   statusBarColor: Theme.elements.statusBarSecondaryDark,
 
   headerLeftIcon: {
-    color: Theme.elements.buttonText,
+    color: Theme.elements.textDark,
     marginBottom: 16,
     marginLeft: 16,
     marginTop: 16,

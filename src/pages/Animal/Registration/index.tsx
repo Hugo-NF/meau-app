@@ -245,7 +245,7 @@ export default function AnimalRegistration() : JSX.Element {
                 formikHelpers={formikHelpers}
                 placeholder="Nome do animal"
                 theme={{ colors: { primary: Theme.default.secondary } }}
-                underlineColor={Theme.elements.headerText}
+                underlineColor={Theme.elements.textDark}
                 style={styles.textInput}
                 mode="flat"
               />
@@ -450,7 +450,7 @@ export default function AnimalRegistration() : JSX.Element {
                 fieldName="diseases"
                 formikHelpers={formikHelpers}
                 theme={{ colors: { primary: Theme.default.secondary } }}
-                underlineColor={Theme.elements.headerText}
+                underlineColor={Theme.elements.textDark}
                 placeholder="Doenças do animal"
                 style={styles.textInput}
                 mode="flat"
@@ -553,7 +553,7 @@ export default function AnimalRegistration() : JSX.Element {
                 dense
                 placeholder="Compartilhe a história do animal"
                 theme={{ colors: { primary: Theme.default.secondary } }}
-                underlineColor={Theme.elements.headerText}
+                underlineColor={Theme.elements.textDark}
                 style={styles.textInput}
                 mode="flat"
               />

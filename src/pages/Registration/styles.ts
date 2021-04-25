@@ -54,7 +54,7 @@ export const styledComponents = {
   `,
 
   ButtonText: styled.Text<TextProps>`
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_400Regular';
     font-size: 12px;
     text-transform: uppercase;
@@ -83,7 +83,7 @@ export const styledComponents = {
     text-align: center;
     font-family: 'Roboto_400Regular';
     font-size: 14px;
-    color: ${Theme.elements.headerText};
+    color: ${Theme.elements.textDark};
     margin-top: 16px;
     margin-bottom: 28px;
     border-radius: 4px;
@@ -149,7 +149,7 @@ export const styles = {
 
   textInput: {
     selectionColor: Theme.elements.statusBarPrimary,
-    underlineColor: Theme.elements.headerText,
+    underlineColor: Theme.elements.textDark,
     style: {
       backgroundColor: 'transparent',
       maxHeight: 56,

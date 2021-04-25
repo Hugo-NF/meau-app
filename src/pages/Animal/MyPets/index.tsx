@@ -53,7 +53,7 @@ const MyPets = (): JSX.Element => {
         <MaterialIcons
           name="error"
           size={24}
-          color={Theme.elements.cardText}
+          color={Theme.elements.textDark}
         />
       )}
       headerBackground={Theme.elements.headerPrimary}

@@ -43,7 +43,7 @@ export const styledComponents = {
   ButtonText: styled.Text<TextProps>`
     font-family: 'Roboto_400Regular';
     font-size: 12px;
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     text-transform: uppercase;
   `,
 

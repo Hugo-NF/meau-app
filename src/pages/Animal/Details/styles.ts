@@ -32,7 +32,7 @@ export const styledComponents = {
   `,
 
   ButtonTextStrong: styled.Text<TextProps>`
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_500Medium';
     font-size: 12px;
     text-transform: uppercase;
@@ -130,7 +130,7 @@ export const styledComponents = {
   `,
 
   TitleText: styled.Text<TextProps>`
-    color: ${Theme.elements.titleText}
+    color: ${Theme.elements.textDark}
     font-family: 'Roboto_500Medium';
     font-size: 16px;
     margin-top: 16px;
@@ -149,7 +149,7 @@ export const styles = {
   },
 
   floatingButtonIcon: {
-    color: Theme.elements.buttonText,
+    color: Theme.elements.textDark,
   },
 
   headerLayoutHeaderPrimaryStyles: {

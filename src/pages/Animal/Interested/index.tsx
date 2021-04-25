@@ -53,7 +53,7 @@ const UserCircle = ({
           width: 84, height: 84, borderRadius: 84, marginBottom: 8,
         }}
       />
-      <Text style={{ fontSize: 14, color: Theme.elements.cardText }}>{user.userName}</Text>
+      <Text style={{ fontSize: 14, color: Theme.elements.textDark }}>{user.userName}</Text>
       {age && (<Text>{age} anos</Text>) }
     </TouchableOpacity>
   );

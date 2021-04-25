@@ -14,7 +14,7 @@ export const styledComponents = {
   `,
 
   ButtonText: styled.Text<TextProps>`
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_400Regular';
     font-size: 12px;
   `,
@@ -49,7 +49,7 @@ export const styledComponents = {
   `,
 
   FormHeaderText: styled.Text<TextProps>`
-    color: ${Theme.elements.headerText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_500Medium';
     font-size: 16px;
     margin-top: 16px;

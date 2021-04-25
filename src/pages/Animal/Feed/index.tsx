@@ -65,7 +65,7 @@ const FeedPets = (): JSX.Element => {
         <MaterialCommunityIcons
           name="heart-outline"
           size={24}
-          color={Theme.elements.headerText}
+          color={Theme.elements.textDark}
         />
       )}
       headerBackground={Theme.elements.headerSecondary}

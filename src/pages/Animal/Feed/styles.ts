@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 import { Theme } from '../../../constants';
 
 export const CardText = styled.Text<TextProps>`
-  color: ${Theme.elements.cardText};
+  color: ${Theme.elements.textDark};
   font-family: 'Roboto_400Regular';
   font-size: 12px;
   text-transform: uppercase;
