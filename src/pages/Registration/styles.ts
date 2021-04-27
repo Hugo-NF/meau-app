@@ -34,7 +34,7 @@ export const styledComponents = {
   `,
 
   BirthDatePlaceholderText: styled.Text<TextProps>`
-    color: ${Theme.elements.placeholderText};
+    color: ${Theme.elements.textFaded};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
   `,

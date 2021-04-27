@@ -67,7 +67,7 @@ export const styledComponents = {
   `,
 
   InvalidCheckBoxText: styled.Text<TextProps>`
-    color: ${Theme.elements.invalidText};
+    color: ${Theme.elements.textFaded};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
     margin-bottom: 1px;

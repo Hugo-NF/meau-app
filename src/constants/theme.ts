@@ -13,9 +13,8 @@ const Theme = {
   elements: {
     text: '#757575',
     textDark: '#434343',
+    textFaded: '#BDBDBD',
     buttonTextDisabled: '#999',
-    invalidText: '#BDBDBD',
-    placeholderText: '#BDBDBD',
     fieldText: '#575756',
     labelPrimary: '#589B9B',
     labelSecondary: '#F7A800',

@@ -32,6 +32,7 @@ import * as CarouselTypes from '../../../types/carousel';
 import * as RouteTypes from '../../../types/routes';
 
 // Utils imports.
+import { concatenateNames } from '../../../utils/concatenateNames';
 import { formatLocation } from '../../../utils/formatTexts';
 
 // Component export.
@@ -99,10 +100,6 @@ export default function AnimalDetails() : JSX.Element {
   function booleanToString(value : boolean) : string {
     if (value === true) return 'Sim';
     return 'Não';
-  }
-
-  function concatenateNames(names : Array<string>) : string {
-    return names.length === 2 ? names.join(' e ') : names.join(', ');
   }
 
   function determinePageBehavior() : void {
