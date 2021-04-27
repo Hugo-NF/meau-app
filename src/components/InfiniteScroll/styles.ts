@@ -22,6 +22,10 @@ export const defaultProps = {
 
   },
 
+  noDataFoundContainerStyles: {
+
+  },
+
   numColumns: 1,
 };
 

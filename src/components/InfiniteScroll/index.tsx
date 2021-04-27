@@ -26,6 +26,7 @@ interface IInfiniteScroll<T> {
   formatContent: (queryResponseData : T) => JSX.Element,
   keyExtractorFunction: (item: T) => string,
   loadingContainerStyles?: Record<string, unknown>,
+  noDataFoundContainerStyles?: Record<string, unknown>,
   numColumns: number,
 }
 
@@ -47,6 +48,7 @@ const InfiniteScroll = <T, _>({
   formatContent,
   keyExtractorFunction,
   loadingContainerStyles,
+  noDataFoundContainerStyles,
   numColumns,
 }: IInfiniteScroll<T>): JSX.Element => {
   // Variable declaration.
@@ -163,7 +165,7 @@ const InfiniteScroll = <T, _>({
   function renderLoading() : JSX.Element {
     if (infiniteScrollState.allDataFetched) {
       return (
-        <TextContainer>
+        <TextContainer style={{ ...noDataFoundContainerStyles }}>
           <NoDataFoundMessage>Não há dados para exibir!</NoDataFoundMessage>
         </TextContainer>
       );

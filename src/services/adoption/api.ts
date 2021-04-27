@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
+import animalAPI from '../animal/api';
 import notificationAPI, { NotificationType } from '../notifications/api';
-import { DocumentData, DocumentRefData } from '../../types/firebase';
+import { DocumentData, DocumentRefData, DocumentSnapshot } from '../../types/firebase';
 import { PaginatedMetaData, filterPaginated } from '../paginated/api';
 
 const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
@@ -26,6 +27,25 @@ const checkIfInterestedIn = async (animal: DocumentRefData, user: DocumentRefDat
   return result.size > 0;
 };
 
+const getAnimalsWhoseInterestsConnectUsers = async (usersConnected : Array<DocumentRefData>) : Promise<Array<DocumentSnapshot>> => {
+  const connectingInterests = await firestore().collection('animalInterested')
+    .where('owner', 'in', usersConnected)
+    .where('user', 'in', usersConnected)
+    .get();
+
+  const animalsRefsFromConnectingInterests : Array<DocumentRefData> = [];
+  connectingInterests.forEach((connectingInterest) => {
+    animalsRefsFromConnectingInterests.push(connectingInterest.data().animal);
+  });
+
+  const animalsFromConnectingInterests = await Promise.all(
+    animalsRefsFromConnectingInterests.map(
+      (animalRef) => animalAPI.getReference(animalRef),
+    ),
+  );
+
+  return animalsFromConnectingInterests;
+};
 
 const getInterestedIn = async (animal: DocumentRefData, paginatedMetaData?: PaginatedMetaData, onlyUnseen = false): Promise<DocumentData> => {
   let query = firestore().collection('animalInterested')
@@ -109,4 +129,5 @@ export default {
   getInterestedIn,
   countNewInterestedIn,
   setAllInterestedSeen,
+  getAnimalsWhoseInterestsConnectUsers,
 };

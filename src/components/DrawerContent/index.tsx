@@ -180,7 +180,8 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
             />
             <List.Item
               title="Chat"
-              titleStyle={styles.ListItemTextDisabled}
+              onPress={() => navigateTo('ChatList')}
+              titleStyle={styles.ListItemText}
             />
           </List.Accordion>
         </List.Section>

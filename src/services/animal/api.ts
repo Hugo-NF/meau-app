@@ -117,6 +117,12 @@ const api = {
     return this.animalPictureDir().child(pictureID).getDownloadURL();
   },
 
+  getReference(
+    animalRef : FirebaseFirestoreTypes.DocumentReference,
+  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return animalRef.get();
+  },
+
   uploadAnimalPicture(
     profilePictureRemoteURI: string,
     profilePictureLocalURI : string,
