@@ -1,8 +1,8 @@
 import React, {
-  useCallback, useEffect, useLayoutEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import {
   GiftedChat, InputToolbar, InputToolbarProps, Send, SendProps, MessageProps, IMessage,
 } from 'react-native-gifted-chat';
@@ -125,14 +125,15 @@ const mock = [
 ];
 
 export default (): JSX.Element => {
-  const navigation = useNavigation();
   const chatTitle = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.title;
   const animalUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.animalUID;
   const targetUserUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.targetUserUID;
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+    }, []),
+  );
 
   const [messages, setMessages] = useState<IMessage[]>([]);
 
