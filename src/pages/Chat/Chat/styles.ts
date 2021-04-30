@@ -37,8 +37,8 @@ export const styledComponents = {
   MessageText: styled.Text<TextProps>`
     color: ${Theme.elements.chatText};
     font-family: Roboto_400Regular;
-    line-height: 24;
-    font-size: 18;
+    line-height: 24px;
+    font-size: 18px;
   `,
 };
 
