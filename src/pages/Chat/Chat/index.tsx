@@ -127,8 +127,8 @@ const mock = [
 export default (): JSX.Element => {
   const navigation = useNavigation();
   const chatTitle = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.title;
-  const animal = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.animal;
-  const targetUser = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.targetUser;
+  const animalUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.animalUID;
+  const targetUserUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.targetUserUID;
 
   useLayoutEffect(() => {
     setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
@@ -140,13 +140,13 @@ export default (): JSX.Element => {
     // eslint-disable-next-line
     console.log('================ CHAT PAGE ================');
     // eslint-disable-next-line
-    console.log('chatAPI.getChat(currentUser, targetUser, animal): ', targetUser.id, animal.id);
+    console.log('chatAPI.getChat(currentUser, targetUser, animal): ', targetUserUID, animalUID);
     // eslint-disable-next-line
     console.log('...then');
     // eslint-disable-next-line
     console.log('chatAPI.loadMessages(chat, pageSize) if chat');
     setMessages(mock.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
-  }, [targetUser, animal]);
+  }, [targetUserUID, animalUID]);
 
   const onSend = useCallback((newMessages = []) => {
     // eslint-disable-next-line

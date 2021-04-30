@@ -154,8 +154,8 @@ const Interested = (): JSX.Element => {
                         text: 'Chat',
                         onPress: () => navigation.navigate('Chat', {
                           title: user.userName,
-                          targetUser: u.ref,
-                          animal,
+                          targetUserUID: u.id,
+                          animalUID: animal?.id,
                         }),
                       },
                       {
