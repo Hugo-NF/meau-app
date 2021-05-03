@@ -24,7 +24,11 @@ const createChat = async (users: Array<DocumentRefData>)
 };
 
 const getOwnChats = async (userRef: DocumentRefData)
-  : Promise<DocumentData> => firestore().collection('chats').where('users', 'array-contains', userRef).get();
+  : Promise<DocumentData> => firestore()
+  .collection('chats')
+  .where('users', 'array-contains', userRef)
+  .orderBy('updatedAt', 'desc')
+  .get();
 
 const pushMessages = async (
   chatRef: DocumentRefData,
