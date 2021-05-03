@@ -1,5 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import {
+  DocumentData, DocumentRefData, DocumentSnapshot,
+} from '../../types/firebase';
 
 // Collection de chats
 // * Id;
@@ -15,16 +17,18 @@ import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 // - * Se visualizado ou não;
 // + * Array de referências para usuários que visualizaram;
 
-const createChat = async (users: Array<FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>>): Promise<void> => {
+const createChat = async (users: Array<DocumentRefData>)
+  : Promise<DocumentData> => {
   const { FieldValue } = firestore;
-  await firestore().collection('chats').add({ users, updatedAt: FieldValue.serverTimestamp() });
+  return (await firestore().collection('chats').add({ users, updatedAt: FieldValue.serverTimestamp() })).get();
 };
 
-const getOwnChats = async (userRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>): Promise<FirebaseFirestoreTypes.QuerySnapshot<FirebaseFirestoreTypes.DocumentData>> => firestore().collection('chats').where('users', 'array-contains', userRef).get();
+const getOwnChats = async (userRef: DocumentRefData)
+  : Promise<DocumentData> => firestore().collection('chats').where('users', 'array-contains', userRef).get();
 
 const pushMessages = async (
-  chatRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
-  senderRef: FirebaseFirestoreTypes.DocumentReference<FirebaseFirestoreTypes.DocumentData>,
+  chatRef: DocumentRefData,
+  senderRef: DocumentRefData,
   messages: Array<string>,
 ): Promise<void> => {
   const { FieldValue } = firestore;
@@ -44,8 +48,36 @@ const pushMessages = async (
   });
 };
 
+const loadMessages = async (
+  chatRef: DocumentRefData,
+  pageSize: number,
+  lastMessage?: DocumentSnapshot,
+): Promise<DocumentData> => {
+  let query = firestore()
+    .collection('messages')
+    .where('chat', '==', chatRef)
+    .orderBy('timestamp', 'desc');
+
+  if (lastMessage !== undefined) {
+    query = query.startAfter(lastMessage);
+  }
+
+  return query.limit(pageSize).get();
+};
+
+const latestMessageOnChat = async (
+  chatRef: DocumentRefData,
+): Promise<DocumentData> => firestore()
+  .collection('messages')
+  .where('chat', '==', chatRef)
+  .orderBy('timestamp', 'desc')
+  .limitToLast(1)
+  .get();
+
 export default {
   createChat,
   getOwnChats,
   pushMessages,
+  latestMessageOnChat,
+  loadMessages,
 };
