@@ -141,11 +141,12 @@ export const styledComponents = {
 // Styles.
 export const styles = {
   adoptionButton: {
-    alignItems: 'center',
     backgroundColor: Theme.elements.adoptionButton,
     borderRadius: '2px',
     height: '40px',
-    width: '232px',
+    marginLeft: '8px',
+    marginRight: '8px',
+    width: '148px',
   },
 
   floatingButtonIcon: {

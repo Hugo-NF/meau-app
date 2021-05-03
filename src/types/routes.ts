@@ -5,5 +5,10 @@ export type RouteParams = {
   },
   Interested: {
     animalUID: string
+  },
+  Chat: {
+    title: string,
+    targetUserUID: string,
+    animalUID: string,
   }
 };

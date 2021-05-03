@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { ScrollView } from 'react-native-gesture-handler';
 import SideMenu from 'react-native-side-menu-updated';
@@ -12,7 +13,7 @@ import { Theme } from '../../constants';
 
 import { styledComponents, IHeaderProps, ITitleProps } from './styles';
 
-type HeaderActions = 'back' | 'drawer' | 'share' | 'search';
+type HeaderActions = 'back' | 'drawer' | 'share' | 'search' | 'options';
 
 interface IButtonAction {
   hidden?: boolean,
@@ -95,6 +96,16 @@ export default function HeaderLayout({
           <ActionButton onPress={() => navigation.goBack()}>
             <Ionicons
               name="search"
+              size={24}
+              color={buttonType?.iconColor}
+            />
+          </ActionButton>
+        );
+      case 'options':
+        return (
+          <ActionButton onPress={() => null}>
+            <MaterialCommunityIcons
+              name="dots-vertical"
               size={24}
               color={buttonType?.iconColor}
             />
