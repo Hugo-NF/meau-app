@@ -48,6 +48,12 @@ const Theme = {
     chatListEntrySeparator: '#E6E7E8',
     chatListEntryTitle: '#589B9B',
     chatListEntryTitleFaded: '#88C9BF',
+    chatTextInput: '#FFFFFF',
+    chatBackground: '#F1F2F2',
+    chatSendIcon: '#FFFFFF',
+    chatSendBall: '#88C9BF',
+    chatText: '#434343',
+    chatBubleUser: '#CFE9E5',
   },
   named: {
     blue: '#007BFF',

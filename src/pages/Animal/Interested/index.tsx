@@ -151,8 +151,11 @@ const Interested = (): JSX.Element => {
                   callback={(u: InterestedUser): void => {
                     Alert.alert(u.userName, 'Selecione a ação', [
                       {
-                        text: 'Cancelar',
-                        onPress: () => null,
+                        text: 'Chat',
+                        onPress: () => navigation.navigate('Chat', {
+                          title: user.userName,
+                          targetUserUID: u.id,
+                        }),
                       },
                       {
                         text: 'Remover',
@@ -176,7 +179,7 @@ const Interested = (): JSX.Element => {
                           }
                         },
                       },
-                    ]);
+                    ], { cancelable: true });
                   }}
                 />
               )}
