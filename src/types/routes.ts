@@ -9,5 +9,6 @@ export type RouteParams = {
   Chat: {
     title: string,
     targetUserUID: string,
+    chatUID: string,
   }
 };

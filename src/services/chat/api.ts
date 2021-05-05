@@ -23,6 +23,8 @@ const createChat = async (users: Array<DocumentRefData>)
   return (await firestore().collection('chats').add({ users, updatedAt: FieldValue.serverTimestamp() })).get();
 };
 
+const getChat = async (chatUID: string): Promise<DocumentData> => firestore().collection('chats').doc(chatUID).get();
+
 const getOwnChats = async (userRef: DocumentRefData)
   : Promise<Query> => firestore()
   .collection('chats')
@@ -79,6 +81,7 @@ const latestMessageOnChat = async (
 
 export default {
   createChat,
+  getChat,
   getOwnChats,
   pushMessages,
   latestMessageOnChat,

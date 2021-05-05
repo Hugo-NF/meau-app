@@ -127,6 +127,7 @@ const mock = [
 export default (): JSX.Element => {
   const chatTitle = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.title;
   const targetUserUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.targetUserUID;
+  const chatUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.chatUID;
 
   useFocusEffect(
     useCallback(() => {
@@ -140,13 +141,13 @@ export default (): JSX.Element => {
     // eslint-disable-next-line
     console.log('================ CHAT PAGE ================');
     // eslint-disable-next-line
-    console.log('chatAPI.getChat(currentUser, targetUser): ', targetUserUID);
+    console.log('chatAPI.getChat(chatUID): ', targetUserUID);
     // eslint-disable-next-line
     console.log('...then');
     // eslint-disable-next-line
     console.log('chatAPI.loadMessages(chat, pageSize) if chat');
     setMessages(mock.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
-  }, [targetUserUID]);
+  }, [targetUserUID, chatUID]);
 
   const onSend = useCallback((newMessages = []) => {
     // eslint-disable-next-line
