@@ -1,4 +1,4 @@
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import {
   DocumentData, DocumentRefData, Query, QuerySnapshot,
 } from '../../types/firebase';
