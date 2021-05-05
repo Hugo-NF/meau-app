@@ -50,7 +50,7 @@ const latestMessageOnChat = async (
 const loadMessages = async (
   chatRef: DocumentRefData,
   pageSize: number,
-  lastMessageTimestamp?: FirebaseFirestoreTypes.Timestamp,
+  lastMessageTimestamp?: Date,
 ): Promise<QuerySnapshot> => {
   let query = firestore()
     .collection('messages')

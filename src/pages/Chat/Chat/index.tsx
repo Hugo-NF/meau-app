@@ -12,7 +12,6 @@ import {
 } from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
@@ -40,56 +39,46 @@ export default (): JSX.Element => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoadingEarlier, setIsLoadingEarlier] = useState<boolean>(false);
 
+  const sorter = (a: IMessage, b: IMessage): number => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime();
+
   const loadMessages = useCallback((lastMessage?: IMessage): void => {
-    let lastMessageTimestamp;
-    if (lastMessage !== undefined) {
-      lastMessageTimestamp = FirebaseFirestoreTypes.Timestamp.fromDate(new Date());
-    }
+    const lastTimestamp = lastMessage ? lastMessage.createdAt as Date : undefined;
 
-    chatAPI.loadMessages(chatRef.current, 10, lastMessageTimestamp)
+    chatAPI.loadMessages(chatRef.current, 10, lastTimestamp)
       .then((loadedMessages) => {
-        // const sortedMessages = loadedMessages.docs.sort((a, b) => b.data().timestamp.toDate().getTime() - a.data().timestamp.toDate().getTime());
-        console.log(loadedMessages.docs);
-        const chatMessagesPromises: Array<Promise<IMessage>> = loadedMessages.docs.map((message) => new Promise((resolve, reject) => {
+        const chatMessages = loadedMessages.docs.map((message) => {
           const messageData = message.data();
-          userAPI.getReference(messageData.sender)
-            .then((userDocument) => {
-              const userData = userDocument.data();
-              resolve({
-                _id: message.id,
-                text: messageData.text,
-                createdAt: messageData.timestamp.toDate(),
-                user: {
-                  _id: userDocument.id,
-                  name: userData?.full_name,
-                },
-              });
-            }).catch((err) => reject(err));
-        }));
+          return {
+            _id: message.id,
+            text: messageData.text,
+            createdAt: messageData.timestamp.toDate(),
+            user: {
+              _id: messageData.sender.id,
+            },
+          };
+        });
 
-        Promise.all(chatMessagesPromises)
-          .then((chatMessages) => {
-            setMessages((previousMessages) => GiftedChat.append(previousMessages, chatMessages));
-            setIsLoadingEarlier(false);
-          })
-          .catch(() => {
-            Alert.alert(
-              'Erro!',
-              'Ocorreu um erro no carregamento das informações.\n'
-                  + 'Retornando para a página anterior.',
-              [
-                {
-                  text: 'Ok',
-                  onPress: () => navigation.goBack(),
-                },
-              ],
-              {
-                cancelable: false,
-              },
-            );
-          });
+        setMessages((previousMessages) => GiftedChat.append(previousMessages, chatMessages).sort(sorter));
+
+        setIsLoadingEarlier(false);
+      })
+      .catch(() => {
+        Alert.alert(
+          'Erro!',
+          'Ocorreu um erro no carregamento das informações.\n'
+              + 'Retornando para a página anterior.',
+          [
+            {
+              text: 'Ok',
+              onPress: () => navigation.goBack(),
+            },
+          ],
+          {
+            cancelable: false,
+          },
+        );
       });
-  }, []);
+  }, [navigation]);
 
   useEffect(() => {
     if (chatUID.current !== undefined) {
@@ -109,7 +98,7 @@ export default (): JSX.Element => {
 
     chatAPI.pushMessages(chatRef.current, currentUserRef, newMessages.map((x) => x.text));
     setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
-  }, []);
+  }, [currentUserRef, targetUserUID]);
 
   const onLoadEarlier = (): void => {
     setIsLoadingEarlier(true);
@@ -141,7 +130,7 @@ export default (): JSX.Element => {
   );
 
   const renderMessage = (props: MessageProps<IMessage>): JSX.Element => {
-    const isSameUser = props.currentMessage?.user._id === 1;
+    const isSameUser = props.currentMessage?.user._id === currentUserRef.id;
     const MessageView = isSameUser ? SelfMessageBubble : MessageBubble;
 
     return (

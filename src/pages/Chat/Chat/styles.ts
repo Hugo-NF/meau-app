@@ -25,6 +25,7 @@ export const styledComponents = {
     padding: 15px;
     margin-top: 8px;
     border-radius: 6px;
+    align-self: flex-start;
   `,
   SelfMessageBubble: styled.View<ViewProps>`
     background-color: ${Theme.elements.chatBubleUser};
