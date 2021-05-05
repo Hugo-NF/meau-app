@@ -27,14 +27,25 @@ const checkIfInterestedIn = async (animal: DocumentRefData, user: DocumentRefDat
   return result.size > 0;
 };
 
-const getAnimalsWhoseInterestsConnectUsers = async (usersConnected : Array<DocumentRefData>) : Promise<Array<DocumentSnapshot>> => {
-  const connectingInterests = await firestore().collection('animalInterested')
-    .where('owner', 'in', usersConnected)
-    .where('user', 'in', usersConnected)
+const getAnimalsWhoseInterestsConnectTwoUsers = async (
+  firstUser : DocumentRefData, secondUser: DocumentRefData,
+) : Promise<Array<DocumentSnapshot>> => {
+  const connectingInterestsWhereFirstUserIsOwner = await firestore()
+    .collection('animalInterested')
+    .where('owner', '==', firstUser)
+    .where('user', '==', secondUser)
+    .get();
+  const connectingInterestsWhereSecondUserIsOwner = await firestore()
+    .collection('animalInterested')
+    .where('owner', '==', secondUser)
+    .where('user', '==', firstUser)
     .get();
 
   const animalsRefsFromConnectingInterests : Array<DocumentRefData> = [];
-  connectingInterests.forEach((connectingInterest) => {
+  connectingInterestsWhereFirstUserIsOwner.forEach((connectingInterest) => {
+    animalsRefsFromConnectingInterests.push(connectingInterest.data().animal);
+  });
+  connectingInterestsWhereSecondUserIsOwner.forEach((connectingInterest) => {
     animalsRefsFromConnectingInterests.push(connectingInterest.data().animal);
   });
 
@@ -129,5 +140,5 @@ export default {
   getInterestedIn,
   countNewInterestedIn,
   setAllInterestedSeen,
-  getAnimalsWhoseInterestsConnectUsers,
+  getAnimalsWhoseInterestsConnectTwoUsers,
 };

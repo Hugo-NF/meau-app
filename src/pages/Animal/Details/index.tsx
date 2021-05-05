@@ -313,7 +313,7 @@ export default function AnimalDetails() : JSX.Element {
                         callback={() => navigation.navigate('Chat', {
                           /* eslint-disable camelcase */
                           title: owner.data()?.full_name,
-                          targetUserUID: animalData.owner.id,
+                          targetUserUID: ownerID,
                         })}
                       >
                         <ButtonTextStrong>Chat</ButtonTextStrong>

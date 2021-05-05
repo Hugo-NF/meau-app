@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { ImageSourcePropType } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 // Service imports.
 import adoptionAPI from '../../../services/adoption/api';
@@ -31,6 +31,7 @@ import * as FirebaseTypes from '../../../types/firebase';
 // Page exported.
 export default function ChatList() : JSX.Element {
   // Variable declaration.
+  const navigation = useNavigation();
 
   // Styled components.
   const {
@@ -60,8 +61,9 @@ export default function ChatList() : JSX.Element {
       filterPaginated(
         chatAPI.getOwnChats(currentUserDocument),
         {
-          lastElementMarker: [lastEntry],
+          lastElementMarker: [lastEntry?.updatedAt],
           marker: 'updatedAt',
+          orderByDirection: 'desc',
           pageNumber,
           pageSize,
         },
@@ -80,7 +82,7 @@ export default function ChatList() : JSX.Element {
                 let userChatListEntryUnseenUpdates : boolean;
 
                 const otherUserInChatRef = userChatData.users.find(
-                  (userRef : FirebaseTypes.DocumentRefData) => userRef !== userAPI.currentUserDocument(),
+                  (userRef : FirebaseTypes.DocumentRefData) => userRef.id !== userAPI.currentUserDocument().id,
                 );
 
                 const userDataPromise = new Promise<void>(
@@ -88,12 +90,13 @@ export default function ChatList() : JSX.Element {
                     userAPI.getReference(otherUserInChatRef)
                       .then((user) => {
                         const userData = user.data();
-                        userChatListEntryOtherUserDisplayName = userData?.fullName;
+                        /* eslint-disable-next-line camelcase */
+                        userChatListEntryOtherUserDisplayName = userData?.full_name;
 
                         const chatTitlePromise = new Promise<void>(
                           (resolveChatTitle, rejectChatTitle) => {
-                            adoptionAPI.getAnimalsWhoseInterestsConnectUsers(
-                              [currentUserDocument, otherUserInChatRef],
+                            adoptionAPI.getAnimalsWhoseInterestsConnectTwoUsers(
+                              currentUserDocument, otherUserInChatRef,
                             ).then((animalsFromConnectingInterests) => {
                               const animalNames : Array<string> = [];
 
@@ -109,11 +112,13 @@ export default function ChatList() : JSX.Element {
 
                               if (animalNameConcatenation !== '') {
                                 userChatListEntryTitle = `${
-                                  userData?.fullName
+                                  /* eslint-disable-next-line camelcase */
+                                  userData?.full_name
                                 } | ${animalNameConcatenation}`;
                               } else {
                                 userChatListEntryTitle = `${
-                                  userData?.fullName
+                                  /* eslint-disable-next-line camelcase */
+                                  userData?.full_name
                                 }`;
                               }
 
@@ -147,7 +152,7 @@ export default function ChatList() : JSX.Element {
 
                 const messageDataPromise = new Promise<void>(
                   (resolveMessageData, rejectMessageData) => {
-                    chatAPI.latestMessageOnChat(chatAPI.chatDocument(userChatData.id))
+                    chatAPI.latestMessageOnChat(chatAPI.chatDocument(userChat.id))
                       .then((message) => {
                         const messageData = message.data();
 
@@ -162,11 +167,11 @@ export default function ChatList() : JSX.Element {
 
                 Promise.all([messageDataPromise, userDataPromise])
                   .then(() => resolveUserChat({
-                    id: userChatData.id,
+                    id: userChat.id,
                     image: userChatListEntryImage,
                     messagePreview: userChatListEntryMessagePreview,
                     otherUserDisplayName: userChatListEntryOtherUserDisplayName,
-                    updatedAt: userChatData.updatedAt.toISOString(),
+                    updatedAt: userChatData.updatedAt,
                     title: userChatListEntryTitle,
                     unseenUpdates: userChatListEntryUnseenUpdates,
                   }))
@@ -185,7 +190,12 @@ export default function ChatList() : JSX.Element {
 
   function formatChatListEntry(listEntry: ChatListEntry) : JSX.Element {
     return (
-      <ChatListEntryContainer>
+      <ChatListEntryContainer
+        onPress={() => navigation.navigate('Chat', {
+          title: listEntry.otherUserDisplayName,
+          chatUID: listEntry.id,
+        })}
+      >
         {
           listEntry.image !== null ? (
             <Avatar.Image
@@ -223,7 +233,7 @@ export default function ChatList() : JSX.Element {
           )
         }
         <ChatListEntryTimestampText>
-          {listEntry.updatedAt}
+          {listEntry.updatedAt.toDate().toISOString()}
         </ChatListEntryTimestampText>
       </ChatListEntryContainer>
     );
