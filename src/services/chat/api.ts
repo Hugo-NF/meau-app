@@ -17,6 +17,8 @@ import {
 // - * Se visualizado ou não;
 // + * Array de referências para usuários que visualizaram;
 
+const chatDocument = (chatUID: string): DocumentRefData => firestore().collection('chats').doc(chatUID);
+
 const createChat = async (users: Array<DocumentRefData>)
   : Promise<DocumentData> => {
   const { FieldValue } = firestore;
@@ -25,11 +27,10 @@ const createChat = async (users: Array<DocumentRefData>)
 
 const getChat = async (chatUID: string): Promise<DocumentData> => firestore().collection('chats').doc(chatUID).get();
 
-const getOwnChats = async (userRef: DocumentRefData)
-  : Promise<Query> => firestore()
+const getOwnChats = (userRef: DocumentRefData)
+  : Query => firestore()
   .collection('chats')
-  .where('users', 'array-contains', userRef)
-  .orderBy('updatedAt', 'desc');
+  .where('users', 'array-contains', userRef);
 
 const pushMessages = async (
   chatRef: DocumentRefData,
@@ -44,7 +45,7 @@ const pushMessages = async (
       timestamp: FieldValue.serverTimestamp(),
       sender: senderRef,
       chat: chatRef,
-      visualized: [senderRef],
+      seenBy: [senderRef],
     });
   });
 
@@ -80,6 +81,7 @@ const latestMessageOnChat = async (
   .get();
 
 export default {
+  chatDocument,
   createChat,
   getChat,
   getOwnChats,

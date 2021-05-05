@@ -7,7 +7,7 @@ export type ChatListEntry = {
   image : ImageSourcePropType | null,
   messagePreview: string,
   otherUserDisplayName: string,
-  timestamp: string,
+  updatedAt: string,
   title : string,
   unseenUpdates: boolean,
 };

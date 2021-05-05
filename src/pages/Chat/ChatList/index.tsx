@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { ImageSourcePropType } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import { v4 as uuidv4 } from 'uuid';
 import { useFocusEffect } from '@react-navigation/native';
 
 // Service imports.
@@ -56,14 +55,10 @@ export default function ChatList() : JSX.Element {
     pageSize: number,
   ): Promise<Array<ChatListEntry>> {
     return new Promise((resolve, reject) => {
-      /* Chat API TODO: Método getAllUserChats para receber um doc de usuário e
-       * retornar todos os chats que tem uma referência para esse doc entre os
-       * participantes. Se quiser mudar o parâmetro de doc para UID, a vontade.
-       */
       const currentUserDocument = userAPI.currentUserDocument();
 
       filterPaginated(
-        chatAPI.allUserChatsQuery(currentUserDocument),
+        chatAPI.getOwnChats(currentUserDocument),
         {
           lastElementMarker: [lastEntry],
           marker: 'updatedAt',
@@ -84,8 +79,6 @@ export default function ChatList() : JSX.Element {
                 let userChatListEntryTitle : string;
                 let userChatListEntryUnseenUpdates : boolean;
 
-                // ChatAPI TODO: Se o nome do campo de usuário não for "users",
-                // corrigir aqui!
                 const otherUserInChatRef = userChatData.users.find(
                   (userRef : FirebaseTypes.DocumentRefData) => userRef !== userAPI.currentUserDocument(),
                 );
@@ -154,7 +147,7 @@ export default function ChatList() : JSX.Element {
 
                 const messageDataPromise = new Promise<void>(
                   (resolveMessageData, rejectMessageData) => {
-                    chatAPI.getLastChatMessage(userChatData.id)
+                    chatAPI.latestMessageOnChat(chatAPI.chatDocument(userChatData.id))
                       .then((message) => {
                         const messageData = message.data();
 
@@ -173,7 +166,7 @@ export default function ChatList() : JSX.Element {
                     image: userChatListEntryImage,
                     messagePreview: userChatListEntryMessagePreview,
                     otherUserDisplayName: userChatListEntryOtherUserDisplayName,
-                    timestamp: userChatData.timestamp, // TODO: Format this with date-alguma-coisa;
+                    updatedAt: userChatData.updatedAt.toISOString(),
                     title: userChatListEntryTitle,
                     unseenUpdates: userChatListEntryUnseenUpdates,
                   }))
@@ -187,39 +180,6 @@ export default function ChatList() : JSX.Element {
             .catch((err) => reject(err));
         })
         .catch((err) => reject(err));
-    });
-  }
-
-  function fetchChatListMock(
-    lastEntry: ChatListEntry | null,
-    pageNumber: number,
-    pageSize: number,
-  ): Promise<Array<ChatListEntry>> {
-    return new Promise((resolve) => {
-      if (pageNumber === 1 || lastEntry === null) {
-        resolve([
-          {
-            id: uuidv4(),
-            image: null,
-            messagePreview: 'Olá, Bob Esponja! Tudo bem?',
-            otherUserDisplayName: 'Patrick Estrela',
-            timestamp: '17:56',
-            title: 'Patrick Estrela | Gary',
-            unseenUpdates: false,
-          },
-          {
-            id: uuidv4(),
-            image: null,
-            messagePreview: 'Bob Esponja, gostaria de adotar o Pin. Acho que preciso de um pet.',
-            otherUserDisplayName: 'Lula Molusco',
-            timestamp: '17:51',
-            title: 'Lula Molusco | Pin',
-            unseenUpdates: true,
-          },
-        ]);
-      } else {
-        resolve([]);
-      }
     });
   }
 
@@ -263,7 +223,7 @@ export default function ChatList() : JSX.Element {
           )
         }
         <ChatListEntryTimestampText>
-          {listEntry.timestamp}
+          {listEntry.updatedAt}
         </ChatListEntryTimestampText>
       </ChatListEntryContainer>
     );
@@ -297,7 +257,7 @@ export default function ChatList() : JSX.Element {
           keyExtractorFunction={chatListEntryKey}
           contentBatchSize={10}
           contentContainerStyles={styles.infiniteScroll.contentContainerStyles}
-          dataFetchQuery={fetchChatListMock}
+          dataFetchQuery={fetchChatList}
           formatContent={formatChatListEntry}
           noDataFoundContainerStyles={
             styles.infiniteScroll.noDataFoundContainerStyles
