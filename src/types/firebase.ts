@@ -5,3 +5,4 @@ export type DocumentData = FirebaseFirestoreTypes.DocumentData;
 export type DocumentRefData = FirebaseFirestoreTypes.DocumentReference<DocumentData>;
 export type DocumentSnapshot = FirebaseFirestoreTypes.DocumentSnapshot<DocumentData>;
 export type Query = FirebaseFirestoreTypes.Query;
+export type QuerySnapshot = FirebaseFirestoreTypes.QuerySnapshot<DocumentData>;

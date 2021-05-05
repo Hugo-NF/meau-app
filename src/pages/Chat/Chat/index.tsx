@@ -1,8 +1,12 @@
+/* eslint-disable camelcase */
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
+import { Alert } from 'react-native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
+import {
+  RouteProp, useFocusEffect, useRoute, useNavigation,
+} from '@react-navigation/native';
 import {
   GiftedChat, InputToolbar, InputToolbarProps, Send, SendProps, MessageProps, IMessage,
 } from 'react-native-gifted-chat';
@@ -11,118 +15,10 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
-import { styledComponents, styles } from './styles';
+import chatAPI from '../../../services/chat/api';
+import userAPI from '../../../services/user/api';
 
-const mock = [
-  {
-    _id: 1,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(1),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 2,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(2),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 3,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(3),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 5,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(5),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 6,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(6),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 7,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(7),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 8,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(8),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 4,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(4),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 9,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(9),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 10,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(10),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 11,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(11),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 12,
-    text: 'Que maravilha, Marília! Você mora aqui em Brasília?',
-    createdAt: new Date(12),
-    user: {
-      _id: 1,
-      name: 'React Native',
-    },
-  },
-];
+import { styledComponents, styles } from './styles';
 
 export default (): JSX.Element => {
   const chatTitle = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.title;
@@ -135,18 +31,56 @@ export default (): JSX.Element => {
     }, []),
   );
 
+  const navigation = useNavigation();
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    // eslint-disable-next-line
-    console.log('================ CHAT PAGE ================');
-    // eslint-disable-next-line
-    console.log('chatAPI.getChat(chatUID): ', targetUserUID);
-    // eslint-disable-next-line
-    console.log('...then');
-    // eslint-disable-next-line
-    console.log('chatAPI.loadMessages(chat, pageSize) if chat');
-    setMessages(mock.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
+    if (chatUID !== null) {
+      chatAPI.loadMessages(chatAPI.chatDocument(chatUID), 10)
+        .then((loadedMessages) => {
+          const sortedMessages = loadedMessages.docs.sort((a, b) => b.data().timestamp.getTime() - a.data().timestamp.getTime());
+
+          const chatMessagesPromises: Array<Promise<IMessage>> = sortedMessages.map((message) => new Promise((resolve, reject) => {
+            const messageData = message.data();
+            userAPI.getReference(messageData.sender)
+              .then((userDocument) => {
+                const userData = userDocument.data();
+                resolve({
+                  _id: messageData.id,
+                  text: messageData.text,
+                  createdAt: messageData.timestamp,
+                  user: {
+                    _id: userData?.id,
+                    name: userData?.full_name,
+                  },
+                });
+              }).catch((err) => reject(err));
+          }));
+
+          Promise.all(chatMessagesPromises)
+            .then((chatMessages) => {
+              setMessages(chatMessages);
+            })
+            .catch(() => {
+              Alert.alert(
+                'Erro!',
+                'Ocorreu um erro no carregamento das informações.\n'
+                  + 'Retornando para a página anterior.',
+                [
+                  {
+                    text: 'Ok',
+                    onPress: () => navigation.goBack(),
+                  },
+                ],
+                {
+                  cancelable: false,
+                },
+              );
+            });
+        });
+    } else {
+      setMessages([]);
+    }
   }, [targetUserUID, chatUID]);
 
   const onSend = useCallback((newMessages = []) => {
