@@ -97,15 +97,9 @@ const InfiniteScroll = <T, _>({
   }, [contentBatchSize, dataFetchQuery]);
 
   // Function declarations.
-  function componentDidMount() : () => void {
-    let mounted = true;
-
-    if (mounted) fetchInitialData();
-
-    return function cleanUp() : void {
-      mounted = false;
-    };
-  }
+  const onComponentFocus = useCallback(() : void => {
+    fetchInitialData();
+  }, [fetchInitialData]);
 
   function fetchMoreData() : void {
     if (!infiniteScrollState.loadingMore && !infiniteScrollState.allDataFetched) {
@@ -186,7 +180,7 @@ const InfiniteScroll = <T, _>({
   }
 
   // Component effects.
-  useFocusEffect(componentDidMount);
+  useFocusEffect(onComponentFocus);
 
   // JSX returned.
   return (
