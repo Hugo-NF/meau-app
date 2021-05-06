@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import React, {
-  useCallback, useEffect, useState, useRef,
+  useCallback, useEffect, useState,
 } from 'react';
 import { Alert } from 'react-native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
@@ -25,8 +25,7 @@ export default (): JSX.Element => {
   const chatTitle = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.title;
   const targetUserUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.targetUserUID;
 
-  const chatUID = useRef<string>(useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.chatUID);
-  const chatRef = useRef<DocumentRefData>(chatAPI.chatDocument(chatUID.current));
+  const routeChatUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.chatUID;
   const currentUserRef = userAPI.currentUserDocument();
 
   useFocusEffect(
@@ -38,20 +37,23 @@ export default (): JSX.Element => {
   const navigation = useNavigation();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoadingEarlier, setIsLoadingEarlier] = useState<boolean>(false);
+  const [chatRef, setChatRef] = useState<DocumentRefData>();
 
   const sorter = (a: IMessage, b: IMessage): number => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime();
 
   const loadMessages = useCallback((lastMessage?: IMessage): void => {
+    if (!chatRef) return;
+
     const lastTimestamp = lastMessage ? lastMessage.createdAt as Date : undefined;
 
-    chatAPI.loadMessages(chatRef.current, 10, lastTimestamp)
+    chatAPI.loadMessages(chatRef, 10, lastTimestamp)
       .then((loadedMessages) => {
         const chatMessages = loadedMessages.docs.map((message) => {
           const messageData = message.data();
           return {
             _id: message.id,
             text: messageData.text,
-            createdAt: messageData.timestamp.toDate(),
+            createdAt: messageData.timestamp ? messageData.timestamp.toDate() : new Date(),
             user: {
               _id: messageData.sender.id,
             },
@@ -78,27 +80,39 @@ export default (): JSX.Element => {
           },
         );
       });
-  }, [navigation]);
+  }, [chatRef, navigation]);
 
   useEffect(() => {
-    if (chatUID.current !== undefined) {
-      loadMessages();
-    } else {
-      setMessages([]);
+    if (routeChatUID !== undefined) {
+      setChatRef(chatAPI.chatDocument(routeChatUID));
+    } else if (routeChatUID === undefined && targetUserUID !== undefined) {
+      chatAPI.getChatByTarget(currentUserRef, userAPI.userDocument(targetUserUID)).then((chat) => {
+        if (chat?.ref) {
+          setChatRef(chat.ref);
+        } else {
+          setMessages([]);
+        }
+      });
     }
-  }, [loadMessages]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => loadMessages(), [loadMessages, chatRef]);
 
   const onSend = useCallback(async (newMessages: IMessage[] = []) => {
-    if (chatUID.current === undefined) {
+    let cRef: DocumentRefData;
+    if (chatRef === undefined) {
       const chatDetails = await chatAPI.createChat([currentUserRef, userAPI.userDocument(targetUserUID)]);
 
-      chatUID.current = chatDetails.id;
-      chatRef.current = chatAPI.chatDocument(chatUID.current);
+      cRef = chatAPI.chatDocument(chatDetails.id);
+      setChatRef(cRef);
+    } else {
+      cRef = chatRef;
+      setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
     }
 
-    chatAPI.pushMessages(chatRef.current, currentUserRef, newMessages.map((x) => x.text));
-    setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
-  }, [currentUserRef, targetUserUID]);
+    chatAPI.pushMessages(cRef, currentUserRef, newMessages.map((x) => x.text));
+  }, [chatRef, currentUserRef, targetUserUID]);
 
   const onLoadEarlier = (): void => {
     setIsLoadingEarlier(true);

@@ -32,6 +32,26 @@ const getOwnChats = (userRef: DocumentRefData)
   .collection('chats')
   .where('users', 'array-contains', userRef);
 
+const getChatByTarget = async (currentUser: DocumentRefData, targetUser: DocumentRefData): Promise<DocumentData | undefined> => {
+  const query1 = await firestore()
+    .collection('chats')
+    .where('users', '==', [currentUser, targetUser])
+    .get();
+  const query2 = await firestore()
+    .collection('chats')
+    .where('users', '==', [targetUser, currentUser])
+    .get();
+
+  if (query1.docs.length > 0) {
+    return query1.docs[0];
+  }
+  if (query2.docs.length > 0) {
+    return query2.docs[0];
+  }
+
+  return undefined;
+};
+
 const latestMessageOnChat = async (
   chatRef: DocumentRefData,
 ): Promise<DocumentData> => new Promise((resolve, reject) => {
@@ -90,6 +110,7 @@ export default {
   chatDocument,
   createChat,
   getChat,
+  getChatByTarget,
   getOwnChats,
   latestMessageOnChat,
   loadMessages,
