@@ -3,20 +3,6 @@ import {
   DocumentData, DocumentRefData, Query, QuerySnapshot,
 } from '../../types/firebase';
 
-// Collection de chats
-// * Id;
-// * Array de referências de usuários;
-// + * Timestamp da última mensagem (updatedAt);
-
-// Collection de mensagens
-// * Id;
-// * Texto;
-// * Timestamp;
-// * Referência para o usuário que enviou;
-// * Referência para o chat;
-// - * Se visualizado ou não;
-// + * Array de referências para usuários que visualizaram;
-
 const chatDocument = (chatUID: string): DocumentRefData => firestore().collection('chats').doc(chatUID);
 
 const createChat = async (users: Array<DocumentRefData>)
