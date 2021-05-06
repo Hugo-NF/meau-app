@@ -159,7 +159,8 @@ export default function ChatList() : JSX.Element {
 
                         userChatListEntryMessagePreview = messageData.text;
                         userChatListEntryUnseenUpdates = !messageData.seenBy
-                          .includes(currentUserDocument);
+                          .map((userRef : FirebaseTypes.DocumentRefData) => userRef.id)
+                          .includes(currentUserDocument.id);
                         resolveMessageData();
                       })
                       .catch((err) => rejectMessageData(err));

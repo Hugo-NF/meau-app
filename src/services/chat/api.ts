@@ -84,6 +84,34 @@ const loadMessages = async (
   return query.limit(pageSize).get();
 };
 
+const markChatMessagesAsSeemByUser = async (
+  chatUID: string,
+  userRef: DocumentRefData,
+) : Promise<void> => {
+  const chatRef = chatDocument(chatUID);
+
+  const messagesSentByOtherUserInChat = await firestore()
+    .collection('messages')
+    .where('chat', '==', chatRef)
+    .where('sender', '!=', userRef)
+    .get();
+
+  const messagesUnseenByUser = messagesSentByOtherUserInChat.docs.filter(
+    (messageDoc) => {
+      const idsForUsersWhoSawMessage = messageDoc.data().seenBy.map(
+        (userRefInSeenByArray: DocumentRefData) => userRefInSeenByArray.id,
+      );
+      return !idsForUsersWhoSawMessage.includes(userRef.id);
+    },
+  );
+
+  messagesUnseenByUser.forEach(
+    (messageDoc) => messageDoc.ref.set({
+      seenBy: [...messageDoc.data().seenBy, userRef],
+    }, { merge: true }),
+  );
+};
+
 const pushMessages = async (
   chatRef: DocumentRefData,
   senderRef: DocumentRefData,
@@ -114,5 +142,6 @@ export default {
   getOwnChats,
   latestMessageOnChat,
   loadMessages,
+  markChatMessagesAsSeemByUser,
   pushMessages,
 };

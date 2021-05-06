@@ -85,10 +85,12 @@ export default (): JSX.Element => {
   useEffect(() => {
     if (routeChatUID !== undefined) {
       setChatRef(chatAPI.chatDocument(routeChatUID));
+      chatAPI.markChatMessagesAsSeemByUser(routeChatUID, currentUserRef);
     } else if (routeChatUID === undefined && targetUserUID !== undefined) {
       chatAPI.getChatByTarget(currentUserRef, userAPI.userDocument(targetUserUID)).then((chat) => {
         if (chat?.ref) {
           setChatRef(chat.ref);
+          chatAPI.markChatMessagesAsSeemByUser(chat.ref.id, currentUserRef);
         } else {
           setMessages([]);
         }
