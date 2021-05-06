@@ -44,9 +44,9 @@ export default (): JSX.Element => {
   const loadMessages = useCallback((lastMessage?: IMessage): void => {
     if (!chatRef) return;
 
-    const lastTimestamp = lastMessage ? lastMessage.createdAt as Date : undefined;
+    const lastDate = lastMessage ? lastMessage.createdAt as Date : undefined;
 
-    chatAPI.loadMessages(chatRef, 10, lastTimestamp)
+    chatAPI.loadMessages(chatRef, 10, lastDate)
       .then((loadedMessages) => {
         const chatMessages = loadedMessages.docs.map((message) => {
           const messageData = message.data();
