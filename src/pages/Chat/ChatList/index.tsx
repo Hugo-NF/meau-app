@@ -83,7 +83,7 @@ export default function ChatList() : JSX.Element {
                 let userChatListEntryUnseenUpdates : boolean;
 
                 const otherUserInChatRef = userChatData.users.find(
-                  (userRef : FirebaseTypes.DocumentRefData) => userRef.id !== userAPI.currentUserDocument().id,
+                  (userRef : FirebaseTypes.DocumentRefData) => userRef.id !== currentUserDocument.id,
                 );
 
                 const userDataPromise = new Promise<void>(
@@ -113,13 +113,11 @@ export default function ChatList() : JSX.Element {
 
                               if (animalNameConcatenation !== '') {
                                 userChatListEntryTitle = `${
-                                  /* eslint-disable-next-line camelcase */
-                                  userData?.full_name
+                                  userChatListEntryOtherUserDisplayName
                                 } | ${animalNameConcatenation}`;
                               } else {
                                 userChatListEntryTitle = `${
-                                  /* eslint-disable-next-line camelcase */
-                                  userData?.full_name
+                                  userChatListEntryOtherUserDisplayName
                                 }`;
                               }
 

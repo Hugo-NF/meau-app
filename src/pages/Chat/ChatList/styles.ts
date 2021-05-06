@@ -1,5 +1,5 @@
 // Package imports.
-import { TouchableOpacityProps, TextProps, ViewProps } from 'react-native';
+import { TextProps, TouchableOpacityProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 
 // Style imports.
