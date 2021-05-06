@@ -16,6 +16,7 @@ import InfiniteScroll from '../../../components/InfiniteScroll';
 
 // Utils imports.
 import { concatenateNames } from '../../../utils/concatenateNames';
+import { formatChatDate } from '../../../utils/formatTexts';
 import { getNameInitials } from '../../../utils/getNameInitials';
 
 // Layout imports.
@@ -233,7 +234,7 @@ export default function ChatList() : JSX.Element {
           )
         }
         <ChatListEntryTimestampText>
-          {listEntry.updatedAt.toDate().toISOString()}
+          {formatChatDate(listEntry.updatedAt.toDate())}
         </ChatListEntryTimestampText>
       </ChatListEntryContainer>
     );
