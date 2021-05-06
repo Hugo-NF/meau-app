@@ -2,6 +2,7 @@
 
 // Package imports.
 import React, { useCallback, useState } from 'react';
+import useIsMounted from 'ismounted';
 import { ActivityIndicator, FlatList } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -53,6 +54,7 @@ const InfiniteScroll = <T, _>({
   numColumns,
 }: IInfiniteScroll<T>): JSX.Element => {
   // Variable declaration.
+  const isMounted = useIsMounted();
   const [infiniteScrollState, setInfiniteScrollState] = useState<InfiniteScrollState<T>>({
     allDataFetched: false,
     data: [],
@@ -67,34 +69,38 @@ const InfiniteScroll = <T, _>({
       .then((response) => {
         const contentReceived = response;
 
-        if (contentReceived.length === 0) {
-          setInfiniteScrollState({
-            allDataFetched: true,
-            data: [],
-            error: null,
-            loadingMore: false,
-            page: 1,
-          });
-        } else {
-          setInfiniteScrollState({
-            allDataFetched: false,
-            data: contentReceived,
-            error: null,
-            loadingMore: false,
-            page: 2,
-          });
+        if (isMounted.current) {
+          if (contentReceived.length === 0) {
+            setInfiniteScrollState({
+              allDataFetched: true,
+              data: [],
+              error: null,
+              loadingMore: false,
+              page: 1,
+            });
+          } else {
+            setInfiniteScrollState({
+              allDataFetched: false,
+              data: contentReceived,
+              error: null,
+              loadingMore: false,
+              page: 2,
+            });
+          }
         }
       })
       .catch((err) => {
-        setInfiniteScrollState({
-          allDataFetched: true,
-          data: [],
-          error: err,
-          loadingMore: false,
-          page: 1,
-        });
+        if (isMounted.current) {
+          setInfiniteScrollState({
+            allDataFetched: true,
+            data: [],
+            error: err,
+            loadingMore: false,
+            page: 1,
+          });
+        }
       });
-  }, [contentBatchSize, dataFetchQuery]);
+  }, [contentBatchSize, dataFetchQuery, isMounted]);
 
   // Function declarations.
   const onComponentFocus = useCallback(() : void => {
@@ -102,7 +108,11 @@ const InfiniteScroll = <T, _>({
   }, [fetchInitialData]);
 
   function fetchMoreData() : void {
-    if (!infiniteScrollState.loadingMore && !infiniteScrollState.allDataFetched) {
+    if (
+      !infiniteScrollState.loadingMore
+      && !infiniteScrollState.allDataFetched
+      && isMounted.current
+    ) {
       setInfiniteScrollState({
         ...infiniteScrollState,
         loadingMore: true,
@@ -115,30 +125,34 @@ const InfiniteScroll = <T, _>({
         .then((response) => {
           const contentReceived = response;
 
-          if (contentReceived.length === 0) {
-            setInfiniteScrollState({
-              ...infiniteScrollState,
-              allDataFetched: true,
-              loadingMore: false,
-              error: null,
-            });
-          } else {
-            setInfiniteScrollState({
-              ...infiniteScrollState,
-              data: infiniteScrollState.data.concat(contentReceived),
-              error: null,
-              loadingMore: false,
-              page: infiniteScrollState.page + 1,
-            });
+          if (isMounted.current) {
+            if (contentReceived.length === 0) {
+              setInfiniteScrollState({
+                ...infiniteScrollState,
+                allDataFetched: true,
+                loadingMore: false,
+                error: null,
+              });
+            } else {
+              setInfiniteScrollState({
+                ...infiniteScrollState,
+                data: infiniteScrollState.data.concat(contentReceived),
+                error: null,
+                loadingMore: false,
+                page: infiniteScrollState.page + 1,
+              });
+            }
           }
         })
         .catch((err) => {
-          setInfiniteScrollState({
-            ...infiniteScrollState,
-            allDataFetched: true,
-            error: err,
-            loadingMore: false,
-          });
+          if (isMounted.current) {
+            setInfiniteScrollState({
+              ...infiniteScrollState,
+              allDataFetched: true,
+              error: err,
+              loadingMore: false,
+            });
+          }
         });
     }
   }
