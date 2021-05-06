@@ -1,8 +1,9 @@
 // Component to implement an infinite scroll for any type of content.
 
 // Package imports.
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 // Style imports.
 import { defaultProps, styledComponents } from './styles';
@@ -185,7 +186,7 @@ const InfiniteScroll = <T, _>({
   }
 
   // Component effects.
-  useEffect(componentDidMount, [fetchInitialData]);
+  useFocusEffect(componentDidMount);
 
   // JSX returned.
   return (
