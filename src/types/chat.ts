@@ -1,6 +1,8 @@
-// Type imports.
-import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+// Package type imports.
 import { ImageSourcePropType } from 'react-native';
+
+// User type imports.
+import * as FirebaseTypes from './firebase';
 
 // Type declarations.
 export type ChatListEntry = {
@@ -8,7 +10,7 @@ export type ChatListEntry = {
   image : ImageSourcePropType | null,
   messagePreview: string,
   otherUserDisplayName: string,
-  updatedAt: FirebaseFirestoreTypes.Timestamp,
   title : string,
   unseenUpdates: boolean,
+  updatedAt: FirebaseTypes.Timestamp,
 };
