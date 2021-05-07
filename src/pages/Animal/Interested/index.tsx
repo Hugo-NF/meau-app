@@ -53,7 +53,7 @@ const UserCircle = ({
           width: 84, height: 84, borderRadius: 84, marginBottom: 8,
         }}
       />
-      <Text style={{ fontSize: 14, color: Theme.elements.cardText }}>{user.userName}</Text>
+      <Text style={{ fontSize: 14, color: Theme.elements.textDark }}>{user.userName}</Text>
       {age && (<Text>{age} anos</Text>) }
     </TouchableOpacity>
   );
@@ -148,22 +148,21 @@ const Interested = (): JSX.Element => {
               formatContent={(user) => (
                 <UserCircle
                   user={user}
-                  callback={(u: InterestedUser): void => {
-                    Alert.alert(u.userName, 'Selecione a ação', [
+                  callback={(interestedUser: InterestedUser): void => {
+                    Alert.alert(interestedUser.userName, 'Selecione a ação', [
                       {
                         text: 'Chat',
                         onPress: () => navigation.navigate('Chat', {
                           title: user.userName,
-                          targetUserUID: u.id,
-                          animalUID: animal?.id,
+                          targetUserUID: interestedUser.id,
                         }),
                       },
                       {
                         text: 'Remover',
                         onPress: () => {
                           if (animal) {
-                            adoptionAPI.removeInterestToAnimal(animal, u.ref, true);
-                            removeFromList(u.id);
+                            adoptionAPI.removeInterestToAnimal(animal, interestedUser.ref, true);
+                            removeFromList(interestedUser.id);
                           }
                         },
                       },
@@ -171,7 +170,7 @@ const Interested = (): JSX.Element => {
                         text: 'Realizar transferência',
                         onPress: () => {
                           if (animal) {
-                            adoptionAPI.transferAnimalTo(animal, u.ref);
+                            adoptionAPI.transferAnimalTo(animal, interestedUser.ref);
                             navigation.reset({
                               index: 0,
                               routes: [{ name: 'Home' }],

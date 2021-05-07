@@ -124,7 +124,7 @@ export default function Login() : JSX.Element {
                 keyboardType="email-address"
                 autoFocus
                 selectionColor={Theme.elements.statusBarPrimary}
-                underlineColor={Theme.elements.headerText}
+                underlineColor={Theme.elements.textDark}
                 style={{
                   backgroundColor: 'transparent',
                   maxHeight: 56,
@@ -139,7 +139,7 @@ export default function Login() : JSX.Element {
                 mode="flat"
                 secureTextEntry
                 selectionColor={Theme.elements.statusBarPrimary}
-                underlineColor={Theme.elements.headerText}
+                underlineColor={Theme.elements.textDark}
                 style={{
                   backgroundColor: 'transparent',
                   maxHeight: 56,

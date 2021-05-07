@@ -47,7 +47,7 @@ export const styledComponents = {
     font-family: 'Roboto_400Medium';
     font-size: 14px;
     text-transform: uppercase;
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
   `,
 };
 
@@ -62,12 +62,12 @@ export const styles = {
   SectionTitle: {
     fontFamily: 'Roboto_400Medium',
     fontSize: 14,
-    color: Theme.elements.buttonText,
+    color: Theme.elements.textDark,
   },
   ListItemText: {
     fontFamily: 'Roboto_400Regular',
     fontSize: 14,
-    color: Theme.elements.buttonText,
+    color: Theme.elements.textDark,
   },
   ListItemTextDisabled: {
     fontFamily: 'Roboto_400Regular',

@@ -171,7 +171,7 @@ HeaderLayout.defaultProps = {
   titleStyles: {
     fontFamily: 'Roboto_500Medium',
     fontSize: '20px',
-    color: Theme.elements.headerText,
+    color: Theme.elements.textDark,
   },
   drawerRoutes: [],
   drawerUser: true,

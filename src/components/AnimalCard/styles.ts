@@ -29,7 +29,7 @@ export const CardTitle = styled.Text<TextProps>`
     text-align-vertical: center;
     font-family: Roboto_500Medium;
     font-size: 16px;
-    color: ${Theme.elements.headerText};
+    color: ${Theme.elements.textDark};
 `;
 
 export const CardOptions = styled.View<ViewProps>`

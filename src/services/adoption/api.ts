@@ -1,7 +1,62 @@
 import firestore from '@react-native-firebase/firestore';
+import animalAPI from '../animal/api';
 import notificationAPI, { NotificationType } from '../notifications/api';
-import { DocumentData, DocumentRefData } from '../../types/firebase';
+import { DocumentData, DocumentRefData, DocumentSnapshot } from '../../types/firebase';
 import { PaginatedMetaData, filterPaginated } from '../paginated/api';
+
+const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
+  const animalData = (await animal.get()).data();
+  const animalOwner = animalData?.owner;
+
+  await firestore().collection('animalInterested').add({
+    animal,
+    user,
+    owner: animalOwner,
+    seen: false,
+  });
+
+  notificationAPI.sendToUser(animalOwner, '', NotificationType.adoptionInterest, { animal });
+};
+
+const checkIfInterestedIn = async (animal: DocumentRefData, user: DocumentRefData): Promise<boolean> => {
+  const result = await firestore().collection('animalInterested')
+    .where('animal', '==', animal)
+    .where('user', '==', user)
+    .get();
+
+  return result.size > 0;
+};
+
+const getAnimalsWhoseInterestsConnectTwoUsers = async (
+  firstUser : DocumentRefData, secondUser: DocumentRefData,
+) : Promise<Array<DocumentSnapshot>> => {
+  const connectingInterestsWhereFirstUserIsOwner = await firestore()
+    .collection('animalInterested')
+    .where('owner', '==', firstUser)
+    .where('user', '==', secondUser)
+    .get();
+  const connectingInterestsWhereSecondUserIsOwner = await firestore()
+    .collection('animalInterested')
+    .where('owner', '==', secondUser)
+    .where('user', '==', firstUser)
+    .get();
+
+  const animalsRefsFromConnectingInterests : Array<DocumentRefData> = [];
+  connectingInterestsWhereFirstUserIsOwner.forEach((connectingInterest) => {
+    animalsRefsFromConnectingInterests.push(connectingInterest.data().animal);
+  });
+  connectingInterestsWhereSecondUserIsOwner.forEach((connectingInterest) => {
+    animalsRefsFromConnectingInterests.push(connectingInterest.data().animal);
+  });
+
+  const animalsFromConnectingInterests = await Promise.all(
+    animalsRefsFromConnectingInterests.map(
+      (animalRef) => animalAPI.getReference(animalRef),
+    ),
+  );
+
+  return animalsFromConnectingInterests;
+};
 
 const getInterestedIn = async (animal: DocumentRefData, paginatedMetaData?: PaginatedMetaData, onlyUnseen = false): Promise<DocumentData> => {
   let query = firestore().collection('animalInterested')
@@ -16,24 +71,6 @@ const getInterestedIn = async (animal: DocumentRefData, paginatedMetaData?: Pagi
   const result = await query.get();
 
   return Promise.all(result.docs.map(async (doc) => doc.data().user.get()));
-};
-
-const checkIfInterestedIn = async (animal: DocumentRefData, user: DocumentRefData): Promise<boolean> => {
-  const result = await firestore().collection('animalInterested')
-    .where('animal', '==', animal)
-    .where('user', '==', user)
-    .get();
-
-  return result.size > 0;
-};
-
-const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
-  await firestore().collection('animalInterested').add({ animal, user, seen: false });
-
-  const animalData = (await animal.get()).data();
-  const animalOwner = animalData?.owner;
-
-  notificationAPI.sendToUser(animalOwner, '', NotificationType.adoptionInterest, { animal });
 };
 
 const removeInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData, notify = false): Promise<void> => {
@@ -103,4 +140,5 @@ export default {
   getInterestedIn,
   countNewInterestedIn,
   setAllInterestedSeen,
+  getAnimalsWhoseInterestsConnectTwoUsers,
 };

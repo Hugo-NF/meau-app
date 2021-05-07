@@ -1,8 +1,12 @@
+/* eslint-disable camelcase */
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
+import { Alert } from 'react-native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
+import {
+  RouteProp, useFocusEffect, useRoute, useNavigation,
+} from '@react-navigation/native';
 import {
   GiftedChat, InputToolbar, InputToolbarProps, Send, SendProps, MessageProps, IMessage,
 } from 'react-native-gifted-chat';
@@ -11,123 +15,18 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
-import { styledComponents, styles } from './styles';
+import { DocumentRefData } from '../../../types/firebase';
+import chatAPI from '../../../services/chat/api';
+import userAPI from '../../../services/user/api';
 
-const mock = [
-  {
-    _id: 1,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(1),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 2,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(2),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 3,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(3),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 5,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(5),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 6,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(6),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 7,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(7),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 8,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(8),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 4,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(4),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 9,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(9),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 10,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(10),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 11,
-    text: 'Olá! Gostaria de adotar o seu gato!',
-    createdAt: new Date(11),
-    user: {
-      _id: 2,
-      name: 'React Native',
-    },
-  },
-  {
-    _id: 12,
-    text: 'Que maravilha, Marília! Você mora aqui em Brasília?',
-    createdAt: new Date(12),
-    user: {
-      _id: 1,
-      name: 'React Native',
-    },
-  },
-];
+import { styledComponents, styles } from './styles';
 
 export default (): JSX.Element => {
   const chatTitle = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.title;
-  const animalUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.animalUID;
   const targetUserUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.targetUserUID;
+
+  const routeChatUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Chat'>>().params?.chatUID;
+  const currentUserRef = userAPI.currentUserDocument();
 
   useFocusEffect(
     useCallback(() => {
@@ -135,29 +34,91 @@ export default (): JSX.Element => {
     }, []),
   );
 
+  const navigation = useNavigation();
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [isLoadingEarlier, setIsLoadingEarlier] = useState<boolean>(false);
+  const [chatRef, setChatRef] = useState<DocumentRefData>();
+
+  const sorter = (a: IMessage, b: IMessage): number => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime();
+
+  const loadMessages = useCallback((lastMessage?: IMessage): void => {
+    if (!chatRef) return;
+
+    const lastDate = lastMessage ? lastMessage.createdAt as Date : undefined;
+
+    chatAPI.loadMessages(chatRef, 10, lastDate)
+      .then((loadedMessages) => {
+        const chatMessages = loadedMessages.docs.map((message) => {
+          const messageData = message.data();
+          return {
+            _id: message.id,
+            text: messageData.text,
+            createdAt: messageData.timestamp ? messageData.timestamp.toDate() : new Date(),
+            user: {
+              _id: messageData.sender.id,
+            },
+          };
+        });
+
+        setMessages((previousMessages) => GiftedChat.append(previousMessages, chatMessages).sort(sorter));
+
+        setIsLoadingEarlier(false);
+      })
+      .catch(() => {
+        Alert.alert(
+          'Erro!',
+          'Ocorreu um erro no carregamento das informações.\n'
+              + 'Retornando para a página anterior.',
+          [
+            {
+              text: 'Ok',
+              onPress: () => navigation.goBack(),
+            },
+          ],
+          {
+            cancelable: false,
+          },
+        );
+      });
+  }, [chatRef, navigation]);
 
   useEffect(() => {
-    // eslint-disable-next-line
-    console.log('================ CHAT PAGE ================');
-    // eslint-disable-next-line
-    console.log('chatAPI.getChat(currentUser, targetUser, animal): ', targetUserUID, animalUID);
-    // eslint-disable-next-line
-    console.log('...then');
-    // eslint-disable-next-line
-    console.log('chatAPI.loadMessages(chat, pageSize) if chat');
-    setMessages(mock.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()));
-  }, [targetUserUID, animalUID]);
-
-  const onSend = useCallback((newMessages = []) => {
-    // eslint-disable-next-line
-    console.log('chatAPI.pushPessages(chat, newMessages): ', newMessages);
-    setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
+    if (routeChatUID !== undefined) {
+      setChatRef(chatAPI.chatDocument(routeChatUID));
+      chatAPI.markChatMessagesAsSeemByUser(routeChatUID, currentUserRef);
+    } else if (routeChatUID === undefined && targetUserUID !== undefined) {
+      chatAPI.getChatByTarget(currentUserRef, userAPI.userDocument(targetUserUID)).then((chat) => {
+        if (chat?.ref) {
+          setChatRef(chat.ref);
+          chatAPI.markChatMessagesAsSeemByUser(chat.ref.id, currentUserRef);
+        } else {
+          setMessages([]);
+        }
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => loadMessages(), [loadMessages, chatRef]);
+
+  const onSend = useCallback(async (newMessages: IMessage[] = []) => {
+    let cRef: DocumentRefData;
+    if (chatRef === undefined) {
+      const chatDetails = await chatAPI.createChat([currentUserRef, userAPI.userDocument(targetUserUID)]);
+
+      cRef = chatAPI.chatDocument(chatDetails.id);
+      setChatRef(cRef);
+    } else {
+      cRef = chatRef;
+      setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessages));
+    }
+
+    chatAPI.pushMessages(cRef, currentUserRef, newMessages.map((x) => x.text));
+  }, [chatRef, currentUserRef, targetUserUID]);
+
   const onLoadEarlier = (): void => {
-    // eslint-disable-next-line
-    console.log('chatAPI.loadMessages(chat, pageSize, lastMessage): ', messages[0]);
+    setIsLoadingEarlier(true);
+    loadMessages(messages[messages.length - 1]);
   };
 
   const {
@@ -185,7 +146,7 @@ export default (): JSX.Element => {
   );
 
   const renderMessage = (props: MessageProps<IMessage>): JSX.Element => {
-    const isSameUser = props.currentMessage?.user._id === 1;
+    const isSameUser = props.currentMessage?.user._id === currentUserRef.id;
     const MessageView = isSameUser ? SelfMessageBubble : MessageBubble;
 
     return (
@@ -219,11 +180,11 @@ export default (): JSX.Element => {
           messages={messages}
           loadEarlier
           infiniteScroll
+          isLoadingEarlier={isLoadingEarlier}
           onLoadEarlier={onLoadEarlier}
           onSend={(newMessages) => onSend(newMessages)}
-          user={{ _id: 1 }}
+          user={{ _id: currentUserRef.id }}
           messagesContainerStyle={styles.messagesContainer}
-          renderAvatar={() => null}
           placeholder=""
           alignTop
           alwaysShowSend

@@ -9,6 +9,7 @@ import AnimalRegistration from './pages/Animal/Registration';
 import AnimalRegistrationSuccess from './pages/Animal/Success';
 import MyPets from './pages/Animal/MyPets';
 
+import ChatList from './pages/Chat/ChatList';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
@@ -47,6 +48,11 @@ export default class Routes extends React.Component {
     {
       name: 'AnimalRegistrationSuccess',
       component: AnimalRegistrationSuccess,
+      requireSession: true,
+    },
+    {
+      name: 'ChatList',
+      component: ChatList,
       requireSession: true,
     },
     {
