@@ -177,8 +177,11 @@ const Interested = (): JSX.Element => {
                           if (animal) {
                             adoptionAPI.transferAnimalTo(animal, interestedUser.ref);
                             navigation.reset({
-                              index: 0,
-                              routes: [{ name: 'Home' }],
+                              index: 1,
+                              routes: [
+                                { name: 'Home' },
+                                { name: 'MyPets' },
+                              ],
                             });
                             Alert.alert('Transferência realizada com sucesso!');
                           }

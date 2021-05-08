@@ -117,10 +117,11 @@ const MyPets = (): JSX.Element => {
       }}
       leftAction={{
         hidden: false,
-        actionType: 'back',
+        actionType: 'drawer',
       }}
       rightAction={{
-        hidden: true,
+        hidden: false,
+        actionType: 'search',
       }}
     >
       <Container>
