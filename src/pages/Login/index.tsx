@@ -1,8 +1,12 @@
 // Package imports.
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { StackActions, useNavigation } from '@react-navigation/native';
+import {
+  StackActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -49,10 +53,12 @@ export default function Login() : JSX.Element {
     message: '',
   });
 
-  // Layout effects.
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
-  }, [navigation]);
+  // Page effects.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
+    }, []),
+  );
 
   const signIn = async ({ email, password }: LoginForm): Promise<void> => {
     try {

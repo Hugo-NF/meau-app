@@ -1,8 +1,8 @@
 // Package imports.
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Theme } from '../../constants';
@@ -21,7 +21,6 @@ import notificationAPI, { NotificationType, NotificationModels } from '../../ser
 export default function NotificationsList() : JSX.Element {
   // Variables.
   const navigation = useNavigation();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [fetchedNotifications, setFetchedNotifications] = useState<NotificationModels[]>([]);
   const [fetchedOnce, setFetchedOnce] = useState(false);
 
@@ -35,12 +34,14 @@ export default function NotificationsList() : JSX.Element {
     });
   };
 
+  // Page effects.
   useEffect(() => fetchNotifications(), []);
 
-  // Page effects.
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor('transparent', true);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+    }, []),
+  );
 
   const notificationRenderer = (notification: (NotificationModels)): JSX.Element => {
     switch (notification.type) {
