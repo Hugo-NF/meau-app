@@ -59,6 +59,22 @@ const loadMessages = async (
   return query.limit(pageSize).get();
 };
 
+const loadNewMessages = async (
+  chatRef: DocumentRefData,
+  currentNewestMessageTimestamp?: Date,
+): Promise<QuerySnapshot> => {
+  let query = firestore()
+    .collection('messages')
+    .where('chat', '==', chatRef)
+    .orderBy('timestamp', 'asc');
+
+  if (currentNewestMessageTimestamp !== undefined) {
+    query = query.startAfter(currentNewestMessageTimestamp);
+  }
+
+  return query.get();
+};
+
 const markChatMessagesAsSeemByUser = async (
   chatUID: string,
   userRef: DocumentRefData,
@@ -109,6 +125,28 @@ const pushMessages = async (
   });
 };
 
+const setIsTyping = async (
+  chatRef: DocumentRefData,
+  typerRef: DocumentRefData,
+  isTyping: boolean,
+): Promise<void> => {
+  await firestore().runTransaction(async (t) => {
+    const chat = await t.get(chatRef);
+    const currentlyTypingArray = chat.data()?.currentlyTyping as DocumentRefData[];
+    if (currentlyTypingArray) {
+      const storedThatIsTyping = currentlyTypingArray.map((c) => c.id).includes(typerRef.id);
+      if (isTyping && !storedThatIsTyping) {
+        t.update(chatRef, { currentlyTyping: [...currentlyTypingArray, typerRef] });
+      }
+      if (!isTyping && storedThatIsTyping) {
+        t.update(chatRef, { currentlyTyping: currentlyTypingArray.filter((c) => c.id !== typerRef.id) });
+      }
+    } else if (isTyping) {
+      t.update(chatRef, { currentlyTyping: [typerRef] });
+    }
+  });
+};
+
 export default {
   chatDocument,
   createChat,
@@ -117,6 +155,8 @@ export default {
   getOwnChats,
   latestMessageOnChat,
   loadMessages,
+  loadNewMessages,
   markChatMessagesAsSeemByUser,
   pushMessages,
+  setIsTyping,
 };

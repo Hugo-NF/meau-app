@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 import { Alert } from 'react-native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
@@ -15,7 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
-import { DocumentRefData } from '../../../types/firebase';
+import { DocumentRefData, QueryDocumentSnapshot } from '../../../types/firebase';
 import chatAPI from '../../../services/chat/api';
 import userAPI from '../../../services/user/api';
 
@@ -38,8 +38,59 @@ export default (): JSX.Element => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoadingEarlier, setIsLoadingEarlier] = useState<boolean>(false);
   const [chatRef, setChatRef] = useState<DocumentRefData>();
+  const [typingTimeoutFunction, setTypingTimeoutFunction] = useState<NodeJS.Timeout>();
+  const [otherIsTyping, setOtherIsTyping] = useState<boolean>(false);
+  const ignoreFirstOnInputTextChanged = useRef<boolean>(true);
+  const selfIsTyping = useRef<boolean>(false);
+  const firstLoad = useRef<boolean>(true);
 
   const sorter = (a: IMessage, b: IMessage): number => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime();
+
+  const naiveUnique = (a: IMessage[]): IMessage[] => {
+    if (!a.every((m, i) => a.indexOf(m) === i)) {
+      throw new Error(`Not unique array: ${a.toString()}`);
+    }
+    return a.filter((m, i) => a.indexOf(m) === i);
+  };
+
+  const addMessages = useCallback((loadedMessages: QueryDocumentSnapshot): void => {
+    const chatMessages = loadedMessages.map((message) => {
+      const messageData = message.data();
+      return {
+        _id: message.id,
+        text: messageData.text,
+        createdAt: messageData.timestamp ? messageData.timestamp.toDate() : new Date(),
+        user: {
+          _id: messageData.sender.id,
+        },
+      };
+    });
+
+    setMessages((previousMessages) => naiveUnique(GiftedChat.append(previousMessages, chatMessages).sort(sorter)));
+  }, []);
+
+  const updateMessages = useCallback((): void => {
+    if (firstLoad.current) {
+      firstLoad.current = false;
+      return;
+    }
+    if (!chatRef) {
+      return;
+    }
+
+    let newestDate;
+    if (messages.length > 0) {
+      const newestMessage = messages[0];
+      newestDate = newestMessage ? newestMessage.createdAt as Date : undefined;
+    } else {
+      newestDate = undefined;
+    }
+
+    chatAPI.loadNewMessages(chatRef, newestDate).then((loadedMessages) => {
+      const filteredLoadedMessages = loadedMessages.docs.filter((doc) => doc.data().sender.id !== currentUserRef.id);
+      addMessages(filteredLoadedMessages);
+    });
+  }, [messages, chatRef, currentUserRef, addMessages]);
 
   const loadMessages = useCallback((lastMessage?: IMessage): void => {
     if (!chatRef) return;
@@ -48,20 +99,7 @@ export default (): JSX.Element => {
 
     chatAPI.loadMessages(chatRef, 10, lastDate)
       .then((loadedMessages) => {
-        const chatMessages = loadedMessages.docs.map((message) => {
-          const messageData = message.data();
-          return {
-            _id: message.id,
-            text: messageData.text,
-            createdAt: messageData.timestamp ? messageData.timestamp.toDate() : new Date(),
-            user: {
-              _id: messageData.sender.id,
-            },
-          };
-        });
-
-        setMessages((previousMessages) => GiftedChat.append(previousMessages, chatMessages).sort(sorter));
-
+        addMessages(loadedMessages.docs);
         setIsLoadingEarlier(false);
       })
       .catch(() => {
@@ -80,8 +118,34 @@ export default (): JSX.Element => {
           },
         );
       });
-  }, [chatRef, navigation]);
+  }, [chatRef, navigation, addMessages]);
 
+  const updateTyping = (): void => {
+    // onInputTextChanged triggers when first load
+    if (ignoreFirstOnInputTextChanged.current === true) {
+      ignoreFirstOnInputTextChanged.current = false;
+      return;
+    }
+
+    // Updates db if changed selfIsTypingState
+    if (selfIsTyping.current === false) {
+      if (chatRef) chatAPI.setIsTyping(chatRef, currentUserRef, true);
+    }
+
+    selfIsTyping.current = true;
+
+    if (typingTimeoutFunction) {
+      console.log('cleaning timeout');
+      clearTimeout(typingTimeoutFunction);
+    }
+
+    setTypingTimeoutFunction(setTimeout(() => {
+      selfIsTyping.current = false;
+      if (chatRef) chatAPI.setIsTyping(chatRef, currentUserRef, false);
+    }, 1000));
+  };
+
+  // Effect to load chatRef from routeChatUID or targetUserUID
   useEffect(() => {
     if (routeChatUID !== undefined) {
       setChatRef(chatAPI.chatDocument(routeChatUID));
@@ -99,7 +163,31 @@ export default (): JSX.Element => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Initial load messages when chatRef is set
   useEffect(() => loadMessages(), [loadMessages, chatRef]);
+
+  // Get real time chat updates
+  useEffect(() => {
+    if (!chatRef) return () => null;
+
+    firstLoad.current = true;
+    const unsubscribe = chatRef
+      .onSnapshot((chatSnapshot) => {
+        const chatSnapshotData = chatSnapshot.data();
+        if (chatSnapshotData) {
+          const otherIsTypingSnapshot = (chatSnapshotData.currentlyTyping as DocumentRefData[])
+            .map((c) => c.id)
+            .filter((c) => c !== currentUserRef.id).length > 0;
+          setOtherIsTyping(otherIsTypingSnapshot);
+          console.log(otherIsTypingSnapshot);
+        }
+        updateMessages();
+      });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [chatRef, updateMessages]);
 
   const onSend = useCallback(async (newMessages: IMessage[] = []) => {
     let cRef: DocumentRefData;
@@ -181,8 +269,10 @@ export default (): JSX.Element => {
           loadEarlier
           infiniteScroll
           isLoadingEarlier={isLoadingEarlier}
+          isTyping={otherIsTyping}
           onLoadEarlier={onLoadEarlier}
           onSend={(newMessages) => onSend(newMessages)}
+          onInputTextChanged={() => updateTyping()}
           user={{ _id: currentUserRef.id }}
           messagesContainerStyle={styles.messagesContainer}
           placeholder=""
