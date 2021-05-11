@@ -38,19 +38,24 @@ export default (): JSX.Element => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoadingEarlier, setIsLoadingEarlier] = useState<boolean>(false);
   const [chatRef, setChatRef] = useState<DocumentRefData>();
-  const [typingTimeoutFunction, setTypingTimeoutFunction] = useState<NodeJS.Timeout>();
   const [otherIsTyping, setOtherIsTyping] = useState<boolean>(false);
+  const typingTimeoutFunction = useRef<NodeJS.Timeout>();
   const ignoreFirstOnInputTextChanged = useRef<boolean>(true);
   const selfIsTyping = useRef<boolean>(false);
   const firstLoad = useRef<boolean>(true);
 
   const sorter = (a: IMessage, b: IMessage): number => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime();
 
-  const naiveUnique = (a: IMessage[]): IMessage[] => {
-    if (!a.every((m, i) => a.indexOf(m) === i)) {
-      throw new Error(`Not unique array: ${a.toString()}`);
+  const naiveUnique = (msgs: IMessage[]): IMessage[] => {
+    // eslint-disable-next-line no-underscore-dangle
+    const messagesId = msgs.map((m) => m._id);
+
+    if (!messagesId.every((mid, i) => messagesId.indexOf(mid) === i)) {
+      // eslint-disable-next-line no-console
+      console.warn('Not unique array: autofixing but something is wrong');
     }
-    return a.filter((m, i) => a.indexOf(m) === i);
+    // eslint-disable-next-line no-underscore-dangle
+    return msgs.filter((m, i) => messagesId.indexOf(m._id) === i);
   };
 
   const addMessages = useCallback((loadedMessages: QueryDocumentSnapshot): void => {
@@ -78,18 +83,13 @@ export default (): JSX.Element => {
       return;
     }
 
-    let newestDate;
-    if (messages.length > 0) {
-      const newestMessage = messages[0];
-      newestDate = newestMessage ? newestMessage.createdAt as Date : undefined;
-    } else {
-      newestDate = undefined;
+    const newestDate = messages[0]?.createdAt as Date;
+    if (newestDate) {
+      chatAPI.loadNewMessages(chatRef, newestDate).then((loadedMessages) => {
+        const filteredLoadedMessages = loadedMessages.docs.filter((doc) => doc.data().sender.id !== currentUserRef.id);
+        addMessages(filteredLoadedMessages);
+      });
     }
-
-    chatAPI.loadNewMessages(chatRef, newestDate).then((loadedMessages) => {
-      const filteredLoadedMessages = loadedMessages.docs.filter((doc) => doc.data().sender.id !== currentUserRef.id);
-      addMessages(filteredLoadedMessages);
-    });
   }, [messages, chatRef, currentUserRef, addMessages]);
 
   const loadMessages = useCallback((lastMessage?: IMessage): void => {
@@ -134,15 +134,14 @@ export default (): JSX.Element => {
 
     selfIsTyping.current = true;
 
-    if (typingTimeoutFunction) {
-      console.log('cleaning timeout');
-      clearTimeout(typingTimeoutFunction);
+    if (typingTimeoutFunction.current) {
+      clearTimeout(typingTimeoutFunction.current);
     }
 
-    setTypingTimeoutFunction(setTimeout(() => {
+    typingTimeoutFunction.current = setTimeout(() => {
       selfIsTyping.current = false;
       if (chatRef) chatAPI.setIsTyping(chatRef, currentUserRef, false);
-    }, 1000));
+    }, 1000);
   };
 
   // Effect to load chatRef from routeChatUID or targetUserUID
@@ -174,12 +173,11 @@ export default (): JSX.Element => {
     const unsubscribe = chatRef
       .onSnapshot((chatSnapshot) => {
         const chatSnapshotData = chatSnapshot.data();
-        if (chatSnapshotData) {
+        if (chatSnapshotData?.currentlyTyping) {
           const otherIsTypingSnapshot = (chatSnapshotData.currentlyTyping as DocumentRefData[])
             .map((c) => c.id)
             .filter((c) => c !== currentUserRef.id).length > 0;
           setOtherIsTyping(otherIsTypingSnapshot);
-          console.log(otherIsTypingSnapshot);
         }
         updateMessages();
       });
@@ -187,7 +185,7 @@ export default (): JSX.Element => {
     return () => {
       unsubscribe();
     };
-  }, [chatRef, updateMessages]);
+  }, [chatRef, updateMessages, currentUserRef]);
 
   const onSend = useCallback(async (newMessages: IMessage[] = []) => {
     let cRef: DocumentRefData;
