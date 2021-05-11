@@ -19,6 +19,7 @@ interface IButtonAction {
   hidden?: boolean,
   actionType?: HeaderActions,
   iconColor?: string,
+  onPress?: () => void,
 }
 
 interface IRoutesDrawer {
@@ -103,7 +104,7 @@ export default function HeaderLayout({
         );
       case 'options':
         return (
-          <ActionButton onPress={() => null}>
+          <ActionButton onPress={() => (buttonType.onPress ? buttonType.onPress() : null)}>
             <MaterialCommunityIcons
               name="dots-vertical"
               size={24}

@@ -12,6 +12,7 @@ import {
 } from 'react-native-gifted-chat';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import { Button, Modal, Portal } from 'react-native-paper';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
@@ -38,6 +39,7 @@ export default (): JSX.Element => {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [isLoadingEarlier, setIsLoadingEarlier] = useState<boolean>(false);
   const [chatRef, setChatRef] = useState<DocumentRefData>();
+  const [dialog, setDialog] = useState<boolean>(false);
 
   const sorter = (a: IMessage, b: IMessage): number => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime();
 
@@ -127,6 +129,9 @@ export default (): JSX.Element => {
     MessageBubble,
     SelfMessageBubble,
     MessageText,
+    ModalExternalContainer,
+    ModalInternalContainer,
+    ModalButtonText,
   } = styledComponents;
 
   const renderInputToolbar = (props: InputToolbarProps): JSX.Element => (
@@ -173,9 +178,39 @@ export default (): JSX.Element => {
       rightAction={{
         hidden: false,
         actionType: 'options',
+        onPress: () => setDialog(true),
       }}
     >
       <Container>
+        <Portal>
+          <Modal
+            visible={dialog}
+            onDismiss={() => setDialog(false)}
+            style={styles.modalContainer}
+          >
+            <ModalExternalContainer>
+              <ModalInternalContainer>
+                <Button
+                  style={styles.modalDefaultButton}
+                  onPress={() => {
+                    if (chatRef) {
+                      chatAPI.removeChat(chatRef);
+                      navigation.goBack();
+                    }
+                  }}
+                >
+                  <ModalButtonText>APAGAR CHAT</ModalButtonText>
+                </Button>
+                <Button
+                  style={styles.modalAccentButton}
+                  onPress={() => setDialog(false)}
+                >
+                  <ModalButtonText>CANCELAR</ModalButtonText>
+                </Button>
+              </ModalInternalContainer>
+            </ModalExternalContainer>
+          </Modal>
+        </Portal>
         <GiftedChat
           messages={messages}
           loadEarlier
