@@ -175,8 +175,7 @@ export default (): JSX.Element => {
         const chatSnapshotData = chatSnapshot.data();
         if (chatSnapshotData?.currentlyTyping) {
           const otherIsTypingSnapshot = (chatSnapshotData.currentlyTyping as DocumentRefData[])
-            .map((c) => c.id)
-            .filter((c) => c !== currentUserRef.id).length > 0;
+            .some((userRef) => userRef.id !== currentUserRef.id);
           setOtherIsTyping(otherIsTypingSnapshot);
         }
         updateMessages();
