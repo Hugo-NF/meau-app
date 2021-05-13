@@ -127,22 +127,22 @@ const pushMessages = async (
 
 const setIsTyping = async (
   chatRef: DocumentRefData,
-  typerRef: DocumentRefData,
+  userRef: DocumentRefData,
   isTyping: boolean,
 ): Promise<void> => {
   await firestore().runTransaction(async (t) => {
     const chat = await t.get(chatRef);
     const currentlyTypingArray = chat.data()?.currentlyTyping as DocumentRefData[];
     if (currentlyTypingArray) {
-      const storedThatIsTyping = currentlyTypingArray.map((c) => c.id).includes(typerRef.id);
+      const storedThatIsTyping = currentlyTypingArray.map((c) => c.id).includes(userRef.id);
       if (isTyping && !storedThatIsTyping) {
-        t.update(chatRef, { currentlyTyping: [...currentlyTypingArray, typerRef] });
+        t.update(chatRef, { currentlyTyping: [...currentlyTypingArray, userRef] });
       }
       if (!isTyping && storedThatIsTyping) {
-        t.update(chatRef, { currentlyTyping: currentlyTypingArray.filter((c) => c.id !== typerRef.id) });
+        t.update(chatRef, { currentlyTyping: currentlyTypingArray.filter((c) => c.id !== userRef.id) });
       }
     } else if (isTyping) {
-      t.update(chatRef, { currentlyTyping: [typerRef] });
+      t.update(chatRef, { currentlyTyping: [userRef] });
     }
   });
 };

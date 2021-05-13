@@ -15,7 +15,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
-import { DocumentRefData, QueryDocumentSnapshot } from '../../../types/firebase';
+import { DocumentRefData, QuerySnapshotDocuments } from '../../../types/firebase';
 import chatAPI from '../../../services/chat/api';
 import userAPI from '../../../services/user/api';
 
@@ -58,7 +58,7 @@ export default (): JSX.Element => {
     return msgs.filter((m, i) => messagesId.indexOf(m._id) === i);
   };
 
-  const addMessages = useCallback((loadedMessages: QueryDocumentSnapshot): void => {
+  const addMessages = useCallback((loadedMessages: QuerySnapshotDocuments): void => {
     const chatMessages = loadedMessages.map((message) => {
       const messageData = message.data();
       return {
