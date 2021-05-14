@@ -15,16 +15,14 @@ import {
   Button, Dialog, Paragraph, Portal,
 } from 'react-native-paper';
 
+// Component imports.
+import AsyncButton from '../../components/AsyncButton';
+
 // Service imports.
 import userAPI from '../../services/user/api';
 
 // Style imports.
-import {
-  ButtonText,
-  Container,
-  LoginForm,
-  SubmitButton,
-} from './styles';
+import { styledComponents, styles } from './styles';
 
 // Layout import
 import HeaderLayout from '../../layouts/HeaderLayout';
@@ -52,6 +50,13 @@ export default function Login() : JSX.Element {
     title: '',
     message: '',
   });
+
+  // Styled components.
+  const {
+    ButtonText,
+    Container,
+    LoginForm,
+  } = styledComponents;
 
   // Page effects.
   useFocusEffect(
@@ -152,12 +157,14 @@ export default function Login() : JSX.Element {
                   width: 312,
                 }}
               />
-              <SubmitButton
+              <AsyncButton
+                asyncAction
+                callback={formikHelpers.handleSubmit as (values: unknown) => void}
                 disabled={formikHelpers.isSubmitting}
-                onPress={formikHelpers.handleSubmit as (values: unknown) => void}
+                styles={styles.submitButtonStyles}
               >
                 <ButtonText>Entrar</ButtonText>
-              </SubmitButton>
+              </AsyncButton>
             </LoginForm>
           )}
         </Formik>
