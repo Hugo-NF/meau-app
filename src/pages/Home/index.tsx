@@ -34,6 +34,7 @@ export default function Home() : JSX.Element {
       leftAction={{
         hidden: false,
         actionType: 'drawer',
+        iconColor: styles.headerIconColor,
       }}
       rightAction={{
         hidden: true,
@@ -45,7 +46,8 @@ export default function Home() : JSX.Element {
         </Center>
         <Message>
           Bem vindo ao Meau!{'\n'}
-          Aqui você pode adotar, doar e ajudar cães e gatos com facilidade. Qual o seu interesse?
+          Aqui você pode adotar, doar e ajudar cães e gatos com facilidade.{'\n'}
+          Qual o seu interesse?
         </Message>
         <AsyncButton
           styles={styles.asyncButton}
@@ -54,7 +56,16 @@ export default function Home() : JSX.Element {
             navigation.navigate('Registration');
           }}
         >
-          <ButtonText>Cadastro</ButtonText>
+          <ButtonText>Cadastro de usuário</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('AnimalFeed');
+          }}
+        >
+          <ButtonText>Adotar</ButtonText>
         </AsyncButton>
         <AsyncButton
           styles={styles.asyncButton}
@@ -66,17 +77,7 @@ export default function Home() : JSX.Element {
           <ButtonText>Cadastrar animal</ButtonText>
         </AsyncButton>
         <AsyncButton
-          styles={{
-            backgroundColor: 'transparent',
-            marginBottom: '68px',
-            marginTop: '32px',
-            marginLeft: '10px',
-            marginRight: '10px',
-            width: '60%',
-            height: '40px',
-            alignItems: 'center',
-            borderRadius: '2px',
-          }}
+          styles={styles.loginButton}
           asyncAction={false}
           callback={() => {
             navigation.navigate('Login');

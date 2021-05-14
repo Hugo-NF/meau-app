@@ -17,6 +17,7 @@ export interface ButtonType extends TouchableOpacityProps {
   alignSelf?: string,
   alignItems?: string,
   justifyContent?: string,
+  elevation?: number,
 }
 
 export const Button = styled.TouchableOpacity<ButtonType>`
@@ -34,6 +35,7 @@ export const Button = styled.TouchableOpacity<ButtonType>`
   align-self: ${(props) => props.alignSelf};
   align-items: ${(props) => props.alignItems};
   justify-content: ${(props) => props.justifyContent};
+  elevation: ${(props) => props.elevation};
 `;
 
 Button.defaultProps = {
@@ -50,4 +52,5 @@ Button.defaultProps = {
   alignSelf: 'center',
   alignItems: 'center',
   justifyContent: 'center',
+  elevation: 3,
 };
