@@ -1,11 +1,14 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import {
   ActivityIndicator, Text, Image, TouchableOpacity, Alert,
 } from 'react-native';
-import React, {
-  useCallback, useEffect, useLayoutEffect, useState,
-} from 'react';
 import { fromUnixTime, differenceInYears } from 'date-fns';
 import InfiniteScroll from '../../../components/InfiniteScroll';
 import { Theme } from '../../../constants';
@@ -105,9 +108,11 @@ const Interested = (): JSX.Element => {
       });
   }, [fetchAnimal]);
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+    }, []),
+  );
 
   return (
     loading
@@ -172,8 +177,11 @@ const Interested = (): JSX.Element => {
                           if (animal) {
                             adoptionAPI.transferAnimalTo(animal, interestedUser.ref);
                             navigation.reset({
-                              index: 0,
-                              routes: [{ name: 'Home' }],
+                              index: 1,
+                              routes: [
+                                { name: 'Home' },
+                                { name: 'MyPets' },
+                              ],
                             });
                             Alert.alert('Transferência realizada com sucesso!');
                           }

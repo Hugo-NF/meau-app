@@ -195,8 +195,9 @@ export default (): JSX.Element => {
                   onPress={() => {
                     if (chatRef) {
                       chatAPI.removeChat(chatRef);
-                      navigation.goBack();
                     }
+                    setDialog(false);
+                    navigation.goBack();
                   }}
                 >
                   <ModalButtonText>APAGAR CHAT</ModalButtonText>

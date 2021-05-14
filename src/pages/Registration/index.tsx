@@ -1,5 +1,5 @@
 // Package imports.
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Formik } from 'formik';
 import { TouchableOpacity, View } from 'react-native';
@@ -12,7 +12,11 @@ import * as Yup from 'yup';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { StackActions, useNavigation } from '@react-navigation/native';
+import {
+  StackActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 
 // Service imports.
 import userAPI from '../../services/user/api';
@@ -94,10 +98,12 @@ export default function Registration() : JSX.Element {
     passwordConfirmation: '',
   };
 
-  // Layout effects.
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
-  }, [navigation]);
+  // Page effects.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
+    }, []),
+  );
 
   // Functions declaration.
   function dateToBrazilianString(date : Date) : string {

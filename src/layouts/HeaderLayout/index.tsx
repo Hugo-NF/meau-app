@@ -94,7 +94,7 @@ export default function HeaderLayout({
         );
       case 'search':
         return (
-          <ActionButton onPress={() => navigation.goBack()}>
+          <ActionButton>
             <Ionicons
               name="search"
               size={24}
