@@ -1,5 +1,5 @@
 // Package imports.
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import Lodash from 'lodash';
 import {
@@ -7,7 +7,12 @@ import {
 } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 
 // Service imports.
 import adoptionAPI from '../../../services/adoption/api';
@@ -95,13 +100,14 @@ export default function AnimalDetails() : JSX.Element {
     TitleText,
   } = styledComponents;
 
-  // Function declaration.
-  function booleanToString(value : boolean) : string {
-    if (value === true) return 'Sim';
-    return 'Não';
-  }
+  // Callback declaration.
+  const determinePageBehavior = useCallback(() : void => {
+    // Function declaration.
+    function booleanToString(value : boolean) : string {
+      if (value === true) return 'Sim';
+      return 'Não';
+    }
 
-  function determinePageBehavior() : void {
     function describeAnimalAdoptionRequirements(
       adoptionRequirements : AnimalTypes.AdoptionRequirements,
     ) : string {
@@ -167,6 +173,7 @@ export default function AnimalDetails() : JSX.Element {
       );
     }
 
+    // Callback implementation.
     animalAPI.getAnimal(animalUID)
       .then(async (animal) => {
         const animalData = animal.data();
@@ -231,7 +238,6 @@ export default function AnimalDetails() : JSX.Element {
                         asyncAction={false}
                         callback={async () => {
                           navigation.navigate('Interested', { animalUID });
-                          // console.log((await adoptionAPI.getInterestedIn(animal.ref)));
                         }}
                       >
                         <ButtonText>Ver interessados</ButtonText>
@@ -375,8 +381,9 @@ export default function AnimalDetails() : JSX.Element {
         }
       })
       .catch(() => errorAlert());
-  }
+  }, [animalUID, navigation]);
 
+  // Function declaration.
   function displayAnimalImage(
     { item } : CarouselTypes.CarouselRenderItem,
   ) : JSX.Element {
@@ -384,7 +391,7 @@ export default function AnimalDetails() : JSX.Element {
   }
 
   // Page effects.
-  useLayoutEffect(determinePageBehavior, [animalUID, navigation]);
+  useFocusEffect(determinePageBehavior);
 
   // JSX returned.
   return (

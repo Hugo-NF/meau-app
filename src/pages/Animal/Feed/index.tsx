@@ -1,9 +1,9 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import HeaderLayout from '../../../layouts/HeaderLayout';
 
@@ -36,9 +36,11 @@ import { filterPaginated } from '../../../services/paginated/api';
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, true);
+    }, []),
+  );
 
   const animalKey = (animalItem: Animal): string => animalItem.id;
 

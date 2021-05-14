@@ -1,9 +1,9 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
@@ -31,9 +31,11 @@ const MyPets = (): JSX.Element => {
   const user = userAPI.currentUserDocument();
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+    }, []),
+  );
 
   const animalKey = (animalItem: Animal): string => animalItem.id;
 
@@ -115,10 +117,11 @@ const MyPets = (): JSX.Element => {
       }}
       leftAction={{
         hidden: false,
-        actionType: 'back',
+        actionType: 'drawer',
       }}
       rightAction={{
-        hidden: true,
+        hidden: false,
+        actionType: 'search',
       }}
     >
       <Container>

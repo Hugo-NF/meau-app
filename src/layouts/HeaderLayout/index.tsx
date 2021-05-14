@@ -93,7 +93,7 @@ export default function HeaderLayout({
         );
       case 'search':
         return (
-          <ActionButton onPress={() => navigation.goBack()}>
+          <ActionButton>
             <Ionicons
               name="search"
               size={24}
@@ -103,7 +103,7 @@ export default function HeaderLayout({
         );
       case 'options':
         return (
-          <ActionButton onPress={() => null}>
+          <ActionButton>
             <MaterialCommunityIcons
               name="dots-vertical"
               size={24}

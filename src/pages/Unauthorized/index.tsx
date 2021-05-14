@@ -1,6 +1,6 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import AsyncButton from '../../components/AsyncButton';
@@ -16,9 +16,11 @@ export default function Unauthorized(): JSX.Element {
     ButtonText, Container, Title, Message,
   } = styledComponents;
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+    }, []),
+  );
 
   return (
     <HeaderLayout
