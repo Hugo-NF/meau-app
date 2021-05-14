@@ -1,6 +1,7 @@
 import { TouchableOpacityProps, TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 import Constants from 'expo-constants';
+import { Theme } from '../../constants';
 
 export interface ITitleProps extends TextProps {
   fontFamily?: string,
@@ -12,6 +13,7 @@ export interface IHeaderProps extends ViewProps {
   maxHeight?: string,
   height?: string,
   backgroundColor?: string,
+  elevation?: number,
 }
 
 export const styledComponents = {
@@ -28,6 +30,9 @@ export const styledComponents = {
     justify-content: space-between;
     align-items: center;
     background-color: ${(props) => props.backgroundColor};
+    elevation: ${(props) => props.elevation};
+    border-top-width: 1px;
+    border-color: ${Theme.default.background};
   `,
   HeaderTitle: styled.Text<ITitleProps>`
     font-family: ${(props) => props.fontFamily};
@@ -42,4 +47,12 @@ export const styledComponents = {
     margin: 16px;
     background-color: transparent;
   `,
+};
+
+// Default styled components props.
+styledComponents.HeaderContainer.defaultProps = {
+  maxHeight: '56px',
+  height: '56px',
+  backgroundColor: Theme.elements.headerPrimary,
+  elevation: 3,
 };

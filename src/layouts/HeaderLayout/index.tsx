@@ -38,7 +38,7 @@ interface IHeaderLayoutProps {
   rightAction: IButtonAction,
   children: React.ReactNode,
   drawerRoutes?: Array<IRoutesDrawer>,
-  drawerUser?: boolean
+  drawerUser?: boolean,
 }
 
 export default function HeaderLayout({
@@ -164,11 +164,7 @@ export default function HeaderLayout({
 
 HeaderLayout.defaultProps = {
   disableScrollView: false,
-  headerStyles: {
-    maxHeight: '56px',
-    height: '56px',
-    backgroundColor: Theme.elements.headerPrimary,
-  },
+  headerStyles: {},
   titleStyles: {
     fontFamily: 'Roboto_500Medium',
     fontSize: '20px',

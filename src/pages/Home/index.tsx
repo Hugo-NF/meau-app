@@ -30,6 +30,7 @@ export default function Home() : JSX.Element {
         backgroundColor: Theme.default.background,
         height: '56px',
         maxHeight: '56px',
+        elevation: 0,
       }}
       leftAction={{
         hidden: false,
