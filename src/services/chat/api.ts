@@ -8,7 +8,14 @@ const chatDocument = (chatUID: string): DocumentRefData => firestore().collectio
 const createChat = async (users: Array<DocumentRefData>)
   : Promise<DocumentData> => {
   const { FieldValue } = firestore;
-  return (await firestore().collection('chats').add({ users, updatedAt: FieldValue.serverTimestamp() })).get();
+  const newChat = await firestore().collection('chats').add({
+    users,
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+
+  await newChat.collection('updatedAt').add({ updatedAt: FieldValue.serverTimestamp() });
+
+  return newChat;
 };
 
 const getChat = async (chatUID: string): Promise<DocumentData> => firestore().collection('chats').doc(chatUID).get();
@@ -61,16 +68,13 @@ const loadMessages = async (
 
 const loadNewMessages = async (
   chatRef: DocumentRefData,
-  currentNewestMessageTimestamp?: Date,
+  currentNewestMessageTimestamp: Date,
 ): Promise<QuerySnapshot> => {
-  let query = firestore()
+  const query = firestore()
     .collection('messages')
     .where('chat', '==', chatRef)
-    .orderBy('timestamp', 'asc');
-
-  if (currentNewestMessageTimestamp !== undefined) {
-    query = query.startAfter(currentNewestMessageTimestamp);
-  }
+    .orderBy('timestamp', 'asc')
+    .startAfter(currentNewestMessageTimestamp);
 
   return query.get();
 };
@@ -120,7 +124,10 @@ const pushMessages = async (
     });
   });
 
-  await firestore().collection('chats').doc(chatRef.id).update({
+  const updatedAtDoc = (await firestore().collection('chats').doc(chatRef.id).collection('updatedAt')
+    .get()).docs;
+
+  await updatedAtDoc[0].ref.update({
     updatedAt: FieldValue.serverTimestamp(),
   });
 };
@@ -130,21 +137,17 @@ const setIsTyping = async (
   userRef: DocumentRefData,
   isTyping: boolean,
 ): Promise<void> => {
-  await firestore().runTransaction(async (t) => {
-    const chat = await t.get(chatRef);
-    const currentlyTypingArray = chat.data()?.currentlyTyping as DocumentRefData[];
-    if (currentlyTypingArray) {
-      const storedThatIsTyping = currentlyTypingArray.map((c) => c.id).includes(userRef.id);
-      if (isTyping && !storedThatIsTyping) {
-        t.update(chatRef, { currentlyTyping: [...currentlyTypingArray, userRef] });
-      }
-      if (!isTyping && storedThatIsTyping) {
-        t.update(chatRef, { currentlyTyping: currentlyTypingArray.filter((c) => c.id !== userRef.id) });
-      }
-    } else if (isTyping) {
-      t.update(chatRef, { currentlyTyping: [userRef] });
-    }
-  });
+  const currentlyTyping = (await chatRef.collection('currentlyTyping').where('userRef', '==', userRef).get()).docs;
+  const storedThatIsTyping = currentlyTyping.length > 0;
+
+  if (isTyping && !storedThatIsTyping) {
+    await chatRef.collection('currentlyTyping').add({ userRef });
+  }
+  if (!isTyping && storedThatIsTyping) {
+    const batch = firestore().batch();
+    currentlyTyping.forEach((d) => batch.delete(d.ref));
+    await batch.commit();
+  }
 };
 
 export default {

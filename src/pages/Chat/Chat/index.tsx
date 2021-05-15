@@ -39,6 +39,7 @@ export default (): JSX.Element => {
   const [isLoadingEarlier, setIsLoadingEarlier] = useState<boolean>(false);
   const [chatRef, setChatRef] = useState<DocumentRefData>();
   const [otherIsTyping, setOtherIsTyping] = useState<boolean>(false);
+  const [shouldUpdate, setShouldUpdate] = useState<number>(0);
   const typingTimeoutFunction = useRef<NodeJS.Timeout>();
   const ignoreFirstOnInputTextChanged = useRef<boolean>(true);
   const selfIsTyping = useRef<boolean>(false);
@@ -50,10 +51,6 @@ export default (): JSX.Element => {
     // eslint-disable-next-line no-underscore-dangle
     const messagesId = msgs.map((m) => m._id);
 
-    if (!messagesId.every((mid, i) => messagesId.indexOf(mid) === i)) {
-      // eslint-disable-next-line no-console
-      console.warn('Not unique array: autofixing but something is wrong');
-    }
     // eslint-disable-next-line no-underscore-dangle
     return msgs.filter((m, i) => messagesId.indexOf(m._id) === i);
   };
@@ -71,26 +68,31 @@ export default (): JSX.Element => {
       };
     });
 
+    if (chatMessages.length === 0) return;
+
     setMessages((previousMessages) => naiveUnique(GiftedChat.append(previousMessages, chatMessages).sort(sorter)));
   }, []);
 
-  const updateMessages = useCallback((): void => {
-    if (firstLoad.current) {
-      firstLoad.current = false;
-      return;
-    }
-    if (!chatRef) {
+  useEffect((): void => {
+    if (firstLoad.current || !chatRef) {
       return;
     }
 
-    const newestDate = messages[0]?.createdAt as Date;
+    // eslint-disable-next-line no-underscore-dangle
+    let newestDate = messages.filter((m) => m.user._id !== currentUserRef.id)[0]?.createdAt as Date;
+    // If there's no other user message yet, use newest from current user
+    if (!newestDate) {
+      newestDate = messages[0]?.createdAt as Date;
+    }
+
     if (newestDate) {
       chatAPI.loadNewMessages(chatRef, newestDate).then((loadedMessages) => {
         const filteredLoadedMessages = loadedMessages.docs.filter((doc) => doc.data().sender.id !== currentUserRef.id);
         addMessages(filteredLoadedMessages);
       });
     }
-  }, [messages, chatRef, currentUserRef, addMessages]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldUpdate]);
 
   const loadMessages = useCallback((lastMessage?: IMessage): void => {
     if (!chatRef) return;
@@ -101,6 +103,7 @@ export default (): JSX.Element => {
       .then((loadedMessages) => {
         addMessages(loadedMessages.docs);
         setIsLoadingEarlier(false);
+        firstLoad.current = false;
       })
       .catch(() => {
         Alert.alert(
@@ -168,23 +171,30 @@ export default (): JSX.Element => {
   // Get real time chat updates
   useEffect(() => {
     if (!chatRef) return () => null;
-
-    firstLoad.current = true;
-    const unsubscribe = chatRef
-      .onSnapshot((chatSnapshot) => {
-        const chatSnapshotData = chatSnapshot.data();
-        if (chatSnapshotData?.currentlyTyping) {
-          const otherIsTypingSnapshot = (chatSnapshotData.currentlyTyping as DocumentRefData[])
-            .some((userRef) => userRef.id !== currentUserRef.id);
-          setOtherIsTyping(otherIsTypingSnapshot);
-        }
-        updateMessages();
+    const unsubscribe = chatRef.collection('updatedAt')
+      .onSnapshot(() => {
+        setShouldUpdate((previous) => previous + 1);
       });
 
     return () => {
       unsubscribe();
     };
-  }, [chatRef, updateMessages, currentUserRef]);
+  }, [chatRef]);
+
+  // Get user is typing updates
+  useEffect(() => {
+    if (!chatRef) return () => null;
+
+    const unsubscribe = chatRef.collection('currentlyTyping')
+      .onSnapshot((currentlyTypingSnapshot) => {
+        const otherIsTypingSnapshot = currentlyTypingSnapshot.docs.some((doc) => doc.data().userRef.id !== currentUserRef.id);
+        setOtherIsTyping(otherIsTypingSnapshot);
+      });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [chatRef, currentUserRef.id]);
 
   const onSend = useCallback(async (newMessages: IMessage[] = []) => {
     let cRef: DocumentRefData;
