@@ -84,11 +84,6 @@ export default function Login() : JSX.Element {
     <HeaderLayout
       headerShown
       title="Login"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
@@ -134,13 +129,8 @@ export default function Login() : JSX.Element {
                 mode="flat"
                 keyboardType="email-address"
                 autoFocus
-                selectionColor={Theme.elements.statusBarPrimary}
-                underlineColor={Theme.elements.textDark}
-                style={{
-                  backgroundColor: 'transparent',
-                  maxHeight: 56,
-                  width: 312,
-                }}
+                theme={styles.textInput.theme}
+                iconColor={styles.textInput.iconColor}
               />
               <CustomTextInput
                 fieldName="password"
@@ -149,13 +139,8 @@ export default function Login() : JSX.Element {
                 placeholder="Senha"
                 mode="flat"
                 secureTextEntry
-                selectionColor={Theme.elements.statusBarPrimary}
-                underlineColor={Theme.elements.textDark}
-                style={{
-                  backgroundColor: 'transparent',
-                  maxHeight: 56,
-                  width: 312,
-                }}
+                theme={styles.textInput.theme}
+                iconColor={styles.textInput.iconColor}
               />
               <AsyncButton
                 asyncAction

@@ -54,6 +54,8 @@ const Theme = {
     chatSendBall: '#88C9BF',
     chatText: '#434343',
     chatBubleUser: '#CFE9E5',
+    textInputIconPrimary: '#589B9B',
+    textInputUnderlineColor: '#E6E7E8',
   },
   named: {
     blue: '#007BFF',

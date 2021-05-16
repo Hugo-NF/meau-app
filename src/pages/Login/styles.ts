@@ -22,7 +22,7 @@ export const styledComponents = {
 
   LoginForm: styled.View<ViewProps>`
     flex: 1;
-    margin-top: 56px;
+    margin-top: 28px;
     margin-bottom: 40px;
     align-items: center;
   `,
@@ -35,7 +35,17 @@ export const styles = {
     backgroundColor: Theme.default.primary,
     borderRadius: '2px',
     height: '40px',
-    marginTop: '32px',
+    marginTop: '28px',
     width: '232px',
+  },
+
+  textInput: {
+    iconColor: Theme.elements.textInputIconPrimary,
+    theme: {
+      colors: {
+        primary: Theme.default.primary,
+        placeholder: Theme.elements.textFaded,
+      },
+    },
   },
 };
