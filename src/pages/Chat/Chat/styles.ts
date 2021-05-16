@@ -121,4 +121,5 @@ export const styles = {
     marginTop: 8,
   } as StyleProp<ViewStyle>,
 
+  statusBarColor: Theme.elements.statusBarPrimary,
 };
