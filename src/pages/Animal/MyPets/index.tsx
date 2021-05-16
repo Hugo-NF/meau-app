@@ -12,15 +12,11 @@ import HeaderLayout from '../../../layouts/HeaderLayout';
 import AnimalCard from '../../../components/AnimalCard';
 import InfiniteScroll from '../../../components/InfiniteScroll';
 
-import { Theme } from '../../../constants';
-
 import { formatInterested } from '../../../utils/formatTexts';
 
 import { Animal } from '../../../types/animal';
 
-import {
-  CardText, CardTextContainer, CardTextRow, Container,
-} from './styles';
+import { styledComponents, styles } from './styles';
 
 // Service imports.
 import animalAPI from '../../../services/animal/api';
@@ -31,9 +27,16 @@ const MyPets = (): JSX.Element => {
   const user = userAPI.currentUserDocument();
   const navigation = useNavigation();
 
+  const {
+    CardText,
+    CardTextContainer,
+    CardTextRow,
+    Container,
+  } = styledComponents;
+
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -55,10 +58,10 @@ const MyPets = (): JSX.Element => {
         <MaterialIcons
           name="error"
           size={24}
-          color={Theme.elements.textDark}
+          color={styles.cardIconColor}
         />
       )}
-      headerBackground={Theme.elements.headerPrimary}
+      headerBackground={styles.cardHeaderBackground}
       onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet?.id })}
     />
   );
@@ -110,11 +113,7 @@ const MyPets = (): JSX.Element => {
       disableScrollView
       headerShown
       title="Meus Pets"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimaryDark,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
@@ -128,6 +127,7 @@ const MyPets = (): JSX.Element => {
         <InfiniteScroll
           keyExtractorFunction={animalKey}
           contentBatchSize={10}
+          contentContainerStyles={styles.myPetsFeedContainerStyles}
           dataFetchQuery={fetchPets}
           formatContent={formatAnimal}
         />
