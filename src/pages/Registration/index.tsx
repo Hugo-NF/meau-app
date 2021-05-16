@@ -196,11 +196,6 @@ export default function Registration() : JSX.Element {
     <HeaderLayout
       headerShown
       title="Cadastro Pessoal"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
