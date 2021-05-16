@@ -3,6 +3,7 @@ import React from 'react';
 import AppLoading from 'expo-app-loading';
 import { StatusBar } from 'expo-status-bar';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import SplashScreen from 'react-native-splash-screen';
 
 // React Navigation Stack.
 import 'react-native-gesture-handler';
@@ -44,6 +45,7 @@ export default function App() : JSX.Element {
     return <AppLoading />;
   }
 
+  SplashScreen.hide();
   return (
     <GlobalState>
       <PaperProvider theme={theme}>
