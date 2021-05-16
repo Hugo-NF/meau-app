@@ -164,4 +164,6 @@ export const styles = {
       },
     },
   },
+
+  statusBarColor: Theme.elements.statusBarPrimary,
 };

@@ -5,7 +5,6 @@ import { ActivityIndicator, Text } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Theme } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
 import { styledComponents, styles } from './styles';
 
@@ -41,7 +40,7 @@ export default function NotificationsList() : JSX.Element {
 
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -87,6 +86,7 @@ export default function NotificationsList() : JSX.Element {
     <HeaderLayout
       headerShown
       title="Notificações"
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'drawer',

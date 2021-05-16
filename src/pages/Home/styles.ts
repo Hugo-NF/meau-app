@@ -75,6 +75,11 @@ export const styles = {
     borderRadius: '2px',
   },
 
+  headerLayout: {
+    backgroundColor: Theme.default.background,
+    elevation: 0,
+  },
+
   loginButton: {
     backgroundColor: 'transparent',
     marginBottom: '56px',
@@ -88,4 +93,5 @@ export const styles = {
   },
 
   headerIconColor: Theme.default.primary,
+  statusBarColor: 'transparent',
 };

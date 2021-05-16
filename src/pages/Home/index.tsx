@@ -7,14 +7,14 @@ import HeaderLayout from '../../layouts/HeaderLayout';
 import AsyncButton from '../../components/AsyncButton';
 
 import { styledComponents, styles } from './styles';
-import { Images, Theme } from '../../constants';
+import { Images } from '../../constants';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
 
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor('transparent', true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -26,12 +26,7 @@ export default function Home() : JSX.Element {
     <HeaderLayout
       headerShown
       title=""
-      headerStyles={{
-        backgroundColor: Theme.default.background,
-        height: '56px',
-        maxHeight: '56px',
-        elevation: 0,
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'drawer',

@@ -51,4 +51,10 @@ export const styles = {
     alignItems: 'center',
     borderRadius: '2px',
   },
+
+  headerLayout: {
+    backgroundColor: Theme.elements.headerPrimaryDark,
+  },
+
+  statusBarColor: Theme.elements.statusBarPrimaryDark,
 };

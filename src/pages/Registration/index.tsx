@@ -25,7 +25,7 @@ import userAPI from '../../services/user/api';
 import AsyncButton from '../../components/AsyncButton';
 import CustomTextInput from '../../components/CustomTextInput';
 
-import { Theme, Values } from '../../constants';
+import { Values } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
 import FileOperations from '../../utils/FileOperations';
 
@@ -101,7 +101,7 @@ export default function Registration() : JSX.Element {
   // Page effects.
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 

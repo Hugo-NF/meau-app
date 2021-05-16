@@ -44,5 +44,10 @@ export const styledComponents = {
 
 // Styles.
 export const styles = {
+  headerLayout: {
+    backgroundColor: Theme.elements.headerPrimaryDark,
+  },
+
   activityIndicatorColor: Theme.default.primary,
+  statusBarColor: Theme.elements.statusBarPrimaryDark,
 };

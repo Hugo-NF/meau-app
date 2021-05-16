@@ -29,7 +29,7 @@ import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Project imports.
 import CustomTextInput from '../../components/CustomTextInput';
-import { Theme, Values } from '../../constants';
+import { Values } from '../../constants';
 
 interface LoginForm {
   email: string,
@@ -61,7 +61,7 @@ export default function Login() : JSX.Element {
   // Page effects.
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
