@@ -9,28 +9,8 @@ import { useFocusEffect } from '@react-navigation/native';
 // Style imports.
 import { defaultProps, styledComponents } from './styles';
 
-// Type declaration.
-type InfiniteScrollState<T> = {
-  allDataFetched: boolean,
-  data: Array<T>,
-  error: string | null,
-  loadingMore: boolean,
-  page: number,
-}
-
-// Interface declaration.
-interface IInfiniteScroll<T> {
-  activityIndicatorColor?: string,
-  contentBatchSize: number,
-  contentContainerStyles?: Record<string, unknown>,
-  dataFetchQuery: (lastEntry: T | null, pageNumber: number, pageSize: number) => Promise<Array<T>>,
-  errorContainerStyles?: Record<string, unknown>,
-  formatContent: (queryResponseData : T) => JSX.Element,
-  keyExtractorFunction: (item: T) => string,
-  loadingContainerStyles?: Record<string, unknown>,
-  noDataFoundContainerStyles?: Record<string, unknown>,
-  numColumns: number,
-}
+// Typings imports
+import { InfiniteScrollState, IInfiniteScroll } from '../../types/components/InfiniteScroll';
 
 // Styled components.
 const {

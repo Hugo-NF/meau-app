@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 
 import { ActivityIndicator, GestureResponderEvent } from 'react-native';
-import { Button, ButtonType } from './styles';
+import { Button } from './styles';
 import { Theme } from '../../constants';
-
-interface IButtonProps extends ButtonType {
-  children: React.ReactNode,
-  asyncAction: boolean,
-  callback: <GestureResponderEvent>(arg: GestureResponderEvent) => void,
-  activityIndicator?: Record<string, unknown>,
-  styles?: Record<string, unknown>,
-}
+import { IButtonProps } from '../../types/components/AsyncButton';
 
 const AsyncButton : React.FC<IButtonProps> = (props : IButtonProps) => {
   const [disabled, setDisabled] = useState(false);
