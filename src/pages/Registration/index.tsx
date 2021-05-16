@@ -252,6 +252,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="fullName"
                 formikHelpers={formikHelpers}
+                label="Nome completo"
                 placeholder="Nome completo"
                 mode="flat"
                 {...styles.textInput}
@@ -305,6 +306,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="email"
                 formikHelpers={formikHelpers}
+                label="E-mail"
                 placeholder="E-mail"
                 mode="flat"
                 {...styles.textInput}
@@ -312,6 +314,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="state"
                 formikHelpers={formikHelpers}
+                label="Estado"
                 placeholder="Estado"
                 mode="flat"
                 {...styles.textInput}
@@ -319,6 +322,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="city"
                 formikHelpers={formikHelpers}
+                label="Cidade"
                 placeholder="Cidade"
                 mode="flat"
                 {...styles.textInput}
@@ -326,6 +330,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="address"
                 formikHelpers={formikHelpers}
+                label="Endereço"
                 placeholder="Endereço"
                 mode="flat"
                 {...styles.textInput}
@@ -333,6 +338,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="phoneNumber"
                 formikHelpers={formikHelpers}
+                label="Telefone"
                 placeholder="Telefone"
                 mode="flat"
                 {...styles.textInput}
@@ -341,6 +347,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="username"
                 formikHelpers={formikHelpers}
+                label="Nome de usuário"
                 placeholder="Nome de usuário"
                 mode="flat"
                 {...styles.textInput}
@@ -348,6 +355,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="password"
                 formikHelpers={formikHelpers}
+                label="Senha"
                 placeholder="Senha"
                 mode="flat"
                 secureTextEntry
@@ -356,6 +364,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="passwordConfirmation"
                 formikHelpers={formikHelpers}
+                label="Confirmação de senha"
                 placeholder="Confirmação de senha"
                 mode="flat"
                 secureTextEntry
