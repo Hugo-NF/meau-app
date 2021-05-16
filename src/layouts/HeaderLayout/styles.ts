@@ -2,17 +2,7 @@ import { TouchableOpacityProps, TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 import Constants from 'expo-constants';
 
-export interface ITitleProps extends TextProps {
-  fontFamily?: string,
-  fontSize?: string,
-  color?: string,
-}
-
-export interface IHeaderProps extends ViewProps {
-  maxHeight?: string,
-  height?: string,
-  backgroundColor?: string,
-}
+import { ITitleProps, IHeaderProps } from '../../types/layouts/HeaderLayout';
 
 export const styledComponents = {
   LayoutContainer: styled.View<ViewProps>`
