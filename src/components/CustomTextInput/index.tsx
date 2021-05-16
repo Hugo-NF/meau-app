@@ -2,7 +2,13 @@ import React from 'react';
 import { HelperText, TextInput, useTheme } from 'react-native-paper';
 
 import { FormikProps } from 'formik';
-import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
+import Lodash from 'lodash';
+import {
+  NativeSyntheticEvent,
+  StyleProp,
+  TextInputFocusEventData,
+  TextStyle,
+} from 'react-native';
 
 import { defaultProps, styles } from './styles';
 
@@ -36,8 +42,11 @@ const CustomTextInput = <T, >({
       }
       placeholderTextColor={styles.placeholderTextColor}
       underlineColor={styles.textInputUnderlineColor}
-      style={styles.textInputDefaultStyles}
-      {...rest}
+      {...Lodash.omit(rest, 'style')}
+      style={[
+        styles.textInputDefaultStyles,
+        rest.style as StyleProp<TextStyle>,
+      ]}
     />
     <HelperText
       type="error"
