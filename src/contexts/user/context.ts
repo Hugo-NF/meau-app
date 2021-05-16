@@ -1,9 +1,5 @@
 import React, { useContext } from 'react';
-import { FirebaseAuthTypes } from '@react-native-firebase/auth';
-
-interface IContext {
-    currentUser: FirebaseAuthTypes.User | null
-}
+import { IContext } from '../../types/contexts/user';
 
 const Context = React.createContext<IContext>({
   currentUser: null,
