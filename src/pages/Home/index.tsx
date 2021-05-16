@@ -1,6 +1,6 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 import HeaderLayout from '../../layouts/HeaderLayout';
@@ -12,9 +12,11 @@ import { Images, Theme } from '../../constants';
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor('transparent', true);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor('transparent', true);
+    }, []),
+  );
 
   const {
     Center, Container, Title, Message, ButtonText, LoginText, LogoContainer,

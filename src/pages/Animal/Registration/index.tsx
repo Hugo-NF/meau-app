@@ -1,11 +1,15 @@
 // Package imports.
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { v4 as uuidv4 } from 'uuid';
 
 import RadioForm from 'react-native-simple-radio-button';
 import CheckBox from '@react-native-community/checkbox';
-import { StackActions, useNavigation } from '@react-navigation/native';
+import {
+  StackActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
@@ -61,10 +65,12 @@ export default function AnimalRegistration() : JSX.Element {
     message: '',
   });
 
-  // Layout effects.
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, true);
-  }, [navigation]);
+  // Page effects.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, true);
+    }, []),
+  );
 
   // Styled components.
   const {

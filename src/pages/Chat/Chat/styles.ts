@@ -1,4 +1,6 @@
-import { ViewProps, TextProps } from 'react-native';
+import {
+  ViewProps, TextProps, StyleProp, ViewStyle,
+} from 'react-native';
 
 import styled from 'styled-components/native';
 import { Theme } from '../../../constants';
@@ -40,6 +42,19 @@ export const styledComponents = {
     font-family: Roboto_400Regular;
     line-height: 24px;
     font-size: 18px;
+  `,
+  ModalExternalContainer: styled.View<ViewProps>`
+    margin-bottom: 110px;
+    justify-content: center;
+    flex-direction: row;
+  `,
+  ModalInternalContainer: styled.View<ViewProps>`
+    width: 216px;
+  `,
+  ModalButtonText: styled.Text<TextProps>`
+    font-family: Roboto_400Regular;
+    color: ${Theme.elements.textDark};
+    font-size: 14px;
   `,
 };
 
@@ -86,4 +101,24 @@ export const styles = {
     width: 350,
     paddingBottom: 32,
   },
+
+  modalContainer: {
+    justifyContent: 'flex-end',
+    backgroundColor: 'none',
+    height: '100%',
+  } as StyleProp<ViewStyle>,
+
+  modalDefaultButton: {
+    justifyContent: 'center',
+    height: 40,
+    backgroundColor: Theme.elements.drawerBackground,
+  } as StyleProp<ViewStyle>,
+
+  modalAccentButton: {
+    justifyContent: 'center',
+    height: 40,
+    backgroundColor: Theme.elements.chatSendBall,
+    marginTop: 8,
+  } as StyleProp<ViewStyle>,
+
 };

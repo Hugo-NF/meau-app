@@ -1,6 +1,6 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import AsyncButton from '../../../components/AsyncButton';
 import {
   Container, Title, Message, ButtonContainer, ButtonText, styles,
@@ -11,9 +11,11 @@ import { Theme } from '../../../constants';
 export default function AnimalRegistrationSuccess() : JSX.Element {
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, true);
+    }, []),
+  );
 
   return (
     <HeaderLayout

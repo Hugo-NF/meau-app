@@ -150,6 +150,22 @@ const setIsTyping = async (
   }
 };
 
+const removeChat = async (
+  chatRef: DocumentRefData,
+): Promise<void> => {
+  const batch = firestore().batch();
+  const chatMessages = await firestore().collection('messages').where('chat', '==', chatRef).get();
+
+  // Remove all messages
+  chatMessages.forEach((message) => batch.delete(message.ref));
+
+  // Remove chat
+  batch.delete(chatRef);
+
+  // Finish
+  batch.commit();
+};
+
 export default {
   chatDocument,
   createChat,
@@ -162,4 +178,5 @@ export default {
   markChatMessagesAsSeemByUser,
   pushMessages,
   setIsTyping,
+  removeChat,
 };
