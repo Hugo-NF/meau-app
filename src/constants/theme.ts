@@ -21,6 +21,7 @@ const Theme = {
     divider: '#E0E0E0',
     statusBarPrimary: '#88C9BF',
     statusBarPrimaryDark: '#589B9B',
+    statusBarSecondary: '#FFD358',
     statusBarSecondaryDark: '#F7A800',
     headerPrimary: '#CFE9E5',
     headerPrimaryDark: '#88C9BF',
