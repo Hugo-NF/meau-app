@@ -549,7 +549,6 @@ export default function AnimalRegistration() : JSX.Element {
               />
               <ButtonContainer>
                 <AsyncButton
-                  disabled={uploadLock}
                   styles={styles.submitButton}
                   asyncAction
                   callback={formikHelpers.handleSubmit as (values: unknown) => void}
