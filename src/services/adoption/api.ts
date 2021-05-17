@@ -5,7 +5,9 @@ import notificationAPI from '../notifications/api';
 
 import { NotificationType } from '../../types/services/Notifications';
 import { DocumentData, DocumentRefData, DocumentSnapshot } from '../../types/services/Firebase';
-import { PaginatedMetaData, filterPaginated } from '../paginated/api';
+import { filterPaginated } from '../paginated/api';
+
+import { PaginatedMetaData } from '../../types/services/Paginated';
 
 const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
   const animalData = (await animal.get()).data();

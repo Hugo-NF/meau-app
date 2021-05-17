@@ -12,10 +12,11 @@ import { Container } from './styles';
 // Component imports.
 
 // Service imports.
-import notificationAPI, { NotificationType, NotificationModels } from '../../services/notifications/api';
+import notificationAPI from '../../services/notifications/api';
 // Style imports.
 
 // Type declaration.
+import { NotificationType, NotificationModels } from '../../types/services/Notifications';
 
 // Component.
 export default function NotificationsList() : JSX.Element {
