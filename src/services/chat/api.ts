@@ -130,6 +130,8 @@ const pushMessages = async (
   await updatedAtDoc[0].ref.update({
     updatedAt: FieldValue.serverTimestamp(),
   });
+
+  await chatRef.update({ updatedAt: FieldValue.serverTimestamp() });
 };
 
 const setIsTyping = async (
