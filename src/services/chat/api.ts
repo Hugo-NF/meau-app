@@ -5,14 +5,23 @@ import {
 
 const chatDocument = (chatUID: string): DocumentRefData => firestore().collection('chats').doc(chatUID);
 
+const getChatByTarget = async (currentUser: DocumentRefData, targetUser: DocumentRefData): Promise<DocumentData | undefined> => {
+  const query = await firestore()
+    .collection('chats')
+    .where('users', 'in', [[currentUser, targetUser], [targetUser, currentUser]])
+    .get();
+
+  return query.docs.length > 0 ? query.docs[0] : undefined;
+};
+
 const createChat = async (users: Array<DocumentRefData>)
   : Promise<DocumentRefData> => {
   const { FieldValue } = firestore;
 
   // First check if chat with those users already exists
-  const previousChat = await firestore().collection('chats').where('users', 'in', [users, users.reverse()]).get();
-  if (previousChat.docs.length > 0) {
-    return previousChat.docs[0].ref;
+  const previousChat = await getChatByTarget(users[0], users[1]);
+  if (previousChat) {
+    return previousChat.ref;
   }
 
   const newChat = await firestore().collection('chats').add({
@@ -31,15 +40,6 @@ const getOwnChats = (userRef: DocumentRefData)
   : Query => firestore()
   .collection('chats')
   .where('users', 'array-contains', userRef);
-
-const getChatByTarget = async (currentUser: DocumentRefData, targetUser: DocumentRefData): Promise<DocumentData | undefined> => {
-  const query = await firestore()
-    .collection('chats')
-    .where('users', 'in', [[currentUser, targetUser], [targetUser, currentUser]])
-    .get();
-
-  return query.docs.length > 0 ? query.docs[0] : undefined;
-};
 
 const latestMessageOnChat = async (
   chatRef: DocumentRefData,
