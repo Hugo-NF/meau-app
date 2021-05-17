@@ -5,37 +5,31 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
+
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import {
   ActivityIndicator, Text, Image, TouchableOpacity, Alert,
 } from 'react-native';
+
 import { fromUnixTime, differenceInYears } from 'date-fns';
 import InfiniteScroll from '../../../components/InfiniteScroll';
-import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import {
-  Container, LoadingContainer, LoadingText,
-} from './styles';
-import { DocumentData, DocumentRefData } from '../../../types/firebase';
-import * as RouteTypes from '../../../types/routes';
+
+import { Theme } from '../../../constants';
 
 // Service imports.
 import userAPI from '../../../services/user/api';
 import animalAPI from '../../../services/animal/api';
 import adoptionAPI from '../../../services/adoption/api';
 
-interface InterestedUser {
-  id: string;
-  ref: DocumentRefData;
-  imageURI: string;
-  userName: string;
-  birthDate: number;
-}
+// Type imports
+import * as RouteTypes from '../../../types/routes';
+import { DocumentData, DocumentRefData } from '../../../types/services/firebase';
+import { UserCircleProps, InterestedUser } from '../../../types/pages/Animal';
 
-interface UserCircleProps {
-  user: InterestedUser;
-  callback: (user: InterestedUser) => void;
-}
+import {
+  Container, LoadingContainer, LoadingText,
+} from './styles';
 
 const getAge = (birthDateTimestamp: number): number => differenceInYears(new Date(), fromUnixTime(birthDateTimestamp));
 

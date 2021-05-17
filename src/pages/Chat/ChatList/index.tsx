@@ -27,7 +27,7 @@ import { styles, styledComponents } from './styles';
 
 // Type imports.
 import { ChatListEntry } from '../../../types/chat';
-import * as FirebaseTypes from '../../../types/firebase';
+import * as FirebaseTypes from '../../../types/services/firebase';
 
 // Page exported.
 export default function ChatList() : JSX.Element {

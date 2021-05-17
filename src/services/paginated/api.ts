@@ -1,4 +1,4 @@
-import { Query, CollectionRef } from '../../types/firebase';
+import { Query, CollectionRef } from '../../types/services/firebase';
 
 export interface PaginatedMetaData {
   pageNumber: number;

@@ -1,5 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
-import { DocumentData, DocumentRefData } from '../../types/firebase';
+import { DocumentData, DocumentRefData } from '../../types/services/firebase';
 
 import userAPI from '../user/api';
 

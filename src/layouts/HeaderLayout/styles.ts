@@ -1,4 +1,4 @@
-import { TouchableOpacityProps, TextProps, ViewProps } from 'react-native';
+import { TouchableOpacityProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 import Constants from 'expo-constants';
 
