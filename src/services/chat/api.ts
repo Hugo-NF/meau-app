@@ -6,8 +6,15 @@ import {
 const chatDocument = (chatUID: string): DocumentRefData => firestore().collection('chats').doc(chatUID);
 
 const createChat = async (users: Array<DocumentRefData>)
-  : Promise<DocumentData> => {
+  : Promise<DocumentRefData> => {
   const { FieldValue } = firestore;
+
+  // First check if chat with those users already exists
+  const previousChat = await firestore().collection('chats').where('users', 'in', [users, users.reverse()]).get();
+  if (previousChat.docs.length > 0) {
+    return previousChat.docs[0].ref;
+  }
+
   const newChat = await firestore().collection('chats').add({
     users,
     updatedAt: FieldValue.serverTimestamp(),
