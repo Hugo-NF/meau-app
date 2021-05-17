@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { ScrollView } from 'react-native-gesture-handler';
@@ -95,7 +96,7 @@ export default function HeaderLayout({
       case 'search':
         return (
           <ActionButton>
-            <Ionicons
+            <MaterialIcons
               name="search"
               size={24}
               color={buttonType?.iconColor}
