@@ -11,11 +11,8 @@ import {
 } from 'react-native';
 import { fromUnixTime, differenceInYears } from 'date-fns';
 import InfiniteScroll from '../../../components/InfiniteScroll';
-import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import {
-  Container, LoadingContainer, LoadingText,
-} from './styles';
+import { styledComponents, styles } from './styles';
 import { DocumentData, DocumentRefData } from '../../../types/firebase';
 import * as RouteTypes from '../../../types/routes';
 
@@ -46,18 +43,14 @@ const UserCircle = ({
   return (
     <TouchableOpacity
       onPress={() => callback(user)}
-      style={{
-        alignItems: 'center', marginRight: 36, marginLeft: 36, marginBottom: 24,
-      }}
+      style={styles.interestedUserTouchableOpacity}
     >
       <Image
         source={{ uri: user.imageURI }}
-        style={{
-          width: 84, height: 84, borderRadius: 84, marginBottom: 8,
-        }}
+        style={styles.interestedUserProfilePicture}
       />
-      <Text style={{ fontSize: 14, color: Theme.elements.textDark }}>{user.userName}</Text>
-      {age && (<Text>{age} anos</Text>) }
+      <Text style={styles.interestedUserText}>{user.userName}</Text>
+      {age && (<Text style={styles.interestedUserText}>{age} anos</Text>) }
     </TouchableOpacity>
   );
 };
@@ -68,6 +61,10 @@ const Interested = (): JSX.Element => {
   const animalUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Interested'>>().params?.animalUID;
   const [animal, setAnimal] = useState<DocumentRefData>();
   const [loading, setLoading] = useState(true);
+
+  const {
+    Container, LoadingContainer, LoadingText,
+  } = styledComponents;
 
   const fetchAnimal = useCallback(
     async (): Promise<DocumentRefData> => (await animalAPI.getAnimal(animalUID)).ref,
@@ -110,7 +107,7 @@ const Interested = (): JSX.Element => {
 
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -121,7 +118,7 @@ const Interested = (): JSX.Element => {
           <LoadingText>Carregando...</LoadingText>
           <ActivityIndicator
             size="large"
-            color={Theme.default.primary}
+            color={styles.loadingIconColor}
           />
         </LoadingContainer>
       )
@@ -130,11 +127,6 @@ const Interested = (): JSX.Element => {
           disableScrollView
           headerShown
           title="Interessados"
-          headerStyles={{
-            backgroundColor: Theme.elements.headerPrimaryDark,
-            maxHeight: '56px',
-            height: '56px',
-          }}
           leftAction={{
             hidden: false,
             actionType: 'drawer',
@@ -149,6 +141,7 @@ const Interested = (): JSX.Element => {
               numColumns={2}
               keyExtractorFunction={userKeyExtractor}
               contentBatchSize={10}
+              contentContainerStyles={styles.interestedUserFeedStyles}
               dataFetchQuery={fetchInterested}
               formatContent={(user) => (
                 <UserCircle
