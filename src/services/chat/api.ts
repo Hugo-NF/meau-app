@@ -1,7 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import {
   DocumentData, DocumentRefData, Query, QuerySnapshot,
-} from '../../types/services/firebase';
+} from '../../types/services/Firebase';
 
 const chatDocument = (chatUID: string): DocumentRefData => firestore().collection('chats').doc(chatUID);
 

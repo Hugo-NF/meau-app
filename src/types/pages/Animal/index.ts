@@ -1,4 +1,4 @@
-import { DocumentRefData } from '../../services/firebase';
+import { DocumentRefData } from '../../services/Firebase';
 
 export interface InterestedUser {
   id: string;

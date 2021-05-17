@@ -24,7 +24,7 @@ import adoptionAPI from '../../../services/adoption/api';
 
 // Type imports
 import * as RouteTypes from '../../../types/routes';
-import { DocumentData, DocumentRefData } from '../../../types/services/firebase';
+import { DocumentData, DocumentRefData } from '../../../types/services/Firebase';
 import { UserCircleProps, InterestedUser } from '../../../types/pages/Animal';
 
 import {

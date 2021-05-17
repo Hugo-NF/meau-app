@@ -1,41 +1,12 @@
 import firestore from '@react-native-firebase/firestore';
-import { DocumentData, DocumentRefData } from '../../types/services/firebase';
+import { DocumentData, DocumentRefData } from '../../types/services/Firebase';
+import {
+  NotificationType,
+  INotificationAdoptionInterestData,
+  NotificationModels,
+} from '../../types/services/Notifications';
 
 import userAPI from '../user/api';
-
-export enum NotificationType {
-  standard = 'STD',
-  adoptionInterest = 'AIN',
-  adoptionRefused = 'ARE',
-}
-
-export interface INotificationAdoptionInterestData {
-  animal: DocumentRefData,
-}
-
-export interface NotificationModel {
-  id: string,
-  from: DocumentData,
-  to: DocumentRefData,
-  message: string,
-  seen: false,
-}
-
-export interface NotificationStandardModel extends NotificationModel {
-  type: NotificationType.standard,
-}
-
-export interface NotificationAdoptionModel extends NotificationModel {
-  type: NotificationType.adoptionInterest,
-  animal: DocumentData,
-}
-
-export interface NotificationAdoptionRefusedModel extends NotificationModel {
-  type: NotificationType.adoptionRefused,
-  animal: DocumentData,
-}
-
-export type NotificationModels = NotificationStandardModel | NotificationAdoptionModel | NotificationAdoptionRefusedModel;
 
 const sendToUser = (
   user: DocumentRefData,

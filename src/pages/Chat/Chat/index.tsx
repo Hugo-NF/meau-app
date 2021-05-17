@@ -16,7 +16,7 @@ import { Button, Modal, Portal } from 'react-native-paper';
 import HeaderLayout from '../../../layouts/HeaderLayout';
 import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
-import { DocumentRefData } from '../../../types/services/firebase';
+import { DocumentRefData } from '../../../types/services/Firebase';
 import chatAPI from '../../../services/chat/api';
 import userAPI from '../../../services/user/api';
 
