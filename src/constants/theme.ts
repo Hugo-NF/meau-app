@@ -38,7 +38,6 @@ const Theme = {
     photoBackground: '#E6E7E7',
     photoIcon: '#757575',
     drawerBackground: '#F7F7F7',
-    settingsDrawerBackground: '#E6E7E8',
     animalPhotosInputBackground: '#F1F2F2',
     icon: '#757575',
     iconBackground: '#E6E7E7',
@@ -58,6 +57,10 @@ const Theme = {
     textInputIconPrimary: '#589B9B',
     textInputIconSecondary: '#F7A800',
     textInputUnderlineColor: '#E6E7E8',
+    settingsDrawerDefaultBackground: '#E6E7E8',
+    settingsDrawerPrimaryBackground: '#88C9BF',
+    settingsDrawerPrimaryLightBackground: '#CFE9E5',
+    settingsDrawerSecondaryLightBackground: '#FEE29B',
   },
   named: {
     blue: '#007BFF',
