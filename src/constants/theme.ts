@@ -55,6 +55,7 @@ const Theme = {
     chatText: '#434343',
     chatBubleUser: '#CFE9E5',
     textInputIconPrimary: '#589B9B',
+    textInputIconSecondary: '#F7A800',
     textInputUnderlineColor: '#E6E7E8',
   },
   named: {

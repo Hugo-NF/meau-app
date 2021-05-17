@@ -42,7 +42,7 @@ const CustomTextInput = <T, >({
       }
       placeholderTextColor={styles.placeholderTextColor}
       underlineColor={styles.textInputUnderlineColor}
-      {...Lodash.omit(rest, 'style')}
+      {...Lodash.omit(rest, ['style', 'helperTextStyle'])}
       style={[
         styles.textInputDefaultStyles,
         rest.style as StyleProp<TextStyle>,
@@ -50,6 +50,7 @@ const CustomTextInput = <T, >({
     />
     <HelperText
       type="error"
+      style={rest.helperTextStyle as StyleProp<TextStyle>}
       visible={Boolean(formikHelpers.touched[fieldName] && formikHelpers.errors[fieldName])}
     >
       {formikHelpers.touched[fieldName] && formikHelpers.errors[fieldName]}
