@@ -44,12 +44,10 @@ export default function App() : JSX.Element {
   useEffect(() => {
     async function prepare(): Promise<void> {
       try {
-        // Keep the splash screen visible while we fetch resources
-        // Make any API calls you need to do here
-        // Artificially delay for two seconds to simulate a slow loading
-        // experience. Please remove this when you're ready to approve the PR! @AndreLaranjeira
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Keep the splash screen visible while we fetch resources.
+        // Make any API calls you need to do here.
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.warn(e);
       } finally {
         if (fontsLoaded) {
