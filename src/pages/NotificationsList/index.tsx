@@ -1,22 +1,22 @@
 // Package imports.
 import React, { useCallback, useEffect, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Theme } from '../../constants';
-import HeaderLayout from '../../layouts/HeaderLayout';
-import { Container } from './styles';
 
-// Component imports.
+// Layout imports.
+import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Service imports.
 import notificationAPI from '../../services/notifications/api';
-// Style imports.
 
 // Type declaration.
 import { NotificationType, NotificationModels } from '../../types/services/Notifications';
+
+// Style imports.
+import { styledComponents, styles } from './styles';
 
 // Component.
 export default function NotificationsList() : JSX.Element {
@@ -26,6 +26,13 @@ export default function NotificationsList() : JSX.Element {
   const [fetchedOnce, setFetchedOnce] = useState(false);
 
   // Styled components.
+  const {
+    Container,
+    LoadingContainer,
+    NoDataReturnedText,
+    NotificationContainer,
+    NotificationTextView,
+  } = styledComponents;
 
   // Function declaration.
   const fetchNotifications = (): void => {
@@ -40,7 +47,7 @@ export default function NotificationsList() : JSX.Element {
 
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -57,7 +64,7 @@ export default function NotificationsList() : JSX.Element {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{fromName} está interessado no seu pet {animalName}</Text>
+            <Text>{fromName} está interessado no seu pet {animalName}.</Text>
           </TouchableOpacity>
         );
       }
@@ -90,11 +97,7 @@ export default function NotificationsList() : JSX.Element {
     <HeaderLayout
       headerShown
       title="Notificações"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
@@ -104,25 +107,33 @@ export default function NotificationsList() : JSX.Element {
       }}
     >
       <Container>
-        { fetchedOnce && fetchedNotifications.length === 0 && (<Text style={{ marginTop: 20 }}>Nenhuma notificação</Text>)}
-        {
-          fetchedNotifications.map((notification, index) => (
-            <View
+        { !fetchedOnce && (
+          <LoadingContainer>
+            <ActivityIndicator
+              size="large"
+              color={styles.activityIndicatorColor}
+            />
+          </LoadingContainer>
+        )}
+        { fetchedOnce && fetchedNotifications.length === 0 && (
+          <NoDataReturnedText>Nenhuma notificação.</NoDataReturnedText>
+        )}
+        { fetchedOnce
+          && fetchedNotifications.map((notification, index) => (
+            <NotificationContainer
               key={notification.id}
-              style={{
-                width: 300, height: 50, flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', marginTop: 20, padding: 10,
-              }}
             >
-              <View style={{ flex: 1, paddingRight: 10 }}>{notificationRenderer(notification)}</View>
+              <NotificationTextView>
+                {notificationRenderer(notification)}
+              </NotificationTextView>
               <TouchableOpacity onPress={() => { notificationAPI.setSeenById(notification.id); removeNotification(index); }}>
                 <MaterialIcons
                   name="cancel"
                   size={24}
                 />
               </TouchableOpacity>
-            </View>
-          ))
-        }
+            </NotificationContainer>
+          ))}
       </Container>
     </HeaderLayout>
   );

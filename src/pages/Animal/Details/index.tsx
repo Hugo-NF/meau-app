@@ -278,7 +278,7 @@ export default function AnimalDetails() : JSX.Element {
                       <MaterialIcons
                         name="edit"
                         size={24}
-                        {...styles.floatingButtonIcon}
+                        color={styles.floatingButtonIconColor}
                       />
                     </FloatingButton>,
                   );
@@ -332,7 +332,7 @@ export default function AnimalDetails() : JSX.Element {
                       <MaterialIcons
                         name="favorite-border"
                         size={24}
-                        {...styles.floatingButtonIcon}
+                        color={styles.floatingButtonIconColor}
                       />
                     </FloatingButton>,
                   );

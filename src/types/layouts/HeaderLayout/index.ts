@@ -10,6 +10,7 @@ export interface IHeaderProps extends ViewProps {
   maxHeight?: string,
   height?: string,
   backgroundColor?: string,
+  elevation?: number,
 }
 
 export type HeaderActions = 'back' | 'drawer' | 'share' | 'search' | 'options';

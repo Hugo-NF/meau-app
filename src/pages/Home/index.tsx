@@ -7,14 +7,14 @@ import HeaderLayout from '../../layouts/HeaderLayout';
 import AsyncButton from '../../components/AsyncButton';
 
 import { styledComponents, styles } from './styles';
-import { Images, Theme } from '../../constants';
+import { Images } from '../../constants';
 
 export default function Home() : JSX.Element {
   const navigation = useNavigation();
 
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor('transparent', true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -26,14 +26,11 @@ export default function Home() : JSX.Element {
     <HeaderLayout
       headerShown
       title=""
-      headerStyles={{
-        backgroundColor: Theme.default.background,
-        height: '56px',
-        maxHeight: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
+        iconColor: styles.headerIconColor,
       }}
       rightAction={{
         hidden: true,
@@ -45,7 +42,8 @@ export default function Home() : JSX.Element {
         </Center>
         <Message>
           Bem vindo ao Meau!{'\n'}
-          Aqui você pode adotar, doar e ajudar cães e gatos com facilidade. Qual o seu interesse?
+          Aqui você pode adotar, doar e ajudar cães e gatos com facilidade.{'\n'}
+          Qual o seu interesse?
         </Message>
         <AsyncButton
           styles={styles.asyncButton}
@@ -54,7 +52,16 @@ export default function Home() : JSX.Element {
             navigation.navigate('Registration');
           }}
         >
-          <ButtonText>Cadastro</ButtonText>
+          <ButtonText>Cadastro de usuário</ButtonText>
+        </AsyncButton>
+        <AsyncButton
+          styles={styles.asyncButton}
+          asyncAction={false}
+          callback={() => {
+            navigation.navigate('AnimalFeed');
+          }}
+        >
+          <ButtonText>Adotar</ButtonText>
         </AsyncButton>
         <AsyncButton
           styles={styles.asyncButton}
@@ -66,17 +73,7 @@ export default function Home() : JSX.Element {
           <ButtonText>Cadastrar animal</ButtonText>
         </AsyncButton>
         <AsyncButton
-          styles={{
-            backgroundColor: 'transparent',
-            marginBottom: '68px',
-            marginTop: '32px',
-            marginLeft: '10px',
-            marginRight: '10px',
-            width: '60%',
-            height: '40px',
-            alignItems: 'center',
-            borderRadius: '2px',
-          }}
+          styles={styles.loginButton}
           asyncAction={false}
           callback={() => {
             navigation.navigate('Login');

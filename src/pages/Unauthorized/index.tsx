@@ -8,7 +8,6 @@ import AsyncButton from '../../components/AsyncButton';
 import HeaderLayout from '../../layouts/HeaderLayout';
 
 import { styles, styledComponents } from './styles';
-import { Theme } from '../../constants';
 
 export default function Unauthorized(): JSX.Element {
   const navigation = useNavigation();
@@ -18,7 +17,7 @@ export default function Unauthorized(): JSX.Element {
 
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -26,11 +25,7 @@ export default function Unauthorized(): JSX.Element {
     <HeaderLayout
       headerShown
       title="Cadastro"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimaryDark,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'back',

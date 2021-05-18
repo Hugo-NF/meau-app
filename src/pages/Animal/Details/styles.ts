@@ -21,7 +21,7 @@ export const styledComponents = {
   `,
 
   AnimalImage: styled.Image<ImageProps>`
-    height: 183px;
+    height: 184px;
   `,
 
   ButtonText: styled.Text<TextProps>`
@@ -59,7 +59,7 @@ export const styledComponents = {
     align-items: center;
     background-color: ${Theme.elements.floatingButton};
     border-radius: 28px;
-    elevation: 1;
+    elevation: 5;
     height: 56px;
     justify-content: center;
     width: 56px;
@@ -149,10 +149,6 @@ export const styles = {
     width: '148px',
   },
 
-  floatingButtonIcon: {
-    color: Theme.elements.textDark,
-  },
-
   headerLayoutHeaderPrimaryStyles: {
     backgroundColor: Theme.elements.headerPrimary,
     height: '56px',
@@ -208,5 +204,6 @@ export const styles = {
 
   activityIndicatorColor: Theme.default.primary,
   animalOwnerStatusBarColor: Theme.elements.statusBarPrimary,
-  regularUserStatusBarColor: Theme.elements.statusBarSecondaryDark,
+  floatingButtonIconColor: Theme.elements.icon,
+  regularUserStatusBarColor: Theme.elements.statusBarSecondary,
 };

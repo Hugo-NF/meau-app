@@ -11,7 +11,6 @@ import useIsMounted from 'ismounted';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { Theme } from '../../constants';
 import { useAuth } from '../../contexts/user/context';
 
 import userAPI from '../../services/user/api';
@@ -108,13 +107,13 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
           <List.Section style={styles.SpacedListSection}>
             <List.Subheader>Opções</List.Subheader>
             <List.Item
-              left={(props) => <List.Icon {...props} icon="login" color={Theme.elements.icon} />}
+              left={(props) => <List.Icon {...props} icon="login" color={styles.iconColor} />}
               title="Login"
               titleStyle={styles.ListItemText}
               onPress={() => navigateTo('Login')}
             />
             <List.Item
-              left={(props) => <List.Icon {...props} icon="account-plus" color={Theme.elements.icon} />}
+              left={(props) => <List.Icon {...props} icon="account-plus" color={styles.iconColor} />}
               title="Cadastro"
               titleStyle={styles.ListItemText}
               onPress={() => navigateTo('Registration')}
@@ -135,7 +134,10 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
                 <Avatar.Text
                   size={64}
                   label={getNameInitials(userDetails.displayName)}
-                  style={{ backgroundColor: Theme.default.background, ...styles.Avatar }}
+                  style={{
+                    backgroundColor: styles.userInitialsBackgrond,
+                    ...styles.Avatar,
+                  }}
                 />
                 ) : (
                   <Avatar.Image
@@ -159,7 +161,11 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
           <List.Accordion
             title={userDetails?.displayName}
             left={() => <></>}
-            style={{ backgroundColor: Theme.default.primary, ...styles.ListAccordion }}
+            style={{
+              backgroundColor: styles.settingsDrawerPrimaryBackground,
+              ...styles.ListAccordion,
+              ...styles.ListMainAccordion,
+            }}
             titleStyle={styles.SectionTitle}
           >
             <List.Item
@@ -184,9 +190,12 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
         </List.Section>
         <List.Section style={styles.ListSection}>
           <List.Accordion
-            left={(props) => <List.Icon {...props} icon="paw" color={Theme.elements.icon} />}
+            left={(props) => <List.Icon {...props} icon="paw" color={styles.iconColor} />}
             title="Atalhos"
-            style={{ backgroundColor: Theme.elements.headerSecondary, ...styles.ListAccordion }}
+            style={{
+              backgroundColor: styles.settingsDrawerSecondaryLightBackground,
+              ...styles.ListAccordion,
+            }}
             titleStyle={styles.SectionTitle}
           >
             <List.Item
@@ -203,9 +212,12 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
         </List.Section>
         <List.Section style={styles.ListSection}>
           <List.Accordion
-            left={(props) => <List.Icon {...props} icon="information" color={Theme.elements.icon} />}
+            left={(props) => <List.Icon {...props} icon="information" color={styles.iconColor} />}
             title="Informações"
-            style={{ backgroundColor: Theme.elements.headerPrimary, ...styles.ListAccordion }}
+            style={{
+              backgroundColor: styles.settingsDrawerPrimaryLightBackground,
+              ...styles.ListAccordion,
+            }}
             titleStyle={styles.SectionTitle}
           >
             <List.Item
@@ -232,9 +244,12 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
         </List.Section>
         <List.Section style={styles.ListSection}>
           <List.Accordion
-            left={(props) => <List.Icon {...props} icon="toolbox" color={Theme.elements.icon} />}
+            left={(props) => <List.Icon {...props} icon="cog" color={styles.iconColor} />}
             title="Configurações"
-            style={{ backgroundColor: Theme.elements.settingsDrawerBackground, ...styles.ListAccordion }}
+            style={{
+              backgroundColor: styles.settingsDrawerDefaultBackground,
+              ...styles.ListAccordion,
+            }}
             titleStyle={styles.SectionTitle}
           >
             <List.Item
@@ -243,11 +258,15 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
             />
           </List.Accordion>
         </List.Section>
+        {/*
         <List.Section style={styles.ListSection}>
           <List.Accordion
-            left={(props) => <List.Icon {...props} icon="android-debug-bridge" color={Theme.elements.icon} />}
+            left={(props) => <List.Icon {...props} icon="android-debug-bridge" color={styles.iconColor} />}
             title="Desenvolvimento"
-            style={{ backgroundColor: Theme.elements.settingsDrawerBackground, ...styles.ListAccordion }}
+            style={{
+              backgroundColor: styles.settingsDrawerDefaultBackground,
+              ...styles.ListAccordion,
+            }}
             titleStyle={styles.SectionTitle}
           >
             <List.Item
@@ -257,6 +276,7 @@ const DrawerContent = ({ parentDrawerOpen, setParentDrawerOpen } : IDrawerProps)
             />
           </List.Accordion>
         </List.Section>
+        */}
         <LogoutButton
           onPress={() => logout()}
         >

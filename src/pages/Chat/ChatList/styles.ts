@@ -89,8 +89,6 @@ export const styles = {
 
   headerLayout: {
     backgroundColor: Theme.elements.headerPrimaryDark,
-    height: '56px',
-    maxHeight: '56px',
   },
 
   infiniteScroll: {

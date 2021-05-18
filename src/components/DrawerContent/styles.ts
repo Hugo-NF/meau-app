@@ -14,6 +14,7 @@ export const styledComponents = {
   AvatarContainer: styled.View<ViewProps>`
     height: 152px;
     background-color: ${Theme.default.primary};
+    elevation: 3;
     flex-direction: row;
   `,
 
@@ -74,5 +75,17 @@ export const styles = {
     fontSize: 14,
     color: Theme.elements.buttonTextDisabled,
   },
-  ListAccordion: { paddingVertical: 0 },
+  ListAccordion: {
+    paddingVertical: 0,
+  },
+  ListMainAccordion: {
+    elevation: 3,
+  },
+
+  iconColor: Theme.elements.icon,
+  settingsDrawerDefaultBackground: Theme.elements.settingsDrawerDefaultBackground,
+  settingsDrawerPrimaryBackground: Theme.elements.settingsDrawerPrimaryBackground,
+  settingsDrawerPrimaryLightBackground: Theme.elements.settingsDrawerPrimaryLightBackground,
+  settingsDrawerSecondaryLightBackground: Theme.elements.settingsDrawerSecondaryLightBackground,
+  userInitialsBackgrond: Theme.default.background,
 };

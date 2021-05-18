@@ -15,6 +15,7 @@ export interface ButtonType extends TouchableOpacityProps {
   alignSelf?: string,
   alignItems?: string,
   justifyContent?: string,
+  elevation?: number,
 }
 
 export interface IButtonProps extends ButtonType {

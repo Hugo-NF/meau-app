@@ -14,7 +14,6 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { Button, Modal, Portal } from 'react-native-paper';
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import { Theme } from '../../../constants';
 import * as RouteTypes from '../../../types/routes';
 import { DocumentRefData, QuerySnapshotDocuments } from '../../../types/services/Firebase';
 import chatAPI from '../../../services/chat/api';
@@ -31,7 +30,7 @@ export default (): JSX.Element => {
 
   useFocusEffect(
     useCallback(() => {
-      setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
     }, []),
   );
 
@@ -239,7 +238,7 @@ export default (): JSX.Element => {
         <MaterialIcons
           style={styles.sendButtonIcon}
           name="send"
-          size={24}
+          size={28}
         />
       </SendWrapper>
     </Send>
@@ -261,11 +260,6 @@ export default (): JSX.Element => {
       disableScrollView
       headerShown
       title={chatTitle}
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
       leftAction={{
         hidden: false,
         actionType: 'back',

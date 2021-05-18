@@ -5,28 +5,47 @@ import styled from 'styled-components/native';
 // Style imports.
 import { Theme } from '../../../constants';
 
-export const CardText = styled.Text<TextProps>`
-  color: ${Theme.elements.textDark};
-  font-family: 'Roboto_400Regular';
-  font-size: 12px;
-  text-transform: uppercase;
-`;
+// Styled components.
+export const styledComponents = {
+  CardText: styled.Text<TextProps>`
+    color: ${Theme.elements.textDark};
+    font-family: 'Roboto_400Regular';
+    font-size: 12px;
+    text-transform: uppercase;
+  `,
 
-export const CardTextContainer = styled.View<ViewProps>`
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-`;
+  CardTextContainer: styled.View<ViewProps>`
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+  `,
 
-export const CardTextRow = styled.View<ViewProps>`
-  flex: 1;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-`;
+  CardTextRow: styled.View<ViewProps>`
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  `,
 
-export const Container = styled.View<ViewProps>`
-  align-items: center;
-  flex: 1;
-  background-color: ${Theme.default.background}
-`;
+  Container: styled.View<ViewProps>`
+    align-items: center;
+    flex: 1;
+    background-color: ${Theme.default.background}
+  `,
+};
+
+// Styles.
+export const styles = {
+  headerLayout: {
+    backgroundColor: Theme.elements.headerPrimaryDark,
+  },
+
+  myPetsFeedContainerStyles: {
+    paddingBottom: 8,
+    paddingTop: 8,
+  },
+
+  cardHeaderBackground: Theme.elements.headerPrimary,
+  cardIconColor: Theme.elements.textDark,
+  statusBarColor: Theme.elements.statusBarPrimaryDark,
+};
