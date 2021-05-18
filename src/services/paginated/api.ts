@@ -1,12 +1,6 @@
-import { Query, CollectionRef } from '../../types/firebase';
+import { Query, CollectionRef } from '../../types/services/Firebase';
 
-export interface PaginatedMetaData {
-  pageNumber: number;
-  pageSize: number;
-  lastElementMarker: unknown[];
-  marker: string;
-  orderByDirection?: 'asc' | 'desc';
-}
+import { PaginatedMetaData } from '../../types/services/Paginated';
 
 export const filterPaginated = (source: Query | CollectionRef, paginatedMetaData?: PaginatedMetaData): Query => {
   if (!paginatedMetaData) return source;

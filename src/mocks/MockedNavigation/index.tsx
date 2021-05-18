@@ -3,14 +3,10 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { StackScreen } from '../../types/mocks/MockedNavigation';
+
 // Navigation configuration.
 const Stack = createStackNavigator();
-
-// Interfaces.
-interface StackScreen {
-  component: React.FC,
-  params?: Record<string, unknown>
-}
 
 // Component.
 export default function MockedNavigator(

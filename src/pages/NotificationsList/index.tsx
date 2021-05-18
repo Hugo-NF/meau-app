@@ -12,10 +12,11 @@ import { Container } from './styles';
 // Component imports.
 
 // Service imports.
-import notificationAPI, { NotificationType, NotificationModels } from '../../services/notifications/api';
+import notificationAPI from '../../services/notifications/api';
 // Style imports.
 
 // Type declaration.
+import { NotificationType, NotificationModels } from '../../types/services/Notifications';
 
 // Component.
 export default function NotificationsList() : JSX.Element {
@@ -44,28 +45,32 @@ export default function NotificationsList() : JSX.Element {
   );
 
   const notificationRenderer = (notification: (NotificationModels)): JSX.Element => {
+    // eslint-disable-next-line camelcase
+    const fromName = notification.from.data()?.full_name || 'Usuário deletado';
     switch (notification.type) {
       case NotificationType.adoptionInterest:
       {
+        const animalName = notification.animal.data()?.name || 'Animal deletado';
         return (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{notification.from.data().full_name} está interessado no seu pet {notification.animal.data().name}</Text>
+            <Text>{fromName} está interessado no seu pet {animalName}</Text>
           </TouchableOpacity>
         );
       }
       case NotificationType.adoptionRefused:
       {
+        const animalName = notification.animal.data()?.name || 'Animal deletado';
         return (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{notification.from.data().full_name} recusou sua solicitação ao pet {notification.animal.data().name}</Text>
+            <Text>{fromName} recusou sua solicitação ao pet {animalName}</Text>
           </TouchableOpacity>
         );
       }

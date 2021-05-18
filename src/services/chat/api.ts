@@ -1,22 +1,9 @@
 import firestore from '@react-native-firebase/firestore';
 import {
   DocumentData, DocumentRefData, Query, QuerySnapshot,
-} from '../../types/firebase';
+} from '../../types/services/Firebase';
 
 const chatDocument = (chatUID: string): DocumentRefData => firestore().collection('chats').doc(chatUID);
-
-const createChat = async (users: Array<DocumentRefData>)
-  : Promise<DocumentData> => {
-  const { FieldValue } = firestore;
-  return (await firestore().collection('chats').add({ users, updatedAt: FieldValue.serverTimestamp() })).get();
-};
-
-const getChat = async (chatUID: string): Promise<DocumentData> => firestore().collection('chats').doc(chatUID).get();
-
-const getOwnChats = (userRef: DocumentRefData)
-  : Query => firestore()
-  .collection('chats')
-  .where('users', 'array-contains', userRef);
 
 const getChatByTarget = async (currentUser: DocumentRefData, targetUser: DocumentRefData): Promise<DocumentData | undefined> => {
   const query = await firestore()
@@ -26,6 +13,33 @@ const getChatByTarget = async (currentUser: DocumentRefData, targetUser: Documen
 
   return query.docs.length > 0 ? query.docs[0] : undefined;
 };
+
+const createChat = async (users: Array<DocumentRefData>)
+  : Promise<DocumentRefData> => {
+  const { FieldValue } = firestore;
+
+  // First check if chat with those users already exists
+  const previousChat = await getChatByTarget(users[0], users[1]);
+  if (previousChat) {
+    return previousChat.ref;
+  }
+
+  const newChat = await firestore().collection('chats').add({
+    users,
+    updatedAt: FieldValue.serverTimestamp(),
+  });
+
+  await newChat.collection('updatedAt').add({ updatedAt: FieldValue.serverTimestamp() });
+
+  return newChat;
+};
+
+const getChat = async (chatUID: string): Promise<DocumentData> => firestore().collection('chats').doc(chatUID).get();
+
+const getOwnChats = (userRef: DocumentRefData)
+  : Query => firestore()
+  .collection('chats')
+  .where('users', 'array-contains', userRef);
 
 const latestMessageOnChat = async (
   chatRef: DocumentRefData,
@@ -57,6 +71,19 @@ const loadMessages = async (
   }
 
   return query.limit(pageSize).get();
+};
+
+const loadNewMessages = async (
+  chatRef: DocumentRefData,
+  currentNewestMessageTimestamp: Date,
+): Promise<QuerySnapshot> => {
+  const query = firestore()
+    .collection('messages')
+    .where('chat', '==', chatRef)
+    .orderBy('timestamp', 'asc')
+    .startAfter(currentNewestMessageTimestamp);
+
+  return query.get();
 };
 
 const markChatMessagesAsSeemByUser = async (
@@ -104,9 +131,32 @@ const pushMessages = async (
     });
   });
 
-  await firestore().collection('chats').doc(chatRef.id).update({
+  const updatedAtDoc = (await firestore().collection('chats').doc(chatRef.id).collection('updatedAt')
+    .get()).docs;
+
+  await updatedAtDoc[0].ref.update({
     updatedAt: FieldValue.serverTimestamp(),
   });
+
+  await chatRef.update({ updatedAt: FieldValue.serverTimestamp() });
+};
+
+const setIsTyping = async (
+  chatRef: DocumentRefData,
+  userRef: DocumentRefData,
+  isTyping: boolean,
+): Promise<void> => {
+  const currentlyTyping = (await chatRef.collection('currentlyTyping').where('userRef', '==', userRef).get()).docs;
+  const storedThatIsTyping = currentlyTyping.length > 0;
+
+  if (isTyping && !storedThatIsTyping) {
+    await chatRef.collection('currentlyTyping').add({ userRef });
+  }
+  if (!isTyping && storedThatIsTyping) {
+    const batch = firestore().batch();
+    currentlyTyping.forEach((d) => batch.delete(d.ref));
+    await batch.commit();
+  }
 };
 
 const removeChat = async (
@@ -133,7 +183,9 @@ export default {
   getOwnChats,
   latestMessageOnChat,
   loadMessages,
+  loadNewMessages,
   markChatMessagesAsSeemByUser,
   pushMessages,
+  setIsTyping,
   removeChat,
 };
