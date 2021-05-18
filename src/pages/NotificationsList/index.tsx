@@ -45,28 +45,32 @@ export default function NotificationsList() : JSX.Element {
   );
 
   const notificationRenderer = (notification: (NotificationModels)): JSX.Element => {
+    // eslint-disable-next-line camelcase
+    const fromName = notification.from.data()?.full_name || 'Usuário deletado';
     switch (notification.type) {
       case NotificationType.adoptionInterest:
       {
+        const animalName = notification.animal.data()?.name || 'Animal deletado';
         return (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{notification.from.data().full_name} está interessado no seu pet {notification.animal.data().name}</Text>
+            <Text>{fromName} está interessado no seu pet {animalName}</Text>
           </TouchableOpacity>
         );
       }
       case NotificationType.adoptionRefused:
       {
+        const animalName = notification.animal.data()?.name || 'Animal deletado';
         return (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{notification.from.data().full_name} recusou sua solicitação ao pet {notification.animal.data().name}</Text>
+            <Text>{fromName} recusou sua solicitação ao pet {animalName}</Text>
           </TouchableOpacity>
         );
       }
