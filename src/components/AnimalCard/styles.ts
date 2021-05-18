@@ -1,10 +1,7 @@
 import { ImageProps, TextProps, ViewProps } from 'react-native';
 import styled from 'styled-components/native';
 import { Theme } from '../../constants';
-
-interface CardHeaderProps extends ViewProps {
-    backgroundColor: string;
-}
+import { CardHeaderProps } from '../../types/components/AnimalCard';
 
 export const CardBox = styled.View<ViewProps>`
     width: 344px;

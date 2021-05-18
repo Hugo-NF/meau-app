@@ -12,3 +12,15 @@ export type RouteParams = {
     chatUID: string,
   }
 };
+
+export interface IRouteRule {
+  name: string,
+  component: () => JSX.Element,
+  privateComponent?: () => JSX.Element,
+  requireSession?: boolean,
+}
+
+export interface IRoute {
+  name: string,
+  component: () => JSX.Element,
+}

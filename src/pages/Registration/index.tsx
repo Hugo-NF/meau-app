@@ -29,31 +29,12 @@ import { Theme, Values } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
 import FileOperations from '../../utils/FileOperations';
 
+// Type imports
+import { IDialogState } from '../../types/globals/Dialog';
+import { picturePath, ISignUpForm } from '../../types/pages/Registration';
+
 // Theme imports.
 import { styles, styledComponents } from './styles';
-
-// Type declarations.
-type picturePath = string | null;
-
-// Interface declarations.
-interface IDialogState {
-  open: boolean,
-  title: string,
-  message: string,
-}
-
-interface ISignUpForm {
-  fullName: string,
-  birthDate: Date | null,
-  email: string,
-  state: string,
-  city: string,
-  address: string,
-  phoneNumber: string,
-  username: string,
-  password: string,
-  passwordConfirmation: string,
-}
 
 // Component.
 export default function Registration() : JSX.Element {

@@ -2,7 +2,7 @@
 import { ImageSourcePropType } from 'react-native';
 
 // User type imports.
-import * as FirebaseTypes from './firebase';
+import * as FirebaseTypes from './services/Firebase';
 
 // Type declarations.
 export type ChatListEntry = {

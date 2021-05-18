@@ -1,11 +1,8 @@
 import React from 'react';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 
 import Context from './context';
-
-interface IGlobalServiceState {
-    currentUser: FirebaseAuthTypes.User | null
-}
+import { IGlobalServiceState } from '../../types/contexts/user';
 
 export default class GlobalState extends React.Component<Record<string, unknown>, IGlobalServiceState> {
   constructor(props: Record<string, unknown>) {

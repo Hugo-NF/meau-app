@@ -3,14 +3,8 @@ import {
   HelperText, TextInput,
 } from 'react-native-paper';
 
-import { FormikProps } from 'formik';
 import { NativeSyntheticEvent, TextInputFocusEventData } from 'react-native';
-
-interface ICustomTextInput<T> {
-  formikHelpers: FormikProps<T>,
-  fieldName: keyof T,
-  [propName: string]: unknown;
-}
+import { ICustomTextInput } from '../../types/components/CustomTextInput';
 
 const CustomTextInput = <T, >({
   formikHelpers, fieldName, ...rest

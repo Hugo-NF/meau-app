@@ -33,7 +33,7 @@ import { styles, styledComponents } from './styles';
 
 // Type imports.
 import * as AnimalTypes from '../../../types/animal';
-import * as CarouselTypes from '../../../types/carousel';
+import * as CarouselTypes from '../../../types/globals/Carousel';
 import * as RouteTypes from '../../../types/routes';
 
 // Utils imports.
