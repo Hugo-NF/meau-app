@@ -7,16 +7,10 @@ import storage from '@react-native-firebase/storage';
 import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { FirebaseStorageTypes } from '@react-native-firebase/storage';
+import { QueryParams } from '../../types/services/Firebase';
 
 // User module imports.
 import { Values } from '../../constants';
-
-// Type declarations.
-type QueryParams = {
-  orderBy? : string | undefined,
-  startAfter? : FirebaseFirestoreTypes.DocumentFieldType | undefined,
-  limit? : number | undefined
-}
 
 // Service implementation.
 const api = {

@@ -1,7 +1,4 @@
 import React from 'react';
-import { HelperText, TextInput, useTheme } from 'react-native-paper';
-
-import { FormikProps } from 'formik';
 import Lodash from 'lodash';
 import {
   NativeSyntheticEvent,
@@ -9,15 +6,11 @@ import {
   TextInputFocusEventData,
   TextStyle,
 } from 'react-native';
+import { HelperText, TextInput, useTheme } from 'react-native-paper';
+
+import { ICustomTextInput } from '../../types/components/CustomTextInput';
 
 import { defaultProps, styles } from './styles';
-
-interface ICustomTextInput<T> {
-  formikHelpers: FormikProps<T>,
-  fieldName: keyof T,
-  iconColor?: string,
-  [propName: string]: unknown;
-}
 
 const CustomTextInput = <T, >({
   formikHelpers, fieldName, iconColor, ...rest

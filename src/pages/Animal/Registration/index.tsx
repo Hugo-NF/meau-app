@@ -38,19 +38,10 @@ import FileOperations from '../../../utils/FileOperations';
 
 // Type imports.
 import * as AnimalTypes from '../../../types/animal';
+import { IUploadedPicture } from '../../../types/pages/Animal';
+import { IDialogState } from '../../../types/globals/Dialog';
 
 // Interface declarations.
-interface IUploadedPicture {
-  id: string,
-  remoteName: string,
-  localUri: string,
-}
-
-interface IDialogState {
-  open: boolean,
-  title: string,
-  message: string,
-}
 
 // Component export.
 export default function AnimalRegistration() : JSX.Element {

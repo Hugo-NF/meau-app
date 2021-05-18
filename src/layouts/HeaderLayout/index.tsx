@@ -12,35 +12,8 @@ import DrawerContent from '../../components/DrawerContent';
 
 import { Theme } from '../../constants';
 
-import { styledComponents, IHeaderProps, ITitleProps } from './styles';
-
-type HeaderActions = 'back' | 'drawer' | 'share' | 'search' | 'options';
-
-interface IButtonAction {
-  hidden?: boolean,
-  actionType?: HeaderActions,
-  iconColor?: string,
-  onPress?: () => void,
-}
-
-interface IRoutesDrawer {
-  path: string,
-  displayName: string,
-  icon: JSX.Element
-}
-
-interface IHeaderLayoutProps {
-  disableScrollView?: boolean,
-  headerShown: boolean,
-  headerStyles?: IHeaderProps,
-  title: string,
-  titleStyles?: ITitleProps,
-  leftAction: IButtonAction,
-  rightAction: IButtonAction,
-  children: React.ReactNode,
-  drawerRoutes?: Array<IRoutesDrawer>,
-  drawerUser?: boolean,
-}
+import { IHeaderLayoutProps, IButtonAction } from '../../types/layouts/HeaderLayout';
+import { styledComponents } from './styles';
 
 export default function HeaderLayout({
   disableScrollView,

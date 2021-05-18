@@ -19,17 +19,7 @@ import NotificationsList from './pages/NotificationsList';
 import Interested from './pages/Animal/Interested';
 import Chat from './pages/Chat/Chat';
 
-interface IRouteRule {
-  name: string,
-  component: () => JSX.Element,
-  privateComponent?: () => JSX.Element,
-  requireSession?: boolean,
-}
-
-interface IRoute {
-  name: string,
-  component: () => JSX.Element,
-}
+import { IRouteRule, IRoute } from './types/routes';
 
 // Routes.
 export default class Routes extends React.Component {

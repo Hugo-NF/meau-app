@@ -10,18 +10,15 @@ import useIsMounted from 'ismounted';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { styledComponents, styles } from './styles';
 
-import { getNameInitials } from '../../utils/getNameInitials';
+import { useAuth } from '../../contexts/user/context';
 
 import userAPI from '../../services/user/api';
 import notificationAPI from '../../services/notifications/api';
-import { useAuth } from '../../contexts/user/context';
 
-export interface IDrawerProps {
-  parentDrawerOpen: boolean,
-  setParentDrawerOpen: (_: boolean) => void,
-}
+import { getNameInitials } from '../../utils/getNameInitials';
+import { IDrawerProps } from '../../types/components/DrawerContent';
+import { styledComponents, styles } from './styles';
 
 const fetchProfile = async (currentUser: FirebaseAuthTypes.User | null) : Promise<{displayName: string, photo: string | undefined} | undefined> => {
   if (currentUser != null) {

@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
@@ -6,18 +6,10 @@ import animalAPI from '../../services/animal/api';
 
 import { Images, Theme } from '../../constants';
 
+import { IAnimalCardProps } from '../../types/components/AnimalCard';
 import {
   CardBody, CardBox, CardHeader, CardImage, CardImageLoading, CardOptions, CardTitle,
 } from './styles';
-
-interface IAnimalCardProps {
-    title: string;
-    imageUrl: string | null;
-    headerOptions?: ReactNode;
-    body?: ReactNode;
-    headerBackground: string;
-    onPress?: () => void;
-}
 
 const AnimalCard = ({
   title, body, headerOptions, imageUrl, headerBackground, onPress,

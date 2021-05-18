@@ -1,8 +1,13 @@
 import firestore from '@react-native-firebase/firestore';
+
 import animalAPI from '../animal/api';
-import notificationAPI, { NotificationType } from '../notifications/api';
-import { DocumentData, DocumentRefData, DocumentSnapshot } from '../../types/firebase';
-import { PaginatedMetaData, filterPaginated } from '../paginated/api';
+import notificationAPI from '../notifications/api';
+
+import { NotificationType } from '../../types/services/Notifications';
+import { DocumentData, DocumentRefData, DocumentSnapshot } from '../../types/services/Firebase';
+import { filterPaginated } from '../paginated/api';
+
+import { PaginatedMetaData } from '../../types/services/Paginated';
 
 const addInterestToAnimal = async (animal: DocumentRefData, user: DocumentRefData): Promise<void> => {
   const animalData = (await animal.get()).data();

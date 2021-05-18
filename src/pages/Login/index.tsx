@@ -31,15 +31,8 @@ import HeaderLayout from '../../layouts/HeaderLayout';
 import CustomTextInput from '../../components/CustomTextInput';
 import { Values } from '../../constants';
 
-interface LoginForm {
-  email: string,
-  password: string,
-}
-interface IDialogState {
-  open: boolean,
-  title: string,
-  message: string,
-}
+import { ILoginForm } from '../../types/pages/Login';
+import { IDialogState } from '../../types/globals/Dialog';
 
 // Component export.
 export default function Login() : JSX.Element {
@@ -65,7 +58,7 @@ export default function Login() : JSX.Element {
     }, []),
   );
 
-  const signIn = async ({ email, password }: LoginForm): Promise<void> => {
+  const signIn = async ({ email, password }: ILoginForm): Promise<void> => {
     try {
       const response = await userAPI.signIn(email, password);
       if (response && response.user) {
