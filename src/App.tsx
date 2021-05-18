@@ -1,8 +1,9 @@
 // Package imports.
-import React from 'react';
-import AppLoading from 'expo-app-loading';
+import React, { useEffect } from 'react';
+
 import { StatusBar } from 'expo-status-bar';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import SplashScreen from 'react-native-splash-screen';
 
 // React Navigation Stack.
 import 'react-native-gesture-handler';
@@ -40,9 +41,24 @@ export default function App() : JSX.Element {
     Roboto_500Medium,
   });
 
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
+  useEffect(() => {
+    async function prepare(): Promise<void> {
+      try {
+        // Keep the splash screen visible while we fetch resources.
+        // Make any API calls you need to do here.
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn(e);
+      } finally {
+        if (fontsLoaded) {
+          // Tell the application to render. Hides splashscreen
+          SplashScreen.hide();
+        }
+      }
+    }
+
+    prepare();
+  }, [fontsLoaded]);
 
   return (
     <GlobalState>
