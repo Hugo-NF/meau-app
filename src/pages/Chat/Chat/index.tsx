@@ -41,7 +41,7 @@ export default (): JSX.Element => {
   const [otherIsTyping, setOtherIsTyping] = useState<boolean>(false);
   const [shouldUpdate, setShouldUpdate] = useState<number>(0);
   const typingTimeoutFunction = useRef<NodeJS.Timeout>();
-  const ignoreFirstOnInputTextChanged = useRef<boolean>(true);
+  const firstOnInputTextChanged = useRef<boolean>(true);
   const selfIsTyping = useRef<boolean>(false);
   const firstLoad = useRef<boolean>(true);
   const [dialog, setDialog] = useState<boolean>(false);
@@ -125,13 +125,13 @@ export default (): JSX.Element => {
   }, [chatRef, navigation, addMessages]);
 
   const updateTyping = (): void => {
-    // onInputTextChanged triggers when first load
-    if (ignoreFirstOnInputTextChanged.current === true) {
-      ignoreFirstOnInputTextChanged.current = false;
+    // The condition onInputTextChanged triggers in the first load.
+    if (firstOnInputTextChanged.current === true) {
+      firstOnInputTextChanged.current = false;
       return;
     }
 
-    // Updates db if changed selfIsTypingState
+    // Updates database if changed selfIsTypingState.
     if (selfIsTyping.current === false) {
       if (chatRef) chatAPI.setIsTyping(chatRef, currentUserRef, true);
     }

@@ -77,7 +77,7 @@ export default function NotificationsList() : JSX.Element {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{fromName} recusou sua solicitação ao pet {animalName}</Text>
+            <Text>{fromName} recusou sua solicitação ao pet {animalName}.</Text>
           </TouchableOpacity>
         );
       }

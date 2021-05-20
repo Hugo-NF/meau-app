@@ -41,8 +41,6 @@ import * as AnimalTypes from '../../../types/animal';
 import { IUploadedPicture } from '../../../types/pages/Animal';
 import { IDialogState } from '../../../types/globals/Dialog';
 
-// Interface declarations.
-
 // Component export.
 export default function AnimalRegistration() : JSX.Element {
   // Variable declaration.

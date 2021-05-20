@@ -53,7 +53,7 @@ const Theme = {
     chatSendIcon: '#FFFFFF',
     chatSendBall: '#88C9BF',
     chatText: '#434343',
-    chatBubleUser: '#CFE9E5',
+    chatUserMessageBubble: '#CFE9E5',
     textInputIconPrimary: '#589B9B',
     textInputIconSecondary: '#F7A800',
     textInputUnderlineColor: '#E6E7E8',

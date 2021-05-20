@@ -14,6 +14,11 @@ export const styledComponents = {
     padding-top: 12px;
   `,
 
+  InterestedUserText: styled.Text<TextProps>`
+    color: ${Theme.elements.textDark};
+    font-size: 14px;
+  `,
+
   LoadingContainer: styled.View<ViewProps>`
     flex: 1;
     align-items: center;
@@ -41,11 +46,6 @@ export const styles = {
     height: 84,
     marginBottom: 8,
     width: 84,
-  },
-
-  interestedUserText: {
-    color: Theme.elements.textDark,
-    fontSize: 14,
   },
 
   interestedUserTouchableOpacity: {

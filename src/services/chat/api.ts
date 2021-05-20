@@ -108,9 +108,9 @@ const markChatMessagesAsSeemByUser = async (
   );
 
   messagesUnseenByUser.forEach(
-    (messageDoc) => messageDoc.ref.set({
+    (messageDoc) => messageDoc.ref.update({
       seenBy: [...messageDoc.data().seenBy, userRef],
-    }, { merge: true }),
+    }),
   );
 };
 

@@ -13,7 +13,6 @@ export interface UserCircleProps {
   callback: (user: InterestedUser) => void;
 }
 
-// Interface declarations.
 export interface IUploadedPicture {
   id: string,
   remoteName: string,

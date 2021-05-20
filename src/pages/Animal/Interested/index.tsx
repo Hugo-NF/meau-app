@@ -8,7 +8,7 @@ import {
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import {
-  ActivityIndicator, Text, Image, TouchableOpacity, Alert,
+  ActivityIndicator, Image, TouchableOpacity, Alert,
 } from 'react-native';
 
 import { fromUnixTime, differenceInYears } from 'date-fns';
@@ -28,6 +28,10 @@ import { UserCircleProps, InterestedUser } from '../../../types/pages/Animal';
 // Style imports.
 import { styledComponents, styles } from './styles';
 
+const {
+  Container, InterestedUserText, LoadingContainer, LoadingText,
+} = styledComponents;
+
 const getAge = (birthDateTimestamp: number): number => differenceInYears(new Date(), fromUnixTime(birthDateTimestamp));
 
 const UserCircle = ({
@@ -43,8 +47,8 @@ const UserCircle = ({
         source={{ uri: user.imageURI }}
         style={styles.interestedUserProfilePicture}
       />
-      <Text style={styles.interestedUserText}>{user.userName}</Text>
-      {age && (<Text style={styles.interestedUserText}>{age} anos</Text>) }
+      <InterestedUserText>{user.userName}</InterestedUserText>
+      {age && (<InterestedUserText>{age} anos</InterestedUserText>) }
     </TouchableOpacity>
   );
 };
@@ -55,10 +59,6 @@ const Interested = (): JSX.Element => {
   const animalUID = useRoute<RouteProp<RouteTypes.RouteParams, 'Interested'>>().params?.animalUID;
   const [animal, setAnimal] = useState<DocumentRefData>();
   const [loading, setLoading] = useState(true);
-
-  const {
-    Container, LoadingContainer, LoadingText,
-  } = styledComponents;
 
   const fetchAnimal = useCallback(
     async (): Promise<DocumentRefData> => (await animalAPI.getAnimal(animalUID)).ref,
