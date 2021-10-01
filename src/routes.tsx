@@ -9,6 +9,7 @@ import AnimalRegistration from './pages/Animal/Registration';
 import AnimalRegistrationSuccess from './pages/Animal/Success';
 import MyPets from './pages/Animal/MyPets';
 
+import ChatList from './pages/Chat/ChatList';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
@@ -16,18 +17,9 @@ import Unauthorized from './pages/Unauthorized';
 import Context from './contexts/user/context';
 import NotificationsList from './pages/NotificationsList';
 import Interested from './pages/Animal/Interested';
+import Chat from './pages/Chat/Chat';
 
-interface IRouteRule {
-  name: string,
-  component: () => JSX.Element,
-  privateComponent?: () => JSX.Element,
-  requireSession?: boolean,
-}
-
-interface IRoute {
-  name: string,
-  component: () => JSX.Element,
-}
+import { IRouteRule, IRoute } from './types/routes';
 
 // Routes.
 export default class Routes extends React.Component {
@@ -46,6 +38,11 @@ export default class Routes extends React.Component {
     {
       name: 'AnimalRegistrationSuccess',
       component: AnimalRegistrationSuccess,
+      requireSession: true,
+    },
+    {
+      name: 'ChatList',
+      component: ChatList,
       requireSession: true,
     },
     {
@@ -85,6 +82,11 @@ export default class Routes extends React.Component {
     {
       name: 'Interested',
       component: Interested,
+      requireSession: true,
+    },
+    {
+      name: 'Chat',
+      component: Chat,
       requireSession: true,
     },
   ];

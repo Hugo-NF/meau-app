@@ -17,8 +17,8 @@ export const styledComponents = {
     font-family: 'Courgette_400Regular';
     font-size: 53px;
     color: ${Theme.default.primary};
-    margin-top: 52px;
-    margin-bottom: 52px;
+    margin-top: 40px;
+    margin-bottom: 34px;
   `,
 
   Message: styled.Text<TextProps>`
@@ -26,14 +26,14 @@ export const styledComponents = {
     font-size: 14px;
     max-width: 80%;
     color: ${Theme.elements.text};
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     text-align: center;
   `,
 
   ButtonText: styled.Text<TextProps>`
     font-family: 'Roboto_400Regular';
     font-size: 12px;
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     text-transform: uppercase;
   `,
 };
@@ -51,4 +51,10 @@ export const styles = {
     alignItems: 'center',
     borderRadius: '2px',
   },
+
+  headerLayout: {
+    backgroundColor: Theme.elements.headerPrimaryDark,
+  },
+
+  statusBarColor: Theme.elements.statusBarPrimaryDark,
 };

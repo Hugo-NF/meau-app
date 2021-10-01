@@ -14,7 +14,7 @@ export const styledComponents = {
   `,
 
   ButtonText: styled.Text<TextProps>`
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_400Regular';
     font-size: 12px;
   `,
@@ -49,7 +49,7 @@ export const styledComponents = {
   `,
 
   FormHeaderText: styled.Text<TextProps>`
-    color: ${Theme.elements.headerText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_500Medium';
     font-size: 16px;
     margin-top: 16px;
@@ -63,11 +63,12 @@ export const styledComponents = {
   `,
 
   IndentedSubsection: styled.View<ViewProps>`
+    margin-bottom: -12px;
     margin-left: 36px;
   `,
 
   InvalidCheckBoxText: styled.Text<TextProps>`
-    color: ${Theme.elements.invalidText};
+    color: ${Theme.elements.textFaded};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
     margin-bottom: 1px;
@@ -79,47 +80,59 @@ export const styledComponents = {
     width: 100px;
   `,
 
-  SingleCheckBoxRow: styled.View<ViewProps>`
-    flex-direction: row;
-    align-items: center;
-    margin-bottom: 8px;
-    margin-top: 20px;
-    width: 100%;
-  `,
-
-  PictureThumbnail: styled.Image<ImageProps>`
-    width: 100px;
-    height: 100px;
-    margin-right: 10px;
-  `,
-
   PicturesInput: styled.TouchableOpacity<TouchableOpacityProps>`
-    width: 312px;
-    height: 128px;
-    background: ${Theme.elements.animalPhotosInputBackground};
-    margin-top: 16px;
-    align-items: center;
     flex-direction: row;
+    align-items: center;
+    background: ${Theme.elements.animalPhotosInputBackground};
+    height: 128px;
+    margin-top: 16px;
+    width: 312px;
   `,
 
   PicturesInputInternal: styled.View<ViewProps>`
-    width: 100%;
     align-items: center;
+    width: 100%;
   `,
 
   PicturesInputText: styled.Text<TextProps>`
     color: ${Theme.elements.text}
   `,
 
+  PictureThumbnail: styled.Image<ImageProps>`
+    height: 100px;
+    margin-right: 10px;
+    width: 100px;
+  `,
+
+  SingleCheckBoxRow: styled.View<ViewProps>`
+    flex-direction: row;
+    align-items: center;
+    height: 20px;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    width: 100%;
+  `,
+
 };
 
 // Styles.
 export const styles = {
-  checkbox: {
-    // Remove the default margins on bottom and top because they mess with the
-    // apps' specification.
-    marginBottom: -2,
-    marginTop: -2,
+  addPhotoIcon: {
+    color: Theme.elements.photoIcon,
+  },
+
+  checkboxTintColors: {
+    disabled: Theme.elements.textFaded,
+    true: Theme.elements.labelSecondary,
+    false: Theme.elements.text,
+  },
+
+  headerLayout: {
+    backgroundColor: Theme.elements.headerSecondaryDark,
+  },
+
+  picturesGrid: {
+    width: 312,
   },
 
   radioForm: {
@@ -152,8 +165,6 @@ export const styles = {
     },
   },
 
-  statusBarColor: Theme.elements.statusBarSecondaryDark,
-
   // Submit button must have sizes in '_px' due to Styled components.
   submitButton: {
     backgroundColor: Theme.default.secondary,
@@ -165,17 +176,25 @@ export const styles = {
   },
 
   textInput: {
-    backgroundColor: 'transparent',
-    width: 312,
-    marginBottom: 0,
-    marginTop: 8,
+    helperTextStyle: {
+      marginTop: 12,
+      marginBottom: -12,
+    },
+    iconColor: Theme.elements.textInputIconSecondary,
+    mode: 'flat',
+    style: {
+      backgroundColor: 'transparent',
+      width: 312,
+      marginBottom: -12,
+      marginTop: 4,
+    },
+    theme: {
+      colors: {
+        primary: Theme.default.secondary,
+        placeholder: Theme.elements.textFaded,
+      },
+    },
   },
 
-  picturesGrid: {
-    width: 312,
-  },
-
-  addPhotoIcon: {
-    color: 'black',
-  },
+  statusBarColor: Theme.elements.statusBarSecondaryDark,
 };

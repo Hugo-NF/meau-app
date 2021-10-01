@@ -27,14 +27,15 @@ export const styledComponents = {
     flex: 1;
     flex-direction: row;
     align-items: center;
-    height: 30px;
+    height: 32px;
     justify-content: flex-start;
     margin-left: 28px;
     margin-right: 16px;
+    margin-top: 24px;
   `,
 
   BirthDatePlaceholderText: styled.Text<TextProps>`
-    color: ${Theme.elements.placeholderText};
+    color: ${Theme.elements.textFaded};
     font-family: 'Roboto_400Regular';
     font-size: 14px;
   `,
@@ -54,7 +55,7 @@ export const styledComponents = {
   `,
 
   ButtonText: styled.Text<TextProps>`
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_400Regular';
     font-size: 12px;
     text-transform: uppercase;
@@ -83,9 +84,9 @@ export const styledComponents = {
     text-align: center;
     font-family: 'Roboto_400Regular';
     font-size: 14px;
-    color: ${Theme.elements.headerText};
+    color: ${Theme.elements.textDark};
+    margin-bottom: 8px;
     margin-top: 16px;
-    margin-bottom: 28px;
     border-radius: 4px;
     height: 80px;
   `,
@@ -94,6 +95,7 @@ export const styledComponents = {
     align-items: center;
     background-color: ${Theme.elements.iconBackground};
     border-radius: 2px;
+    elevation: 3;
     height: 128px;
     justify-content: center;
     padding: 8px;
@@ -111,22 +113,22 @@ export const styledComponents = {
   `,
 
   PhotoSelectContainer: styled.View<ViewProps>`
-    align-items: center;
     background-color: ${Theme.elements.iconBackground};
     border-radius: 2px;
+    elevation: 3;
     height: 128px;
     padding-bottom: 48px;
     padding-top: 44px;
+    margin-top: 28px;
     width: 128px;
   `,
 
   SectionText: styled.Text<TextProps>`
-    width: 90%;
-    margin-bottom: 32px;
+    align-self: flex-start;
     margin-left: 28px;
+    margin-top: 20px;
     color: ${Theme.default.primary};
     text-transform: uppercase;
-    text-align: left;
   `,
 
 };
@@ -148,12 +150,20 @@ export const styles = {
   },
 
   textInput: {
-    selectionColor: Theme.elements.statusBarPrimary,
-    underlineColor: Theme.elements.headerText,
+    iconColor: Theme.elements.textInputIconPrimary,
     style: {
-      backgroundColor: 'transparent',
-      maxHeight: 56,
-      width: 312,
+      marginBottom: 0,
+      marginTop: 4,
+      paddingHorizontal: 12,
+      width: 328,
+    },
+    theme: {
+      colors: {
+        primary: Theme.default.primary,
+        placeholder: Theme.elements.textFaded,
+      },
     },
   },
+
+  statusBarColor: Theme.elements.statusBarPrimary,
 };

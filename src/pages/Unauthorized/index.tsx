@@ -1,6 +1,6 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import AsyncButton from '../../components/AsyncButton';
@@ -8,7 +8,6 @@ import AsyncButton from '../../components/AsyncButton';
 import HeaderLayout from '../../layouts/HeaderLayout';
 
 import { styles, styledComponents } from './styles';
-import { Theme } from '../../constants';
 
 export default function Unauthorized(): JSX.Element {
   const navigation = useNavigation();
@@ -16,19 +15,17 @@ export default function Unauthorized(): JSX.Element {
     ButtonText, Container, Title, Message,
   } = styledComponents;
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, true);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
 
   return (
     <HeaderLayout
       headerShown
       title="Cadastro"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimaryDark,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'back',

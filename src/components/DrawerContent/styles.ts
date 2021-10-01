@@ -14,6 +14,7 @@ export const styledComponents = {
   AvatarContainer: styled.View<ViewProps>`
     height: 152px;
     background-color: ${Theme.default.primary};
+    elevation: 3;
     flex-direction: row;
   `,
 
@@ -47,7 +48,7 @@ export const styledComponents = {
     font-family: 'Roboto_400Medium';
     font-size: 14px;
     text-transform: uppercase;
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
   `,
 };
 
@@ -62,17 +63,29 @@ export const styles = {
   SectionTitle: {
     fontFamily: 'Roboto_400Medium',
     fontSize: 14,
-    color: Theme.elements.buttonText,
+    color: Theme.elements.textDark,
   },
   ListItemText: {
     fontFamily: 'Roboto_400Regular',
     fontSize: 14,
-    color: Theme.elements.buttonText,
+    color: Theme.elements.textDark,
   },
   ListItemTextDisabled: {
     fontFamily: 'Roboto_400Regular',
     fontSize: 14,
     color: Theme.elements.buttonTextDisabled,
   },
-  ListAccordion: { paddingVertical: 0 },
+  ListAccordion: {
+    paddingVertical: 0,
+  },
+  ListMainAccordion: {
+    elevation: 3,
+  },
+
+  iconColor: Theme.elements.icon,
+  settingsDrawerDefaultBackground: Theme.elements.settingsDrawerDefaultBackground,
+  settingsDrawerPrimaryBackground: Theme.elements.settingsDrawerPrimaryBackground,
+  settingsDrawerPrimaryLightBackground: Theme.elements.settingsDrawerPrimaryLightBackground,
+  settingsDrawerSecondaryLightBackground: Theme.elements.settingsDrawerSecondaryLightBackground,
+  userInitialsBackgrond: Theme.default.background,
 };

@@ -1,16 +1,14 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import HeaderLayout from '../../../layouts/HeaderLayout';
 
 import AnimalCard from '../../../components/AnimalCard';
 import InfiniteScroll from '../../../components/InfiniteScroll';
-
-import { Theme } from '../../../constants';
 
 import {
   Age,
@@ -24,9 +22,7 @@ import {
 
 import { formatLocation } from '../../../utils/formatTexts';
 
-import {
-  CardText, CardTextContainer, CardTextRow, Container,
-} from './styles';
+import { styledComponents, styles } from './styles';
 
 // Service imports.
 import userAPI from '../../../services/user/api';
@@ -36,9 +32,18 @@ import { filterPaginated } from '../../../services/paginated/api';
 const FeedPets = (): JSX.Element => {
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
-  }, [navigation]);
+  const {
+    CardText,
+    CardTextContainer,
+    CardTextRow,
+    Container,
+  } = styledComponents;
+
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
 
   const animalKey = (animalItem: Animal): string => animalItem.id;
 
@@ -65,10 +70,10 @@ const FeedPets = (): JSX.Element => {
         <MaterialCommunityIcons
           name="heart-outline"
           size={24}
-          color={Theme.elements.headerText}
+          color={styles.cardIconColor}
         />
       )}
-      headerBackground={Theme.elements.headerSecondary}
+      headerBackground={styles.cardHeaderBackground}
       onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet?.id })}
     />
   );
@@ -115,11 +120,7 @@ const FeedPets = (): JSX.Element => {
       disableScrollView
       headerShown
       title="Adotar"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerSecondaryDark,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
@@ -133,6 +134,7 @@ const FeedPets = (): JSX.Element => {
         <InfiniteScroll
           keyExtractorFunction={animalKey}
           contentBatchSize={10}
+          contentContainerStyles={styles.adoptionFeedContainerStyles}
           dataFetchQuery={fetchPets}
           formatContent={formatAnimal}
         />

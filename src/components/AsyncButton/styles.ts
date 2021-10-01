@@ -1,23 +1,7 @@
 import styled from 'styled-components/native';
-import { TouchableOpacityProps } from 'react-native';
 
 import { Theme } from '../../constants';
-
-export interface ButtonType extends TouchableOpacityProps {
-  flex?: number,
-  flexDirection?: string,
-  width?: string,
-  height?: string,
-  backgroundColor?: string,
-  marginTop?: string,
-  marginBottom?: string,
-  marginLeft?: string,
-  marginRight?: string,
-  borderRadius?: string,
-  alignSelf?: string,
-  alignItems?: string,
-  justifyContent?: string,
-}
+import { ButtonType } from '../../types/components/AsyncButton';
 
 export const Button = styled.TouchableOpacity<ButtonType>`
   flex: ${(props) => props.flex};
@@ -34,6 +18,7 @@ export const Button = styled.TouchableOpacity<ButtonType>`
   align-self: ${(props) => props.alignSelf};
   align-items: ${(props) => props.alignItems};
   justify-content: ${(props) => props.justifyContent};
+  elevation: ${(props) => props.elevation};
 `;
 
 Button.defaultProps = {
@@ -50,4 +35,5 @@ Button.defaultProps = {
   alignSelf: 'center',
   alignItems: 'center',
   justifyContent: 'center',
+  elevation: 3,
 };

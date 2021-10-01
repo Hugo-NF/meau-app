@@ -1,5 +1,5 @@
 // Package imports.
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import { Formik } from 'formik';
 import { TouchableOpacity, View } from 'react-native';
@@ -12,7 +12,11 @@ import * as Yup from 'yup';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { StackActions, useNavigation } from '@react-navigation/native';
+import {
+  StackActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 
 // Service imports.
 import userAPI from '../../services/user/api';
@@ -21,35 +25,16 @@ import userAPI from '../../services/user/api';
 import AsyncButton from '../../components/AsyncButton';
 import CustomTextInput from '../../components/CustomTextInput';
 
-import { Theme, Values } from '../../constants';
+import { Values } from '../../constants';
 import HeaderLayout from '../../layouts/HeaderLayout';
 import FileOperations from '../../utils/FileOperations';
 
+// Type imports
+import { IDialogState } from '../../types/globals/Dialog';
+import { picturePath, ISignUpForm } from '../../types/pages/Registration';
+
 // Theme imports.
 import { styles, styledComponents } from './styles';
-
-// Type declarations.
-type picturePath = string | null;
-
-// Interface declarations.
-interface IDialogState {
-  open: boolean,
-  title: string,
-  message: string,
-}
-
-interface ISignUpForm {
-  fullName: string,
-  birthDate: Date | null,
-  email: string,
-  state: string,
-  city: string,
-  address: string,
-  phoneNumber: string,
-  username: string,
-  password: string,
-  passwordConfirmation: string,
-}
 
 // Component.
 export default function Registration() : JSX.Element {
@@ -94,10 +79,12 @@ export default function Registration() : JSX.Element {
     passwordConfirmation: '',
   };
 
-  // Layout effects.
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
-  }, [navigation]);
+  // Page effects.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
 
   // Functions declaration.
   function dateToBrazilianString(date : Date) : string {
@@ -190,11 +177,6 @@ export default function Registration() : JSX.Element {
     <HeaderLayout
       headerShown
       title="Cadastro Pessoal"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
@@ -246,6 +228,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="fullName"
                 formikHelpers={formikHelpers}
+                label="Nome completo"
                 placeholder="Nome completo"
                 mode="flat"
                 {...styles.textInput}
@@ -299,6 +282,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="email"
                 formikHelpers={formikHelpers}
+                label="E-mail"
                 placeholder="E-mail"
                 mode="flat"
                 {...styles.textInput}
@@ -306,6 +290,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="state"
                 formikHelpers={formikHelpers}
+                label="Estado"
                 placeholder="Estado"
                 mode="flat"
                 {...styles.textInput}
@@ -313,6 +298,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="city"
                 formikHelpers={formikHelpers}
+                label="Cidade"
                 placeholder="Cidade"
                 mode="flat"
                 {...styles.textInput}
@@ -320,6 +306,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="address"
                 formikHelpers={formikHelpers}
+                label="Endereço"
                 placeholder="Endereço"
                 mode="flat"
                 {...styles.textInput}
@@ -327,6 +314,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="phoneNumber"
                 formikHelpers={formikHelpers}
+                label="Telefone"
                 placeholder="Telefone"
                 mode="flat"
                 {...styles.textInput}
@@ -335,6 +323,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="username"
                 formikHelpers={formikHelpers}
+                label="Nome de usuário"
                 placeholder="Nome de usuário"
                 mode="flat"
                 {...styles.textInput}
@@ -342,6 +331,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="password"
                 formikHelpers={formikHelpers}
+                label="Senha"
                 placeholder="Senha"
                 mode="flat"
                 secureTextEntry
@@ -350,6 +340,7 @@ export default function Registration() : JSX.Element {
               <CustomTextInput
                 fieldName="passwordConfirmation"
                 formikHelpers={formikHelpers}
+                label="Confirmação de senha"
                 placeholder="Confirmação de senha"
                 mode="flat"
                 secureTextEntry

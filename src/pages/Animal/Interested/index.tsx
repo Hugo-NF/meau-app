@@ -1,38 +1,36 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import {
-  ActivityIndicator, Text, Image, TouchableOpacity, Alert,
+  ActivityIndicator, Image, TouchableOpacity, Alert,
 } from 'react-native';
-import React, {
-  useCallback, useEffect, useLayoutEffect, useState,
-} from 'react';
+
 import { fromUnixTime, differenceInYears } from 'date-fns';
 import InfiniteScroll from '../../../components/InfiniteScroll';
-import { Theme } from '../../../constants';
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import {
-  Container, LoadingContainer, LoadingText,
-} from './styles';
-import { DocumentData, DocumentRefData } from '../../../types/firebase';
-import * as RouteTypes from '../../../types/routes';
 
 // Service imports.
 import userAPI from '../../../services/user/api';
 import animalAPI from '../../../services/animal/api';
 import adoptionAPI from '../../../services/adoption/api';
 
-interface InterestedUser {
-  id: string;
-  ref: DocumentRefData;
-  imageURI: string;
-  userName: string;
-  birthDate: number;
-}
+// Type imports.
+import * as RouteTypes from '../../../types/routes';
+import { DocumentData, DocumentRefData } from '../../../types/services/Firebase';
+import { UserCircleProps, InterestedUser } from '../../../types/pages/Animal';
 
-interface UserCircleProps {
-  user: InterestedUser;
-  callback: (user: InterestedUser) => void;
-}
+// Style imports.
+import { styledComponents, styles } from './styles';
+
+const {
+  Container, InterestedUserText, LoadingContainer, LoadingText,
+} = styledComponents;
 
 const getAge = (birthDateTimestamp: number): number => differenceInYears(new Date(), fromUnixTime(birthDateTimestamp));
 
@@ -43,18 +41,14 @@ const UserCircle = ({
   return (
     <TouchableOpacity
       onPress={() => callback(user)}
-      style={{
-        alignItems: 'center', marginRight: 36, marginLeft: 36, marginBottom: 24,
-      }}
+      style={styles.interestedUserTouchableOpacity}
     >
       <Image
         source={{ uri: user.imageURI }}
-        style={{
-          width: 84, height: 84, borderRadius: 84, marginBottom: 8,
-        }}
+        style={styles.interestedUserProfilePicture}
       />
-      <Text style={{ fontSize: 14, color: Theme.elements.cardText }}>{user.userName}</Text>
-      {age && (<Text>{age} anos</Text>) }
+      <InterestedUserText>{user.userName}</InterestedUserText>
+      {age && (<InterestedUserText>{age} anos</InterestedUserText>) }
     </TouchableOpacity>
   );
 };
@@ -105,9 +99,11 @@ const Interested = (): JSX.Element => {
       });
   }, [fetchAnimal]);
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
 
   return (
     loading
@@ -116,7 +112,7 @@ const Interested = (): JSX.Element => {
           <LoadingText>Carregando...</LoadingText>
           <ActivityIndicator
             size="large"
-            color={Theme.default.primary}
+            color={styles.loadingIconColor}
           />
         </LoadingContainer>
       )
@@ -125,11 +121,6 @@ const Interested = (): JSX.Element => {
           disableScrollView
           headerShown
           title="Interessados"
-          headerStyles={{
-            backgroundColor: Theme.elements.headerPrimaryDark,
-            maxHeight: '56px',
-            height: '56px',
-          }}
           leftAction={{
             hidden: false,
             actionType: 'drawer',
@@ -144,22 +135,26 @@ const Interested = (): JSX.Element => {
               numColumns={2}
               keyExtractorFunction={userKeyExtractor}
               contentBatchSize={10}
+              contentContainerStyles={styles.interestedUserFeedStyles}
               dataFetchQuery={fetchInterested}
               formatContent={(user) => (
                 <UserCircle
                   user={user}
-                  callback={(u: InterestedUser): void => {
-                    Alert.alert(u.userName, 'Selecione a ação', [
+                  callback={(interestedUser: InterestedUser): void => {
+                    Alert.alert(interestedUser.userName, 'Selecione a ação', [
                       {
-                        text: 'Cancelar',
-                        onPress: () => null,
+                        text: 'Chat',
+                        onPress: () => navigation.navigate('Chat', {
+                          title: user.userName,
+                          targetUserUID: interestedUser.id,
+                        }),
                       },
                       {
                         text: 'Remover',
                         onPress: () => {
                           if (animal) {
-                            adoptionAPI.removeInterestToAnimal(animal, u.ref, true);
-                            removeFromList(u.id);
+                            adoptionAPI.removeInterestToAnimal(animal, interestedUser.ref, true);
+                            removeFromList(interestedUser.id);
                           }
                         },
                       },
@@ -167,16 +162,19 @@ const Interested = (): JSX.Element => {
                         text: 'Realizar transferência',
                         onPress: () => {
                           if (animal) {
-                            adoptionAPI.transferAnimalTo(animal, u.ref);
+                            adoptionAPI.transferAnimalTo(animal, interestedUser.ref);
                             navigation.reset({
-                              index: 0,
-                              routes: [{ name: 'Home' }],
+                              index: 1,
+                              routes: [
+                                { name: 'Home' },
+                                { name: 'MyPets' },
+                              ],
                             });
                             Alert.alert('Transferência realizada com sucesso!');
                           }
                         },
                       },
-                    ]);
+                    ], { cancelable: true });
                   }}
                 />
               )}

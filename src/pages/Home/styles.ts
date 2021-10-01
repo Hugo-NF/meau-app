@@ -24,8 +24,8 @@ export const styledComponents = {
     font-family: 'Courgette_400Regular';
     font-size: 72px;
     color: ${Theme.default.secondary};
-    margin-bottom: 52px;
-    margin-top: 0;
+    margin-bottom: 32px;
+    margin-top: -12px;
   `,
 
   Message: styled.Text<TextProps>`
@@ -43,7 +43,7 @@ export const styledComponents = {
   ButtonText: styled.Text<TextProps>`
     font-family: 'Roboto_400Regular';
     font-size: 12px;
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     text-transform: uppercase;
   `,
 
@@ -74,4 +74,24 @@ export const styles = {
     alignItems: 'center',
     borderRadius: '2px',
   },
+
+  headerLayout: {
+    backgroundColor: Theme.default.background,
+    elevation: 0,
+  },
+
+  loginButton: {
+    backgroundColor: 'transparent',
+    marginBottom: '56px',
+    marginTop: '20px',
+    marginLeft: '10px',
+    marginRight: '10px',
+    width: '40%',
+    height: '40px',
+    alignItems: 'center',
+    elevation: 0,
+  },
+
+  headerIconColor: Theme.default.primary,
+  statusBarColor: 'transparent',
 };

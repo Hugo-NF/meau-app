@@ -21,7 +21,7 @@ export const styledComponents = {
   `,
 
   AnimalImage: styled.Image<ImageProps>`
-    height: 183px;
+    height: 184px;
   `,
 
   ButtonText: styled.Text<TextProps>`
@@ -32,7 +32,7 @@ export const styledComponents = {
   `,
 
   ButtonTextStrong: styled.Text<TextProps>`
-    color: ${Theme.elements.buttonText};
+    color: ${Theme.elements.textDark};
     font-family: 'Roboto_500Medium';
     font-size: 12px;
     text-transform: uppercase;
@@ -59,7 +59,7 @@ export const styledComponents = {
     align-items: center;
     background-color: ${Theme.elements.floatingButton};
     border-radius: 28px;
-    elevation: 1;
+    elevation: 5;
     height: 56px;
     justify-content: center;
     width: 56px;
@@ -130,7 +130,7 @@ export const styledComponents = {
   `,
 
   TitleText: styled.Text<TextProps>`
-    color: ${Theme.elements.titleText}
+    color: ${Theme.elements.textDark}
     font-family: 'Roboto_500Medium';
     font-size: 16px;
     margin-top: 16px;
@@ -141,15 +141,12 @@ export const styledComponents = {
 // Styles.
 export const styles = {
   adoptionButton: {
-    alignItems: 'center',
     backgroundColor: Theme.elements.adoptionButton,
     borderRadius: '2px',
     height: '40px',
-    width: '232px',
-  },
-
-  floatingButtonIcon: {
-    color: Theme.elements.buttonText,
+    marginLeft: '8px',
+    marginRight: '8px',
+    width: '148px',
   },
 
   headerLayoutHeaderPrimaryStyles: {
@@ -207,5 +204,6 @@ export const styles = {
 
   activityIndicatorColor: Theme.default.primary,
   animalOwnerStatusBarColor: Theme.elements.statusBarPrimary,
-  regularUserStatusBarColor: Theme.elements.statusBarSecondaryDark,
+  floatingButtonIconColor: Theme.elements.icon,
+  regularUserStatusBarColor: Theme.elements.statusBarSecondary,
 };

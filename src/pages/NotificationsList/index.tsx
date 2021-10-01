@@ -1,31 +1,38 @@
 // Package imports.
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { ActivityIndicator, Text } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Theme } from '../../constants';
-import HeaderLayout from '../../layouts/HeaderLayout';
-import { Container } from './styles';
 
-// Component imports.
+// Layout imports.
+import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Service imports.
-import notificationAPI, { NotificationType, NotificationModels } from '../../services/notifications/api';
-// Style imports.
+import notificationAPI from '../../services/notifications/api';
 
 // Type declaration.
+import { NotificationType, NotificationModels } from '../../types/services/Notifications';
+
+// Style imports.
+import { styledComponents, styles } from './styles';
 
 // Component.
 export default function NotificationsList() : JSX.Element {
   // Variables.
   const navigation = useNavigation();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [fetchedNotifications, setFetchedNotifications] = useState<NotificationModels[]>([]);
   const [fetchedOnce, setFetchedOnce] = useState(false);
 
   // Styled components.
+  const {
+    Container,
+    LoadingContainer,
+    NoDataReturnedText,
+    NotificationContainer,
+    NotificationTextView,
+  } = styledComponents;
 
   // Function declaration.
   const fetchNotifications = (): void => {
@@ -35,36 +42,42 @@ export default function NotificationsList() : JSX.Element {
     });
   };
 
+  // Page effects.
   useEffect(() => fetchNotifications(), []);
 
-  // Page effects.
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor('transparent', true);
-  }, [navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
 
   const notificationRenderer = (notification: (NotificationModels)): JSX.Element => {
+    // eslint-disable-next-line camelcase
+    const fromName = notification.from.data()?.full_name || 'Usuário deletado';
     switch (notification.type) {
       case NotificationType.adoptionInterest:
       {
+        const animalName = notification.animal.data()?.name || 'Animal deletado';
         return (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{notification.from.data().full_name} está interessado no seu pet {notification.animal.data().name}</Text>
+            <Text>{fromName} está interessado no seu pet {animalName}.</Text>
           </TouchableOpacity>
         );
       }
       case NotificationType.adoptionRefused:
       {
+        const animalName = notification.animal.data()?.name || 'Animal deletado';
         return (
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('AnimalDetails', { animalUID: notification.animal.id });
             }}
           >
-            <Text>{notification.from.data().full_name} recusou sua solicitação ao pet {notification.animal.data().name}</Text>
+            <Text>{fromName} recusou sua solicitação ao pet {animalName}.</Text>
           </TouchableOpacity>
         );
       }
@@ -84,11 +97,7 @@ export default function NotificationsList() : JSX.Element {
     <HeaderLayout
       headerShown
       title="Notificações"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
@@ -98,25 +107,33 @@ export default function NotificationsList() : JSX.Element {
       }}
     >
       <Container>
-        { fetchedOnce && fetchedNotifications.length === 0 && (<Text style={{ marginTop: 20 }}>Nenhuma notificação</Text>)}
-        {
-          fetchedNotifications.map((notification, index) => (
-            <View
+        { !fetchedOnce && (
+          <LoadingContainer>
+            <ActivityIndicator
+              size="large"
+              color={styles.activityIndicatorColor}
+            />
+          </LoadingContainer>
+        )}
+        { fetchedOnce && fetchedNotifications.length === 0 && (
+          <NoDataReturnedText>Nenhuma notificação.</NoDataReturnedText>
+        )}
+        { fetchedOnce
+          && fetchedNotifications.map((notification, index) => (
+            <NotificationContainer
               key={notification.id}
-              style={{
-                width: 300, height: 50, flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee', marginTop: 20, padding: 10,
-              }}
             >
-              <View style={{ flex: 1, paddingRight: 10 }}>{notificationRenderer(notification)}</View>
+              <NotificationTextView>
+                {notificationRenderer(notification)}
+              </NotificationTextView>
               <TouchableOpacity onPress={() => { notificationAPI.setSeenById(notification.id); removeNotification(index); }}>
                 <MaterialIcons
                   name="cancel"
                   size={24}
                 />
               </TouchableOpacity>
-            </View>
-          ))
-        }
+            </NotificationContainer>
+          ))}
       </Container>
     </HeaderLayout>
   );

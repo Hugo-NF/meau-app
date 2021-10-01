@@ -1,29 +1,28 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import AsyncButton from '../../../components/AsyncButton';
-import {
-  Container, Title, Message, ButtonContainer, ButtonText, styles,
-} from './styles';
+import { styledComponents, styles } from './styles';
 import HeaderLayout from '../../../layouts/HeaderLayout';
-import { Theme } from '../../../constants';
 
 export default function AnimalRegistrationSuccess() : JSX.Element {
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarSecondaryDark, false);
-  }, [navigation]);
+  const {
+    Container, Title, Message, ButtonContainer, ButtonText,
+  } = styledComponents;
+
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
 
   return (
     <HeaderLayout
       headerShown
       title="Cadastro do Animal"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerSecondary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
         actionType: 'back',

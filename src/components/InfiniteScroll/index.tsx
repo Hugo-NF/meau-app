@@ -1,33 +1,16 @@
 // Component to implement an infinite scroll for any type of content.
 
 // Package imports.
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import useIsMounted from 'ismounted';
 import { ActivityIndicator, FlatList } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 // Style imports.
 import { defaultProps, styledComponents } from './styles';
 
-// Type declaration.
-type InfiniteScrollState<T> = {
-  allDataFetched: boolean,
-  data: Array<T>,
-  error: string | null,
-  loadingMore: boolean,
-  page: number,
-}
-
-// Interface declaration.
-interface IInfiniteScroll<T> {
-  activityIndicatorColor?: string,
-  contentBatchSize: number,
-  contentContainerStyles?: Record<string, unknown>,
-  dataFetchQuery: (lastEntry: T | null, pageNumber: number, pageSize: number) => Promise<Array<T>>,
-  errorContainerStyles?: Record<string, unknown>,
-  formatContent: (queryResponseData : T) => JSX.Element,
-  keyExtractorFunction: (item: T) => string,
-  loadingContainerStyles?: Record<string, unknown>,
-  numColumns: number,
-}
+// Typings imports
+import { InfiniteScrollState, IInfiniteScroll } from '../../types/components/InfiniteScroll';
 
 // Styled components.
 const {
@@ -47,9 +30,11 @@ const InfiniteScroll = <T, _>({
   formatContent,
   keyExtractorFunction,
   loadingContainerStyles,
+  noDataFoundContainerStyles,
   numColumns,
 }: IInfiniteScroll<T>): JSX.Element => {
   // Variable declaration.
+  const isMounted = useIsMounted();
   const [infiniteScrollState, setInfiniteScrollState] = useState<InfiniteScrollState<T>>({
     allDataFetched: false,
     data: [],
@@ -64,48 +49,50 @@ const InfiniteScroll = <T, _>({
       .then((response) => {
         const contentReceived = response;
 
-        if (contentReceived.length === 0) {
-          setInfiniteScrollState({
-            allDataFetched: true,
-            data: [],
-            error: null,
-            loadingMore: false,
-            page: 1,
-          });
-        } else {
-          setInfiniteScrollState({
-            allDataFetched: false,
-            data: contentReceived,
-            error: null,
-            loadingMore: false,
-            page: 2,
-          });
+        if (isMounted.current) {
+          if (contentReceived.length === 0) {
+            setInfiniteScrollState({
+              allDataFetched: true,
+              data: [],
+              error: null,
+              loadingMore: false,
+              page: 1,
+            });
+          } else {
+            setInfiniteScrollState({
+              allDataFetched: false,
+              data: contentReceived,
+              error: null,
+              loadingMore: false,
+              page: 2,
+            });
+          }
         }
       })
       .catch((err) => {
-        setInfiniteScrollState({
-          allDataFetched: true,
-          data: [],
-          error: err,
-          loadingMore: false,
-          page: 1,
-        });
+        if (isMounted.current) {
+          setInfiniteScrollState({
+            allDataFetched: true,
+            data: [],
+            error: err,
+            loadingMore: false,
+            page: 1,
+          });
+        }
       });
-  }, [contentBatchSize, dataFetchQuery]);
+  }, [contentBatchSize, dataFetchQuery, isMounted]);
 
   // Function declarations.
-  function componentDidMount() : () => void {
-    let mounted = true;
-
-    if (mounted) fetchInitialData();
-
-    return function cleanUp() : void {
-      mounted = false;
-    };
-  }
+  const onComponentFocus = useCallback(() : void => {
+    fetchInitialData();
+  }, [fetchInitialData]);
 
   function fetchMoreData() : void {
-    if (!infiniteScrollState.loadingMore && !infiniteScrollState.allDataFetched) {
+    if (
+      !infiniteScrollState.loadingMore
+      && !infiniteScrollState.allDataFetched
+      && isMounted.current
+    ) {
       setInfiniteScrollState({
         ...infiniteScrollState,
         loadingMore: true,
@@ -118,30 +105,34 @@ const InfiniteScroll = <T, _>({
         .then((response) => {
           const contentReceived = response;
 
-          if (contentReceived.length === 0) {
-            setInfiniteScrollState({
-              ...infiniteScrollState,
-              allDataFetched: true,
-              loadingMore: false,
-              error: null,
-            });
-          } else {
-            setInfiniteScrollState({
-              ...infiniteScrollState,
-              data: infiniteScrollState.data.concat(contentReceived),
-              error: null,
-              loadingMore: false,
-              page: infiniteScrollState.page + 1,
-            });
+          if (isMounted.current) {
+            if (contentReceived.length === 0) {
+              setInfiniteScrollState({
+                ...infiniteScrollState,
+                allDataFetched: true,
+                loadingMore: false,
+                error: null,
+              });
+            } else {
+              setInfiniteScrollState({
+                ...infiniteScrollState,
+                data: infiniteScrollState.data.concat(contentReceived),
+                error: null,
+                loadingMore: false,
+                page: infiniteScrollState.page + 1,
+              });
+            }
           }
         })
         .catch((err) => {
-          setInfiniteScrollState({
-            ...infiniteScrollState,
-            allDataFetched: true,
-            error: err,
-            loadingMore: false,
-          });
+          if (isMounted.current) {
+            setInfiniteScrollState({
+              ...infiniteScrollState,
+              allDataFetched: true,
+              error: err,
+              loadingMore: false,
+            });
+          }
         });
     }
   }
@@ -163,7 +154,7 @@ const InfiniteScroll = <T, _>({
   function renderLoading() : JSX.Element {
     if (infiniteScrollState.allDataFetched) {
       return (
-        <TextContainer>
+        <TextContainer style={{ ...noDataFoundContainerStyles }}>
           <NoDataFoundMessage>Não há dados para exibir!</NoDataFoundMessage>
         </TextContainer>
       );
@@ -183,7 +174,7 @@ const InfiniteScroll = <T, _>({
   }
 
   // Component effects.
-  useEffect(componentDidMount, [fetchInitialData]);
+  useFocusEffect(onComponentFocus);
 
   // JSX returned.
   return (

@@ -1,5 +1,5 @@
 // Package imports.
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 import Lodash from 'lodash';
 import {
@@ -7,7 +7,12 @@ import {
 } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 
 // Service imports.
 import adoptionAPI from '../../../services/adoption/api';
@@ -28,10 +33,11 @@ import { styles, styledComponents } from './styles';
 
 // Type imports.
 import * as AnimalTypes from '../../../types/animal';
-import * as CarouselTypes from '../../../types/carousel';
+import * as CarouselTypes from '../../../types/globals/Carousel';
 import * as RouteTypes from '../../../types/routes';
 
 // Utils imports.
+import { concatenateNames } from '../../../utils/concatenateNames';
 import { formatLocation } from '../../../utils/formatTexts';
 
 // Component export.
@@ -75,7 +81,6 @@ export default function AnimalDetails() : JSX.Element {
 
   // Styled components.
   const {
-    AdoptionButtonWrapper,
     AnimalImage,
     ButtonText,
     ButtonTextStrong,
@@ -95,17 +100,14 @@ export default function AnimalDetails() : JSX.Element {
     TitleText,
   } = styledComponents;
 
-  // Function declaration.
-  function booleanToString(value : boolean) : string {
-    if (value === true) return 'Sim';
-    return 'Não';
-  }
+  // Callback declaration.
+  const determinePageBehavior = useCallback(() : void => {
+    // Function declaration.
+    function booleanToString(value : boolean) : string {
+      if (value === true) return 'Sim';
+      return 'Não';
+    }
 
-  function concatenateNames(names : Array<string>) : string {
-    return names.length === 2 ? names.join(' e ') : names.join(', ');
-  }
-
-  function determinePageBehavior() : void {
     function describeAnimalAdoptionRequirements(
       adoptionRequirements : AnimalTypes.AdoptionRequirements,
     ) : string {
@@ -171,6 +173,7 @@ export default function AnimalDetails() : JSX.Element {
       );
     }
 
+    // Callback implementation.
     animalAPI.getAnimal(animalUID)
       .then(async (animal) => {
         const animalData = animal.data();
@@ -235,7 +238,6 @@ export default function AnimalDetails() : JSX.Element {
                         asyncAction={false}
                         callback={async () => {
                           navigation.navigate('Interested', { animalUID });
-                          // console.log((await adoptionAPI.getInterestedIn(animal.ref)));
                         }}
                       >
                         <ButtonText>Ver interessados</ButtonText>
@@ -276,7 +278,7 @@ export default function AnimalDetails() : JSX.Element {
                       <MaterialIcons
                         name="edit"
                         size={24}
-                        {...styles.floatingButtonIcon}
+                        color={styles.floatingButtonIconColor}
                       />
                     </FloatingButton>,
                   );
@@ -286,7 +288,7 @@ export default function AnimalDetails() : JSX.Element {
                   setLabelStyles(styles.secondaryLabel);
 
                   setPageButtons(
-                    <AdoptionButtonWrapper>
+                    <OptionButtonsWrapper>
                       <AsyncButton
                         styles={styles.adoptionButton}
                         asyncAction={false}
@@ -311,7 +313,18 @@ export default function AnimalDetails() : JSX.Element {
                       >
                         <ButtonTextStrong>{ resultInterestedIn ? 'Desistir da adoção' : 'Pretendo adotar' }</ButtonTextStrong>
                       </AsyncButton>
-                    </AdoptionButtonWrapper>,
+                      <AsyncButton
+                        styles={styles.adoptionButton}
+                        asyncAction={false}
+                        callback={() => navigation.navigate('Chat', {
+                          /* eslint-disable camelcase */
+                          title: owner.data()?.full_name,
+                          targetUserUID: ownerID,
+                        })}
+                      >
+                        <ButtonTextStrong>Chat</ButtonTextStrong>
+                      </AsyncButton>
+                    </OptionButtonsWrapper>,
                   );
 
                   setFloatingButton(
@@ -319,7 +332,7 @@ export default function AnimalDetails() : JSX.Element {
                       <MaterialIcons
                         name="favorite-border"
                         size={24}
-                        {...styles.floatingButtonIcon}
+                        color={styles.floatingButtonIconColor}
                       />
                     </FloatingButton>,
                   );
@@ -368,8 +381,9 @@ export default function AnimalDetails() : JSX.Element {
         }
       })
       .catch(() => errorAlert());
-  }
+  }, [animalUID, navigation]);
 
+  // Function declaration.
   function displayAnimalImage(
     { item } : CarouselTypes.CarouselRenderItem,
   ) : JSX.Element {
@@ -377,7 +391,7 @@ export default function AnimalDetails() : JSX.Element {
   }
 
   // Page effects.
-  useLayoutEffect(determinePageBehavior, [animalUID, navigation]);
+  useFocusEffect(determinePageBehavior);
 
   // JSX returned.
   return (

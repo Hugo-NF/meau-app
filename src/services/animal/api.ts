@@ -5,16 +5,10 @@ import storage from '@react-native-firebase/storage';
 // Type imports.
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { FirebaseStorageTypes } from '@react-native-firebase/storage';
+import { QueryParams } from '../../types/services/Firebase';
 
 // User module imports.
 import { Values } from '../../constants';
-
-// Type declarations.
-type QueryParams = {
-  orderBy? : string | undefined,
-  startAfter? : FirebaseFirestoreTypes.DocumentFieldType | undefined,
-  limit? : number | undefined
-}
 
 // Service implementation.
 const api = {
@@ -115,6 +109,12 @@ const api = {
     pictureID : string,
   ) : Promise<string> {
     return this.animalPictureDir().child(pictureID).getDownloadURL();
+  },
+
+  getReference(
+    animalRef : FirebaseFirestoreTypes.DocumentReference,
+  ) : Promise<FirebaseFirestoreTypes.DocumentSnapshot<FirebaseFirestoreTypes.DocumentData>> {
+    return animalRef.get();
   },
 
   uploadAnimalPicture(

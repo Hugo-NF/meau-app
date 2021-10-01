@@ -1,8 +1,12 @@
 // Package imports.
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
-import { StackActions, useNavigation } from '@react-navigation/native';
+import {
+  StackActions,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -11,33 +15,24 @@ import {
   Button, Dialog, Paragraph, Portal,
 } from 'react-native-paper';
 
+// Component imports.
+import AsyncButton from '../../components/AsyncButton';
+
 // Service imports.
 import userAPI from '../../services/user/api';
 
 // Style imports.
-import {
-  ButtonText,
-  Container,
-  LoginForm,
-  SubmitButton,
-} from './styles';
+import { styledComponents, styles } from './styles';
 
 // Layout import
 import HeaderLayout from '../../layouts/HeaderLayout';
 
 // Project imports.
 import CustomTextInput from '../../components/CustomTextInput';
-import { Theme, Values } from '../../constants';
+import { Values } from '../../constants';
 
-interface LoginForm {
-  email: string,
-  password: string,
-}
-interface IDialogState {
-  open: boolean,
-  title: string,
-  message: string,
-}
+import { ILoginForm } from '../../types/pages/Login';
+import { IDialogState } from '../../types/globals/Dialog';
 
 // Component export.
 export default function Login() : JSX.Element {
@@ -49,12 +44,21 @@ export default function Login() : JSX.Element {
     message: '',
   });
 
-  // Layout effects.
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimary, true);
-  }, [navigation]);
+  // Styled components.
+  const {
+    ButtonText,
+    Container,
+    LoginForm,
+  } = styledComponents;
 
-  const signIn = async ({ email, password }: LoginForm): Promise<void> => {
+  // Page effects.
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
+
+  const signIn = async ({ email, password }: ILoginForm): Promise<void> => {
     try {
       const response = await userAPI.signIn(email, password);
       if (response && response.user) {
@@ -73,11 +77,6 @@ export default function Login() : JSX.Element {
     <HeaderLayout
       headerShown
       title="Login"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimary,
-        maxHeight: '56px',
-        height: '56px',
-      }}
       leftAction={{
         hidden: false,
         actionType: 'drawer',
@@ -123,13 +122,8 @@ export default function Login() : JSX.Element {
                 mode="flat"
                 keyboardType="email-address"
                 autoFocus
-                selectionColor={Theme.elements.statusBarPrimary}
-                underlineColor={Theme.elements.headerText}
-                style={{
-                  backgroundColor: 'transparent',
-                  maxHeight: 56,
-                  width: 312,
-                }}
+                theme={styles.textInput.theme}
+                iconColor={styles.textInput.iconColor}
               />
               <CustomTextInput
                 fieldName="password"
@@ -138,20 +132,17 @@ export default function Login() : JSX.Element {
                 placeholder="Senha"
                 mode="flat"
                 secureTextEntry
-                selectionColor={Theme.elements.statusBarPrimary}
-                underlineColor={Theme.elements.headerText}
-                style={{
-                  backgroundColor: 'transparent',
-                  maxHeight: 56,
-                  width: 312,
-                }}
+                theme={styles.textInput.theme}
+                iconColor={styles.textInput.iconColor}
               />
-              <SubmitButton
+              <AsyncButton
+                asyncAction
+                callback={formikHelpers.handleSubmit as (values: unknown) => void}
                 disabled={formikHelpers.isSubmitting}
-                onPress={formikHelpers.handleSubmit as (values: unknown) => void}
+                styles={styles.submitButtonStyles}
               >
                 <ButtonText>Entrar</ButtonText>
-              </SubmitButton>
+              </AsyncButton>
             </LoginForm>
           )}
         </Formik>

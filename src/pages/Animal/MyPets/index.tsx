@@ -1,9 +1,9 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useCallback } from 'react';
 import { setStatusBarBackgroundColor } from 'expo-status-bar';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 
@@ -12,15 +12,11 @@ import HeaderLayout from '../../../layouts/HeaderLayout';
 import AnimalCard from '../../../components/AnimalCard';
 import InfiniteScroll from '../../../components/InfiniteScroll';
 
-import { Theme } from '../../../constants';
-
 import { formatInterested } from '../../../utils/formatTexts';
 
 import { Animal } from '../../../types/animal';
 
-import {
-  CardText, CardTextContainer, CardTextRow, Container,
-} from './styles';
+import { styledComponents, styles } from './styles';
 
 // Service imports.
 import animalAPI from '../../../services/animal/api';
@@ -31,9 +27,18 @@ const MyPets = (): JSX.Element => {
   const user = userAPI.currentUserDocument();
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
-    setStatusBarBackgroundColor(Theme.elements.statusBarPrimaryDark, false);
-  }, [navigation]);
+  const {
+    CardText,
+    CardTextContainer,
+    CardTextRow,
+    Container,
+  } = styledComponents;
+
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarBackgroundColor(styles.statusBarColor, true);
+    }, []),
+  );
 
   const animalKey = (animalItem: Animal): string => animalItem.id;
 
@@ -53,10 +58,10 @@ const MyPets = (): JSX.Element => {
         <MaterialIcons
           name="error"
           size={24}
-          color={Theme.elements.cardText}
+          color={styles.cardIconColor}
         />
       )}
-      headerBackground={Theme.elements.headerPrimary}
+      headerBackground={styles.cardHeaderBackground}
       onPress={() => navigation.navigate('AnimalDetails', { animalUID: pet?.id })}
     />
   );
@@ -108,23 +113,21 @@ const MyPets = (): JSX.Element => {
       disableScrollView
       headerShown
       title="Meus Pets"
-      headerStyles={{
-        backgroundColor: Theme.elements.headerPrimaryDark,
-        maxHeight: '56px',
-        height: '56px',
-      }}
+      headerStyles={styles.headerLayout}
       leftAction={{
         hidden: false,
-        actionType: 'back',
+        actionType: 'drawer',
       }}
       rightAction={{
-        hidden: true,
+        hidden: false,
+        actionType: 'search',
       }}
     >
       <Container>
         <InfiniteScroll
           keyExtractorFunction={animalKey}
           contentBatchSize={10}
+          contentContainerStyles={styles.myPetsFeedContainerStyles}
           dataFetchQuery={fetchPets}
           formatContent={formatAnimal}
         />
